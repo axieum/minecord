@@ -6,5 +6,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'fabric-example-mod'
-include 'example-submod'
+rootProject.name = 'minecord'

@@ -3,36 +3,31 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "Lorem ipsum dolor sit amet",
+  "description": "Bring your Minecraft world into your Discord guild",
   "authors": [
-    "[fullname]"
+    "Axieum"
   ],
   "contact": {
-    "homepage": "https://github.com/axieum/fabric-example-mod",
-    "sources": "https://github.com/axieum/fabric-example-mod",
-    "issues": "https://github.com/axieum/fabric-example-mod/issues"
+    "homepage": "https://github.com/axieum/minecord",
+    "sources": "https://github.com/axieum/minecord",
+    "issues": "https://github.com/axieum/minecord/issues",
+    "wiki": "https://github.com/axieum/minecord/wiki"
   },
-  "license": "CC0",
-  "icon": "assets/modid/icon.png",
-  "environment": "*",
+  "license": "MIT",
+  "icon": "assets/minecord/icon.png",
+  "environment": "server",
   "entrypoints": {
-    "main": [
-      "com.example.modid.Example"
+    "server": [
+      "me.axieum.mcmod.minecord.Minecord"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "minecord.mixins.json"
   ],
   "depends": {
     "java": ">=16",
     "minecraft": "1.17.x",
     "fabricloader": ">=0.11.3",
     "fabric": "*"
-  },
-  "recommends": {
-    "modid-sub": "*"
-  },
-  "suggests": {
-    "modmenu": "*"
   }
 }

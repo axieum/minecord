@@ -27,7 +27,6 @@ allprojects {
 
         // Mods
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-        modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
         // Code Quality
         compileOnly "org.jetbrains:annotations:${project.jetbrains_annotations_version}"
@@ -78,7 +77,6 @@ allprojects {
     repositories {
         mavenCentral()
         maven { name 'Fabric'; url 'https://maven.fabricmc.net/' }
-        maven { name 'TerraformersMC'; url 'https://maven.terraformersmc.com/' }
     }
 }
 

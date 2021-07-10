@@ -1,13 +1,11 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.example.modid.submod.mixin",
+  "package": "me.axieum.mcmod.minecord.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [],
   "server": [],
-  "client": [
-    "TitleScreenMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

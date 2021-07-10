@@ -1,2 +1,0 @@
-// Declare dependencies
-dependencies {}
