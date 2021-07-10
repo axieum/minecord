@@ -1,0 +1,7 @@
+// Declare dependencies
+dependencies {
+    include "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
+    implementation include("net.dv8tion:JDA:${project.jda_version}") {
+        exclude module: 'opus-java' // exclude audio
+    }
+}

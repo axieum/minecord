@@ -27,6 +27,7 @@ allprojects {
 
         // Mods
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+        modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
         // Code Quality
         compileOnly "org.jetbrains:annotations:${project.jetbrains_annotations_version}"
@@ -76,7 +77,9 @@ allprojects {
     // Add any additional repositories
     repositories {
         mavenCentral()
+        maven { name 'dv8tion'; url 'https://m2.dv8tion.net/releases' }
         maven { name 'Fabric'; url 'https://maven.fabricmc.net/' }
+        maven { name 'Shedaniel'; url 'https://maven.shedaniel.me/' }
     }
 }
 

@@ -3,7 +3,7 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "Bring your Minecraft world into your Discord guild",
+  "description": "Equips developers with the tools necessary to integrate their mods with Discord",
   "authors": [
     "Axieum"
   ],
@@ -14,14 +14,23 @@
     "wiki": "https://github.com/axieum/minecord/wiki"
   },
   "license": "MIT",
-  "icon": "assets/minecord/icon.png",
+  "icon": "assets/minecord-api/icon.png",
   "environment": "server",
+  "entrypoints": {
+    "preLaunch": [
+      "me.axieum.mcmod.minecord.impl.MinecordImpl"
+    ],
+    "server": [
+      "me.axieum.mcmod.minecord.impl.MinecordImpl"
+    ]
+  },
+  "mixins": [
+    "minecord.mixins.json"
+  ],
   "depends": {
     "java": ">=16",
     "minecraft": "1.17.x",
-    "fabricloader": ">=0.11.3"
-  },
-  "recommends": {
-    "minecord-api": "*"
+    "fabricloader": ">=0.11.3",
+    "fabric": "*"
   }
 }
