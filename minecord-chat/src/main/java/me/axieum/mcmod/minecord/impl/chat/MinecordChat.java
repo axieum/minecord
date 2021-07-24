@@ -1,0 +1,95 @@
+package me.axieum.mcmod.minecord.impl.chat;
+
+import me.shedaniel.autoconfig.ConfigHolder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+
+import me.axieum.mcmod.minecord.api.Minecord;
+import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReactionListener;
+import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReceiveListener;
+import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageUpdateListener;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerChangeWorldCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerConnectionCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerDeathCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerLifecycleCallback;
+import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
+
+public final class MinecordChat implements DedicatedServerModInitializer
+{
+    public static final Logger LOGGER = LogManager.getLogger("Minecord|Chat");
+    protected static final ConfigHolder<ChatConfig> CONFIG = ChatConfig.init();
+
+    @Override
+    public void onInitializeServer()
+    {
+        LOGGER.info("Minecord Chat is getting ready...");
+
+        /*
+         * Register Minecraft server-related callbacks.
+         */
+
+        final ServerLifecycleCallback lifecycleCallback = new ServerLifecycleCallback();
+
+        // The server began to start
+        ServerLifecycleEvents.SERVER_STARTING.register(lifecycleCallback);
+        // The server started and is accepting connections
+        ServerLifecycleEvents.SERVER_STARTED.register(lifecycleCallback);
+        // The server began to stop
+        ServerLifecycleEvents.SERVER_STOPPING.register(lifecycleCallback);
+        // The server stopped and is offline
+        // The server stopped unexpectedly and is inaccessible
+        ServerShutdownCallback.EVENT.register(lifecycleCallback);
+        // A named animal/monster (with name tag) died
+        // EntityDeathMessageCallback.EVENT.register(new EntityDeathCallback());
+
+        /*
+         * Register Minecraft player-related callbacks.
+         */
+
+        final PlayerConnectionCallback playerConnectionCallback = new PlayerConnectionCallback();
+
+        // A player joined the game
+        ServerPlayConnectionEvents.JOIN.register(playerConnectionCallback);
+        // A player left the game
+        ServerPlayConnectionEvents.DISCONNECT.register(playerConnectionCallback);
+        // A player sent an in-game chat message
+        // ChatEvents.RECEIVE_CHAT.register(new ReceiveChatCallback());
+        // A player unlocked an advancement
+        // PlayerEvents.GRANT_CRITERION.register(new PlayerAdvancementCallback());
+        // A player teleported to another dimension
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(new PlayerChangeWorldCallback());
+        // A player died
+        ServerPlayerEvents.COPY_FROM.register(new PlayerDeathCallback());
+
+        /*
+         * Register Discord callbacks.
+         */
+
+        Minecord.getInstance().getJDA().ifPresent(jda -> jda.addEventListener(
+            // A user sent a message
+            new MessageReceiveListener(),
+            // A user edited their recently sent message
+            new MessageUpdateListener(),
+            // A user reacted to a recent message
+            // A user removed their reaction from a recent message
+            new MessageReactionListener()
+        ));
+    }
+
+    /**
+     * Returns the Minecord Chat config instance.
+     *
+     * @return config instance
+     */
+    public static ChatConfig getConfig()
+    {
+        return CONFIG.getConfig();
+    }
+}
