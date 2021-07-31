@@ -14,6 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.server.MinecraftServer;
+
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
@@ -29,7 +31,9 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
 {
     public static final Minecord INSTANCE = new MinecordImpl();
     public static final Logger LOGGER = LogManager.getLogger("Minecord");
-    protected static final ConfigHolder<MinecordConfig> CONFIG = MinecordConfig.init();
+    private static final ConfigHolder<MinecordConfig> CONFIG = MinecordConfig.init();
+
+    private static @Nullable MinecraftServer minecraft = null;
     private static @Nullable JDA client = null;
 
     @Override
@@ -64,12 +68,22 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
     @Override
     public void onInitializeServer()
     {
+        // Capture the server instance
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> minecraft = server);
+
         // Register server lifecycle callbacks
         final ServerLifecycleCallback lifecycleCallback = new ServerLifecycleCallback();
         ServerLifecycleEvents.SERVER_STARTING.register(lifecycleCallback);
         ServerLifecycleEvents.SERVER_STARTED.register(lifecycleCallback);
         ServerLifecycleEvents.SERVER_STOPPING.register(lifecycleCallback);
-        ServerShutdownCallback.EVENT.register(lifecycleCallback);
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> // try to register as late as possible
+            ServerShutdownCallback.EVENT.register(lifecycleCallback));
+    }
+
+    @Override
+    public Optional<MinecraftServer> getMinecraft()
+    {
+        return Optional.ofNullable(minecraft);
     }
 
     @Override
