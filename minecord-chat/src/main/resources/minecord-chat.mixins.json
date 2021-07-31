@@ -4,7 +4,12 @@
   "package": "me.axieum.mcmod.minecord.mixin.chat",
   "compatibilityLevel": "JAVA_16",
   "mixins": [],
-  "server": [],
+  "server": [
+    "LivingEntityMixin",
+    "PlayerAdvancementTrackerMixin",
+    "ServerPlayerEntityMixin",
+    "ServerPlayNetworkHandlerMixin"
+  ],
   "client": [],
   "injectors": {
     "defaultRequire": 1

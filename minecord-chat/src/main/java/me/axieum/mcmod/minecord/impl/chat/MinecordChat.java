@@ -6,16 +6,21 @@ import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import me.axieum.mcmod.minecord.api.Minecord;
+import me.axieum.mcmod.minecord.api.chat.EntityDeathEvents;
+import me.axieum.mcmod.minecord.api.chat.GrantCriterionCallback;
+import me.axieum.mcmod.minecord.api.chat.ReceiveChatCallback;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReactionListener;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReceiveListener;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageUpdateListener;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.EntityDeathCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerAdvancementCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerChangeWorldCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerChatCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerConnectionCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerDeathCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerLifecycleCallback;
@@ -24,7 +29,7 @@ import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
 public final class MinecordChat implements DedicatedServerModInitializer
 {
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Chat");
-    protected static final ConfigHolder<ChatConfig> CONFIG = ChatConfig.init();
+    private static final ConfigHolder<ChatConfig> CONFIG = ChatConfig.init();
 
     @Override
     public void onInitializeServer()
@@ -47,7 +52,7 @@ public final class MinecordChat implements DedicatedServerModInitializer
         // The server stopped unexpectedly and is inaccessible
         ServerShutdownCallback.EVENT.register(lifecycleCallback);
         // A named animal/monster (with name tag) died
-        // EntityDeathMessageCallback.EVENT.register(new EntityDeathCallback());
+        EntityDeathEvents.ANIMAL_MONSTER.register(new EntityDeathCallback());
 
         /*
          * Register Minecraft player-related callbacks.
@@ -60,13 +65,13 @@ public final class MinecordChat implements DedicatedServerModInitializer
         // A player left the game
         ServerPlayConnectionEvents.DISCONNECT.register(playerConnectionCallback);
         // A player sent an in-game chat message
-        // ChatEvents.RECEIVE_CHAT.register(new ReceiveChatCallback());
+        ReceiveChatCallback.EVENT.register(new PlayerChatCallback());
         // A player unlocked an advancement
-        // PlayerEvents.GRANT_CRITERION.register(new PlayerAdvancementCallback());
+        GrantCriterionCallback.EVENT.register(new PlayerAdvancementCallback());
         // A player teleported to another dimension
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(new PlayerChangeWorldCallback());
         // A player died
-        ServerPlayerEvents.COPY_FROM.register(new PlayerDeathCallback());
+        EntityDeathEvents.PLAYER.register(new PlayerDeathCallback());
 
         /*
          * Register Discord callbacks.
