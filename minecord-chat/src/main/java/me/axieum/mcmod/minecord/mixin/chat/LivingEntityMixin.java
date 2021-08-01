@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 
-import me.axieum.mcmod.minecord.api.chat.event.EntityDeathEvents;
+import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 
 /**
  * Injects into, and broadcasts any animal or monster deaths.

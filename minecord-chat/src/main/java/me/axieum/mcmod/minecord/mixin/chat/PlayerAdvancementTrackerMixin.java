@@ -10,7 +10,7 @@ import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import me.axieum.mcmod.minecord.api.chat.event.GrantCriterionCallback;
+import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
 
 /**
  * Injects into, and broadcasts any granted advancement criterion.

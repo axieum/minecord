@@ -10,9 +10,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.EntityDeathEvents;
-import me.axieum.mcmod.minecord.api.chat.event.GrantCriterionCallback;
-import me.axieum.mcmod.minecord.api.chat.event.ReceiveChatCallback;
+import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
+import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
+import me.axieum.mcmod.minecord.api.chat.event.minecraft.ReceiveChatCallback;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReactionListener;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReceiveListener;

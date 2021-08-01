@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerSt
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerStopping;
 
 import me.axieum.mcmod.minecord.api.Minecord;
+import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
@@ -27,12 +28,19 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     @Override
     public void onServerStarting(MinecraftServer server)
     {
-        Minecord.getInstance().getJDA().ifPresent(jda ->
-            // Dispatch the message
+        Minecord.getInstance().getJDA().ifPresent(jda -> {
+            /*
+             * Dispatch the message.
+             */
+
+            final Map<String, Object> values = new HashMap<>();
+            PlaceholderEvents.SERVER_STARTING.invoker().onServerStarting(values, server);
+            final StrSubstitutor formatter = new StrSubstitutor(values);
+
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(entry.discord.starting),
-                entry -> entry.discord.starting != null)
-        );
+                    embed.setDescription(formatter.replace(entry.discord.starting)),
+                entry -> entry.discord.starting != null);
+        });
     }
 
     @Override
@@ -48,11 +56,13 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             // The time taken for the server to start
             values.put("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
 
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             /*
              * Dispatch the message.
              */
+
+            PlaceholderEvents.SERVER_STARTED.invoker().onServerStarted(values, server);
+            final StrSubstitutor formatter = new StrSubstitutor(values);
+
             DiscordDispatcher.embed((embed, entry) ->
                     embed.setColor(Color.GREEN).setDescription(formatter.replace(entry.discord.started)),
                 entry -> entry.discord.started != null);
@@ -72,11 +82,13 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             // The total time for which the server has been online for
             values.put("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
 
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             /*
              * Dispatch the message.
              */
+
+            PlaceholderEvents.SERVER_STOPPING.invoker().onServerStopping(values, server);
+            final StrSubstitutor formatter = new StrSubstitutor(values);
+
             DiscordDispatcher.embed((embed, entry) ->
                     embed.setDescription(formatter.replace(entry.discord.stopping)),
                 entry -> entry.discord.stopping != null);
@@ -98,11 +110,13 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             // The reason for the server stopping, if crashed
             if (crashReport != null) values.put("reason", crashReport.getMessage());
 
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             /*
              * Dispatch the message.
              */
+
+            if (crashReport == null) PlaceholderEvents.SERVER_STOPPED.invoker().onServerStopped(values, server);
+            else PlaceholderEvents.SERVER_CRASHED.invoker().onServerCrashed(values, server, crashReport);
+            final StrSubstitutor formatter = new StrSubstitutor(values);
 
             // The server stopped normally
             if (crashReport == null) {

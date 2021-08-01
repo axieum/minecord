@@ -38,12 +38,12 @@ public class ChatConfig implements ConfigData
             public String chat = "`${world}` **${player}** > ${message}";
 
             @Comment("""
-                A player died
+                A player had died
                 Usages: ${username}, ${player}, ${cause}, ${world}, ${x}, ${y}, ${z}, ${score} and ${exp}""")
             public String death = "**${player}** ${cause}!\n:skull: _${world} | ${x}, ${y}, ${z}_";
 
             @Comment("""
-                A named animal/monster (with name tag) died
+                A named animal/monster (with name tag) had died
                 Usages: ${name}, ${cause}, ${world}, ${x}, ${y} and ${z}""")
             public String grief = "**${name}** ${cause}! :coffin:";
 

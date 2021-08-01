@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import me.axieum.mcmod.minecord.api.chat.event.EntityDeathEvents;
+import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 
 /**
  * Injects into, and broadcasts any player deaths.

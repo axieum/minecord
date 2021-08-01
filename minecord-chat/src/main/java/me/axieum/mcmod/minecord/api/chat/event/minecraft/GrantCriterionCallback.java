@@ -1,4 +1,4 @@
-package me.axieum.mcmod.minecord.api.chat.event;
+package me.axieum.mcmod.minecord.api.chat.event.minecraft;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.server.network.ServerPlayerEntity;
