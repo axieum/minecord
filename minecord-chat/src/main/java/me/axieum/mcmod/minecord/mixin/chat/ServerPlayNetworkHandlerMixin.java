@@ -10,7 +10,7 @@ import net.minecraft.server.filter.TextStream;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import me.axieum.mcmod.minecord.api.chat.ReceiveChatCallback;
+import me.axieum.mcmod.minecord.api.chat.event.ReceiveChatCallback;
 
 /**
  * Injects into, and broadcasts any player chat messages.

@@ -1,4 +1,4 @@
-package me.axieum.mcmod.minecord.api.chat;
+package me.axieum.mcmod.minecord.api.chat.event;
 
 import net.minecraft.server.filter.TextStream;
 import net.minecraft.server.network.ServerPlayerEntity;

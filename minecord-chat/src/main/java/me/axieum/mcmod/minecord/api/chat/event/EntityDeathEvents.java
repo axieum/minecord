@@ -1,4 +1,4 @@
-package me.axieum.mcmod.minecord.api.chat;
+package me.axieum.mcmod.minecord.api.chat.event;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;

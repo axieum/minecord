@@ -3,7 +3,7 @@ package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import me.axieum.mcmod.minecord.api.chat.EntityDeathEvents;
+import me.axieum.mcmod.minecord.api.chat.event.EntityDeathEvents;
 
 public class PlayerDeathCallback implements EntityDeathEvents.Player
 {
