@@ -15,7 +15,7 @@ import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.ReceiveChatCallback;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReactionListener;
-import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReceiveListener;
+import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReceivedListener;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageUpdateListener;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.EntityDeathCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerAdvancementCallback;
@@ -79,7 +79,8 @@ public final class MinecordChat implements DedicatedServerModInitializer
 
         Minecord.getInstance().getJDA().ifPresent(jda -> jda.addEventListener(
             // A user sent a message
-            new MessageReceiveListener(),
+            // A user sent a message that contained attachments
+            new MessageReceivedListener(),
             // A user edited their recently sent message
             new MessageUpdateListener(),
             // A user reacted to a recent message

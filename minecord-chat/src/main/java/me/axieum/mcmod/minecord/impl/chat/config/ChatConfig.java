@@ -1,5 +1,7 @@
 package me.axieum.mcmod.minecord.impl.chat.config;
 
+import java.util.Arrays;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -14,6 +16,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 @Config(name = "minecord/chat")
 public class ChatConfig implements ConfigData
 {
+    @Comment("True if emojis should be treated as unicode - useful if your players' client supports emojis")
+    public boolean useUnicodeEmojis = false;
+
     @Comment("Chat Configurations")
     public ChatEntry[] entries = {new ChatEntry()};
 
@@ -126,6 +131,17 @@ public class ChatConfig implements ConfigData
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url}, ${name}, ${ext} and ${size}""")
             public String attachment = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${name}\",\"color\":\"blue\",\"underlined\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"${url}\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"${ext} (${size})\"}}}]";
         }
+    }
+
+    /**
+     * Determines whether the given channel identifier relates to any chat entries.
+     *
+     * @param identifier Discord channel identifier
+     * @return true if the channel identifier is in use by any chat entries
+     */
+    public boolean hasChannel(final long identifier)
+    {
+        return Arrays.stream(this.entries).anyMatch(entry -> entry.id == identifier);
     }
 
     /**

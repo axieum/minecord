@@ -1,16 +1,15 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.text.StrSubstitutor;
+import java.time.Duration;
 
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.stat.Stats;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
+import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
 public class PlayerDeathCallback implements EntityDeathEvents.Player
@@ -19,21 +18,47 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
     public void onPlayerDeath(ServerPlayerEntity player, DamageSource source)
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
+            final String playerName = player.getDisplayName().getString();
+
             /*
-             * Prepare a message formatter.
+             * Prepare a message template.
              */
 
-            final Map<String, Object> values = new HashMap<>();
+            final StringTemplate st = new StringTemplate();
+
+            // The player's username
+            st.add("username", player.getName().getString());
+            // The player's display name
+            st.add("player", playerName);
+            // The reason for the player's death
+            st.add(
+                "cause", source.getDeathMessage(player).getString().replaceFirst(playerName, "").trim()
+            );
+            // The name of the world the player died in
+            // todo: st.add("world", StringUtils.getWorldName(player.world));
+            // The X coordinate of where the player died
+            st.add("x", String.valueOf((int) player.prevX));
+            // The Y coordinate of where the player died
+            st.add("y", String.valueOf((int) player.prevY));
+            // The Z coordinate of where the player died
+            st.add("z", String.valueOf((int) player.prevZ));
+            // The total time for which the player was alive for
+            st.add("lifespan", Duration.ofMinutes(
+                player.getStatHandler().getStat(Stats.CUSTOM.getOrCreateStat(Stats.TIME_SINCE_DEATH))
+            ));
+            // The player's total score before they died
+            st.add("score", String.valueOf(player.getScore()));
+            // The player's number of experience levels before they died
+            st.add("exp", String.valueOf(player.experienceLevel));
+
+            PlaceholderEvents.Minecraft.PLAYER_DEATH.invoker().onPlayerDeath(st, player, source);
 
             /*
              * Dispatch the message.
              */
 
-            PlaceholderEvents.PLAYER_DEATH.invoker().onPlayerDeath(values, player, source);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(formatter.replace(entry.discord.death)),
+                    embed.setDescription(st.format(entry.discord.death)),
                 entry -> entry.discord.death != null);
         });
     }

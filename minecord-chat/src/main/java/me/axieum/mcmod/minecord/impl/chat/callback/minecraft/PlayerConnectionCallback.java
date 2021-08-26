@@ -1,10 +1,5 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.text.StrSubstitutor;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 
@@ -14,6 +9,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.Join;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
 public class PlayerConnectionCallback implements Join, Disconnect
@@ -23,20 +19,32 @@ public class PlayerConnectionCallback implements Join, Disconnect
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message formatter.
+             * Prepare a message template.
              */
 
-            final Map<String, Object> values = new HashMap<>();
+            final StringTemplate st = new StringTemplate();
+
+            // The player's username
+            st.add("username", handler.player.getName().getString());
+            // The player's display name
+            st.add("player", handler.player.getDisplayName().getString());
+            // The name of the world the player logged into
+            // todo: st.add("world", StringUtils.getWorldName(handler.player));
+            // The X coordinate of where the player logged into
+            st.add("x", String.valueOf(handler.player.getBlockX()));
+            // The Y coordinate of where the player logged into
+            st.add("y", String.valueOf(handler.player.getBlockY()));
+            // The Z coordinate of where the player logged into
+            st.add("z", String.valueOf(handler.player.getBlockZ()));
+
+            PlaceholderEvents.Minecraft.PLAYER_CONNECT.invoker().onPlayerConnect(st, handler.player);
 
             /*
              * Dispatch the message.
              */
 
-            PlaceholderEvents.PLAYER_CONNECT.invoker().onPlayerConnect(values, handler.player);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(formatter.replace(entry.discord.join)),
+                    embed.setDescription(st.format(entry.discord.join)),
                 entry -> entry.discord.join != null);
         });
     }
@@ -46,20 +54,32 @@ public class PlayerConnectionCallback implements Join, Disconnect
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message formatter.
+             * Prepare a message template.
              */
 
-            final Map<String, Object> values = new HashMap<>();
+            final StringTemplate st = new StringTemplate();
+
+            // The player's username
+            st.add("username", handler.player.getName().getString());
+            // The player's display name
+            st.add("player", handler.player.getDisplayName().getString());
+            // The name of the world the player logged out
+            // todo: st.add("world", StringUtils.getWorldName(handler.player));
+            // The X coordinate of where the player logged out
+            st.add("x", String.valueOf(handler.player.getBlockX()));
+            // The Y coordinate of where the player logged out
+            st.add("y", String.valueOf(handler.player.getBlockY()));
+            // The Z coordinate of where the player logged out
+            st.add("z", String.valueOf(handler.player.getBlockZ()));
+
+            PlaceholderEvents.Minecraft.PLAYER_DISCONNECT.invoker().onPlayerDisconnect(st, handler.player);
 
             /*
              * Dispatch the message.
              */
 
-            PlaceholderEvents.PLAYER_DISCONNECT.invoker().onPlayerDisconnect(values, handler.player);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(formatter.replace(entry.discord.leave)),
+                    embed.setDescription(st.format(entry.discord.leave)),
                 entry -> entry.discord.leave != null);
         });
     }

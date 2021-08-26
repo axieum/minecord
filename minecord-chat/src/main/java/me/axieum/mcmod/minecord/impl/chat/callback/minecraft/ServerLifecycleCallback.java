@@ -4,11 +4,8 @@ import java.awt.Color;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.lang3.text.StrSubstitutor;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
@@ -21,6 +18,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerSt
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
+import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
 public class ServerLifecycleCallback implements ServerStarting, ServerStarted, ServerStopping, ServerShutdownCallback
@@ -30,15 +28,19 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
+             * Prepare a message template.
+             */
+
+            final StringTemplate st = new StringTemplate();
+
+            PlaceholderEvents.Minecraft.SERVER_STARTING.invoker().onServerStarting(st, server);
+
+            /*
              * Dispatch the message.
              */
 
-            final Map<String, Object> values = new HashMap<>();
-            PlaceholderEvents.SERVER_STARTING.invoker().onServerStarting(values, server);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(formatter.replace(entry.discord.starting)),
+                    embed.setDescription(st.format(entry.discord.starting)),
                 entry -> entry.discord.starting != null);
         });
     }
@@ -48,23 +50,22 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message formatter.
+             * Prepare a message template.
              */
 
-            final Map<String, Object> values = new HashMap<>();
+            final StringTemplate st = new StringTemplate();
 
             // The time taken for the server to start
-            values.put("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
+            st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
+
+            PlaceholderEvents.Minecraft.SERVER_STARTED.invoker().onServerStarted(st, server);
 
             /*
              * Dispatch the message.
              */
 
-            PlaceholderEvents.SERVER_STARTED.invoker().onServerStarted(values, server);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setColor(Color.GREEN).setDescription(formatter.replace(entry.discord.started)),
+                    embed.setColor(Color.GREEN).setDescription(st.format(entry.discord.started)),
                 entry -> entry.discord.started != null);
         });
     }
@@ -74,23 +75,22 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message formatter.
+             * Prepare a message template.
              */
 
-            final Map<String, Object> values = new HashMap<>();
+            final StringTemplate st = new StringTemplate();
 
             // The total time for which the server has been online for
-            values.put("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
+            st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
+
+            PlaceholderEvents.Minecraft.SERVER_STOPPING.invoker().onServerStopping(st, server);
 
             /*
              * Dispatch the message.
              */
 
-            PlaceholderEvents.SERVER_STOPPING.invoker().onServerStopping(values, server);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(formatter.replace(entry.discord.stopping)),
+                    embed.setDescription(st.format(entry.discord.stopping)),
                 entry -> entry.discord.stopping != null);
         });
     }
@@ -100,28 +100,26 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message formatter.
+             * Prepare a message template.
              */
 
-            final Map<String, Object> values = new HashMap<>();
+            final StringTemplate st = new StringTemplate();
 
             // The total time for which the server has been online for
-            values.put("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
+            st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
             // The reason for the server stopping, if crashed
-            if (crashReport != null) values.put("reason", crashReport.getMessage());
+            if (crashReport != null) st.add("reason", crashReport.getMessage());
+
+            PlaceholderEvents.Minecraft.SERVER_SHUTDOWN.invoker().onServerShutdown(st, server, crashReport);
 
             /*
              * Dispatch the message.
              */
 
-            if (crashReport == null) PlaceholderEvents.SERVER_STOPPED.invoker().onServerStopped(values, server);
-            else PlaceholderEvents.SERVER_CRASHED.invoker().onServerCrashed(values, server, crashReport);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             // The server stopped normally
             if (crashReport == null) {
                 DiscordDispatcher.embed((embed, entry) ->
-                        embed.setColor(Color.RED).setDescription(formatter.replace(entry.discord.stopped)),
+                        embed.setColor(Color.RED).setDescription(st.format(entry.discord.stopped)),
                     entry -> entry.discord.stopped != null);
 
             // The server stopped due to an error
@@ -131,7 +129,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
 
                 // Dispatch the message
                 DiscordDispatcher.embed((embed, entry) ->
-                        embed.setColor(Color.ORANGE).setDescription(formatter.replace(entry.discord.crashed)),
+                        embed.setColor(Color.ORANGE).setDescription(st.format(entry.discord.crashed)),
                     (action, entry) -> {
                         // Conditionally attach the crash report if required
                         if (entry.discord.uploadCrashReport)

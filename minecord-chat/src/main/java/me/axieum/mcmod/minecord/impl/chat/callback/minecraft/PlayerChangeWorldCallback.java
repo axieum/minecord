@@ -1,10 +1,5 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.text.StrSubstitutor;
-
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
@@ -12,29 +7,50 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
 public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.AfterPlayerChange
 {
     @Override
-    public void afterChangeWorld(ServerPlayerEntity player, ServerWorld origin, ServerWorld destination)
+    public void afterChangeWorld(ServerPlayerEntity player, ServerWorld origin, ServerWorld dest)
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message formatter.
+             * Prepare a message template.
              */
 
-            final Map<String, Object> values = new HashMap<>();
+            final StringTemplate st = new StringTemplate();
+
+            // The player's username
+            st.add("username", player.getName().getString());
+            // The player's display name
+            st.add("player", player.getDisplayName().getString());
+            // The name of the world the player entered
+            // todo: st.add("world", StringUtils.getWorldName(destination));
+            // The X coordinate of where the player entered
+            st.add("x", String.valueOf(player.getBlockX()));
+            // The Y coordinate of where the player entered
+            st.add("y", String.valueOf(player.getBlockY()));
+            // The Z coordinate of where the player entered
+            st.add("z", String.valueOf(player.getBlockZ()));
+            // The name of the world the player left
+            // todo: st.add("origin", StringUtils.getWorldName(origin));
+            // The X coordinate of where the player left
+            st.add("origin_x", String.valueOf((int) player.prevX));
+            // The Y coordinate of where the player left
+            st.add("origin_y", String.valueOf((int) player.prevY));
+            // The Z coordinate of where the player left
+            st.add("origin_z", String.valueOf((int) player.prevZ));
+
+            PlaceholderEvents.Minecraft.PLAYER_CHANGE_WORLD.invoker().onPlayerChangeWorld(st, player, origin, dest);
 
             /*
              * Dispatch the message.
              */
 
-            PlaceholderEvents.PLAYER_CHANGE_WORLD.invoker().onPlayerChangeWorld(values, player, origin, destination);
-            final StrSubstitutor formatter = new StrSubstitutor(values);
-
             DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(formatter.replace(entry.discord.teleport)),
+                    embed.setDescription(st.format(entry.discord.teleport)),
                 entry -> entry.discord.teleport != null);
         });
     }
