@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,7 +67,7 @@ public class StringTemplate
     public static final Logger LOGGER = LogManager.getLogger();
 
     private @NotNull String prefix = "${", suffix = "}";
-    private final LinkedHashMap<String, @Nullable Object> variables = new LinkedHashMap<>();
+    private final HashMap<String, @Nullable Object> variables = new HashMap<>();
 
     public StringTemplate() {}
 
@@ -136,7 +136,7 @@ public class StringTemplate
      *
      * @return mapping of token names to variable values
      */
-    public LinkedHashMap<String, Object> getVariables()
+    public HashMap<String, Object> getVariables()
     {
         return variables;
     }
@@ -216,22 +216,5 @@ public class StringTemplate
 
         // Finally, append the remaining contents and return
         return matcher.appendTail(builder).toString();
-    }
-
-    /**
-     * A functional interface for replacing token matches.
-     */
-    @FunctionalInterface
-    public interface TokenReplacer
-    {
-        /**
-         * Computes the replacement string for a token match.
-         *
-         * @param token    name of the variable
-         * @param format   optional format pattern
-         * @param fallback optional default value
-         * @return replacement string for the token
-         */
-        String replace(String token, @Nullable String format, @Nullable String fallback);
     }
 }
