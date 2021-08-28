@@ -152,8 +152,8 @@ public class StringTemplate
         // Immediately bail on an empty template
         if (template == null || template.isBlank()) return template;
 
-        // Prepare a resulting string buffer and token regex matcher
-        final StringBuffer buffer = new StringBuffer();
+        // Prepare a resulting string builder and token regex matcher
+        final StringBuilder builder = new StringBuilder();
         final Matcher matcher = Pattern.compile(
             Pattern.quote(prefix)
                 + "(?<name>.+?)(?::(?!-)(?<format>.*?))?(?::-(?<default>.*?))?"
@@ -175,37 +175,47 @@ public class StringTemplate
                 try {
                     // If a format was specified, use it against its class type
                     if (format != null && !format.isBlank()) {
-                        // Numbers
+                        // Number
                         if (value instanceof Number) {
-                            matcher.appendReplacement(buffer, new DecimalFormat(format).format(value));
+                            matcher.appendReplacement(builder, new DecimalFormat(format).format(value));
                         // Date & Time
                         } else if (value instanceof Temporal) {
                             matcher.appendReplacement(
-                                buffer, DateTimeFormatter.ofPattern(format).format((Temporal) value)
+                                builder, DateTimeFormatter.ofPattern(format).format((Temporal) value)
                             );
                         // Duration
                         } else if (value instanceof Duration) {
                             matcher.appendReplacement(
-                                buffer, DurationFormatUtils.formatDuration(((Duration) value).toMillis(), format)
+                                builder, DurationFormatUtils.formatDuration(((Duration) value).toMillis(), format)
                             );
+                        // Other
                         } else {
                             throw new IllegalArgumentException("Format provided for unsupported variable type!");
                         }
                     // Otherwise, just use the string value of the object
                     } else {
-                        matcher.appendReplacement(buffer, String.valueOf(value));
+                        // Duration
+                        if (value instanceof Duration) {
+                            matcher.appendReplacement(
+                                builder,
+                                DurationFormatUtils.formatDurationWords(((Duration) value).toMillis(), true, true)
+                            );
+                        // Other
+                        } else {
+                            matcher.appendReplacement(builder, String.valueOf(value));
+                        }
                     }
                 } catch (IllegalArgumentException e) {
                     LOGGER.warn("Could not replace variable '{}': {}", name, e.getMessage());
                 }
             // Else, if the value is null or a fallback was provided, replace it with a default value
             } else if (variables.containsKey(name) || fallback != null) {
-                matcher.appendReplacement(buffer, fallback != null ? fallback : "");
+                matcher.appendReplacement(builder, fallback != null ? fallback : "");
             }
         }
 
         // Finally, append the remaining contents and return
-        return matcher.appendTail(buffer).toString();
+        return matcher.appendTail(builder).toString();
     }
 
     /**
