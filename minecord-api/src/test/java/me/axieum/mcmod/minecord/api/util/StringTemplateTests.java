@@ -26,10 +26,11 @@ public class StringTemplateTests
     {
         st.add("name", "John Doe")
             .add("age", 18)
-            .add("dob", LocalDate.of(1999, 9, 9));
+            .add("dob", LocalDate.of(1999, 9, 9))
+            .add("elapsed", Duration.ofSeconds(3720));
         assertEquals(
-            "Hi, John Doe! I was born 1999-09-09 and am 18 years old.",
-            st.format("Hi, ${name}! I was born ${dob} and am ${age} years old.")
+            "Hi, John Doe! I was born 1999-09-09 and am 18 years old. The task took 1 hour 2 minutes.",
+            st.format("Hi, ${name}! I was born ${dob} and am ${age} years old. The task took ${elapsed}.")
         );
     }
 
