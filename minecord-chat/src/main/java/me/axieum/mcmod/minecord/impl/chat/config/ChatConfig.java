@@ -45,7 +45,7 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A player had died
                 Usages: ${username}, ${player}, ${cause}, ${world}, ${x}, ${y}, ${z}, ${score} and ${exp}""")
-            public String death = "**${player}** ${cause}!\n:skull: _${world} | ${x}, ${y}, ${z}_";
+            public String death = "**${player}** ${cause}! :skull:\n_${world} | ${x}, ${y}, ${z}_";
 
             @Comment("""
                 A named animal/monster (with name tag) had died

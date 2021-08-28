@@ -16,6 +16,9 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
     @Override
     public void onEntityDeath(LivingEntity entity, DamageSource source)
     {
+        // Only listen for named animal/monsters (with a name tag)
+        if (!entity.hasCustomName()) return;
+
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             final String entityName = entity.getDisplayName().getString();
 
