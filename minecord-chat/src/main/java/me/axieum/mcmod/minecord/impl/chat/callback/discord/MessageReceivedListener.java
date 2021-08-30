@@ -49,7 +49,7 @@ public class MessageReceivedListener extends ListenerAdapter
         st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
                                                        : event.getAuthor().getName());
         // The formatted message contents
-        st.add("message", event.getMessage().getContentDisplay());
+        st.add("message", StringUtils.discordToMinecraft(event.getMessage().getContentDisplay()));
         // The raw message contents
         st.add("raw", event.getMessage().getContentRaw());
 
@@ -62,7 +62,7 @@ public class MessageReceivedListener extends ListenerAdapter
         MinecraftDispatcher.json(entry -> st.format(entry.minecraft.chat),
             entry -> entry.minecraft.chat != null && entry.id == channelId);
 
-        LOGGER.info(st.format("@${tag} > ${message}"));
+        LOGGER.info(st.format("@${tag} > ${raw}"));
     }
 
     public void onAttachment(MessageReceivedEvent event, Message.Attachment attachment)

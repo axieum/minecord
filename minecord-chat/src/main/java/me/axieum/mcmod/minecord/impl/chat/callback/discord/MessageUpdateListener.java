@@ -18,6 +18,7 @@ import net.minecraft.util.Formatting;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
+import me.axieum.mcmod.minecord.impl.chat.util.StringUtils;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -66,15 +67,15 @@ public class MessageUpdateListener extends ListenerAdapter
                 st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
                                                                : event.getAuthor().getName());
                 // The old formatted message contents
-                st.add("original", original);
+                st.add("original", StringUtils.discordToMinecraft(original));
                 // The old raw message contents
                 st.add("original_raw", context.getContentRaw());
                 // The new formatted message contents
-                st.add("message", event.getMessage().getContentDisplay());
+                st.add("message", StringUtils.discordToMinecraft(event.getMessage().getContentDisplay()));
                 // The new raw message contents
                 st.add("raw", event.getMessage().getContentRaw());
                 // The difference between the original and new message
-                st.add("diff", diffs.get(0).getOldLine());
+                st.add("diff", StringUtils.discordToMinecraft(diffs.get(0).getOldLine()));
 
                 PlaceholderEvents.Discord.MESSAGE_UPDATED.invoker().onMessageUpdated(st, event, context, diffs);
 
@@ -85,7 +86,7 @@ public class MessageUpdateListener extends ListenerAdapter
                 MinecraftDispatcher.json(entry -> st.format(entry.minecraft.edit),
                     entry -> entry.minecraft.edit != null && entry.id == channelId);
 
-                LOGGER.info(st.format("@${tag} > ${message}"));
+                LOGGER.info(st.format("@${tag} > ${raw}"));
             }
 
             // Update the message cache

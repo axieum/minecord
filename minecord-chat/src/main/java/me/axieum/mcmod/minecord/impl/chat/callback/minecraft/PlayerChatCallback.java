@@ -8,6 +8,7 @@ import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.ReceiveChatCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
+import me.axieum.mcmod.minecord.impl.chat.util.StringUtils;
 
 public class PlayerChatCallback implements ReceiveChatCallback
 {
@@ -28,7 +29,7 @@ public class PlayerChatCallback implements ReceiveChatCallback
             // The name of the world the player logged into
             // todo: st.add("world", StringUtils.getWorldName(player.world));
             // The formatted message contents
-            st.add("message", message.getRaw());
+            st.add("message", StringUtils.minecraftToDiscord(message.getRaw()));
 
             PlaceholderEvents.Minecraft.PLAYER_CHAT.invoker().onPlayerChat(st, player, message);
 
