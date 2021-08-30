@@ -87,4 +87,18 @@ public class StringTemplateTests
             st.format("Hi, your age is still ${age:#,###:-missing}!")
         );
     }
+
+    @Test
+    @DisplayName("Apply transformations")
+    public void transforms()
+    {
+        st.add("name", "Jane Doe")
+            .transform(String::toLowerCase)
+            .transform(s -> s.replace('a', 'z'))
+            .transform(s -> s.replace('z', 'y'));
+        assertEquals(
+            "hi, jyne doe!",
+            st.format("Hi, ${name}!")
+        );
+    }
 }

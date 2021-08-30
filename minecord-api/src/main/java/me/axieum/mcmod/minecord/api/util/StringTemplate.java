@@ -4,7 +4,10 @@ import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,6 +71,7 @@ public class StringTemplate
 
     private @NotNull String prefix = "${", suffix = "}";
     private final HashMap<String, @Nullable Object> variables = new HashMap<>();
+    private final List<Function<String, String>> transforms = new ArrayList<>();
 
     public StringTemplate() {}
 
@@ -132,6 +136,19 @@ public class StringTemplate
     }
 
     /**
+     * Adds a function to be applied to the resulting string *after* any
+     * variable substitutions.
+     *
+     * @param transformer string transformer
+     * @return {@code this} for chaining
+     */
+    public StringTemplate transform(final Function<String, String> transformer)
+    {
+        transforms.add(transformer);
+        return this;
+    }
+
+    /**
      * Returns the underlying mapping of token names to variables.
      *
      * @return mapping of token names to variable values
@@ -139,6 +156,16 @@ public class StringTemplate
     public HashMap<String, Object> getVariables()
     {
         return variables;
+    }
+
+    /**
+     * Returns the underlying list of transforms.
+     *
+     * @return list of transforms
+     */
+    public List<Function<String, String>> getTransforms()
+    {
+        return transforms;
     }
 
     /**
@@ -214,7 +241,14 @@ public class StringTemplate
             }
         }
 
-        // Finally, append the remaining contents and return
-        return matcher.appendTail(builder).toString();
+        // Append any remaining contents and capture the resulting string
+        String result = matcher.appendTail(builder).toString();
+
+        // Apply any transforms to the result
+        for (Function<String, String> transformer : transforms)
+            result = transformer.apply(result);
+
+        // Finally, return the resulting string
+        return result;
     }
 }
