@@ -7,8 +7,8 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.ReceiveChatCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
-import me.axieum.mcmod.minecord.impl.chat.util.StringUtils;
 
 public class PlayerChatCallback implements ReceiveChatCallback
 {

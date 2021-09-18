@@ -8,7 +8,6 @@ configurations { shadow; implementation.extendsFrom shadow }
 // Declare dependencies
 dependencies {
     implementation project(path: ':minecord-api', configuration: 'shadow')
-    shadow "com.vdurmont:emoji-java:${project.emoji_java_version}"
     shadow "io.github.java-diff-utils:java-diff-utils:${project.java_diff_utils_version}"
 }
 
@@ -16,9 +15,6 @@ dependencies {
 shadowJar {
     archiveClassifier = 'dev'
     configurations = [project.configurations.shadow]
-
-    // Relocate dependencies
-    final dest = "${project.group}.shadow.chat"
 
     // Minify the result - remove unused classes
     minimize()
