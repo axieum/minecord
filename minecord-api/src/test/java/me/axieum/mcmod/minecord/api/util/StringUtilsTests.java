@@ -1,6 +1,5 @@
 package me.axieum.mcmod.minecord.api.util;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -186,30 +185,6 @@ public class StringUtilsTests
                 "This is ||secret text||!",
                 StringUtils.minecraftToDiscord("This is \u00A7ksecret text\u00A7r!")
             );
-        }
-
-        @Test
-        @Disabled
-        @DisplayName("Resolve @mention#discriminator")
-        public void resolveMention()
-        {
-            //
-        }
-
-        @Test
-        @Disabled
-        @DisplayName("Resolve @mention")
-        public void resolveMentionWithNickname()
-        {
-            //
-        }
-
-        @Test
-        @Disabled
-        @DisplayName("Resolve #channel")
-        public void resolveChannel()
-        {
-            //
         }
 
         @Test

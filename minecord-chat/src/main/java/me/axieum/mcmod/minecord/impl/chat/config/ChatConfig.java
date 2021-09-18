@@ -1,6 +1,8 @@
 package me.axieum.mcmod.minecord.impl.chat.config;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -11,14 +13,13 @@ import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
+import net.minecraft.world.World;
+
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 @Config(name = "minecord/chat")
 public class ChatConfig implements ConfigData
 {
-    @Comment("True if emojis should be treated as unicode - useful if your players' client supports emojis")
-    public boolean useUnicodeEmojis = false;
-
     @Comment("Chat Configurations")
     public ChatEntry[] entries = {new ChatEntry()};
 
@@ -131,7 +132,28 @@ public class ChatConfig implements ConfigData
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url}, ${name}, ${ext} and ${size}""")
             public String attachment = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${name}\",\"color\":\"blue\",\"underlined\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"${url}\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"${ext} (${size})\"}}}]";
         }
+
+        /**
+         * Returns whether a given Minecraft world is within scope.
+         *
+         * @param world Minecraft world
+         * @return true if the Minecraft world is in-scope
+         */
+        public boolean hasWorld(World world)
+        {
+            return world == null
+                || dimensions == null
+                || dimensions.length == 0
+                || Arrays.asList(dimensions).contains(world.getRegistryKey().getValue().toString());
+        }
     }
+
+    @Comment("A mapping of Minecraft dimension IDs to their respective names")
+    public Map<String, String> worldNames = new HashMap<>(Map.ofEntries(
+        Map.entry("minecraft:overworld", "Overworld"),
+        Map.entry("minecraft:the_nether", "Nether"),
+        Map.entry("minecraft:the_end", "The End")
+    ));
 
     /**
      * Determines whether the given channel identifier relates to any chat entries.

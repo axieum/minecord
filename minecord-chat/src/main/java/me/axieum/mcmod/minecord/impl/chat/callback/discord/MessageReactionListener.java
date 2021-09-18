@@ -1,6 +1,5 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.discord;
 
-import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -56,7 +55,7 @@ public class MessageReactionListener extends ListenerAdapter
             // The author's username discriminator, e.g. 1001
             st.add("author_discriminator", event.getUser().getDiscriminator());
             // The emote used to react
-            st.add("emote", getConfig().useUnicodeEmojis ? emote : EmojiParser.parseToAliases(emote));
+            st.add("emote", emote);
 
             PlaceholderEvents.Discord.REACTION.invoker().onReaction(st, event);
 

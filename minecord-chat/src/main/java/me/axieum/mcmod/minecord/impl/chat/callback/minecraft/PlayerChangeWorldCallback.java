@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
@@ -27,7 +28,7 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The name of the world the player entered
-            // todo: st.add("world", StringUtils.getWorldName(destination));
+            st.add("world", ChatStringUtils.getWorldName(dest));
             // The X coordinate of where the player entered
             st.add("x", String.valueOf(player.getBlockX()));
             // The Y coordinate of where the player entered
@@ -35,7 +36,7 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
             // The Z coordinate of where the player entered
             st.add("z", String.valueOf(player.getBlockZ()));
             // The name of the world the player left
-            // todo: st.add("origin", StringUtils.getWorldName(origin));
+            st.add("origin", ChatStringUtils.getWorldName(origin));
             // The X coordinate of where the player left
             st.add("origin_x", String.valueOf((int) player.prevX));
             // The Y coordinate of where the player left
@@ -51,7 +52,7 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
 
             DiscordDispatcher.embed((embed, entry) ->
                     embed.setDescription(st.format(entry.discord.teleport)),
-                entry -> entry.discord.teleport != null);
+                entry -> entry.discord.teleport != null && entry.hasWorld(dest));
         });
     }
 }

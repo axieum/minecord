@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.Join;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
@@ -29,7 +30,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             // The player's display name
             st.add("player", handler.player.getDisplayName().getString());
             // The name of the world the player logged into
-            // todo: st.add("world", StringUtils.getWorldName(handler.player));
+            st.add("world", ChatStringUtils.getWorldName(handler.player.world));
             // The X coordinate of where the player logged into
             st.add("x", String.valueOf(handler.player.getBlockX()));
             // The Y coordinate of where the player logged into
@@ -45,7 +46,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
 
             DiscordDispatcher.embed((embed, entry) ->
                     embed.setDescription(st.format(entry.discord.join)),
-                entry -> entry.discord.join != null);
+                entry -> entry.discord.join != null && entry.hasWorld(handler.player.world));
         });
     }
 
@@ -64,7 +65,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             // The player's display name
             st.add("player", handler.player.getDisplayName().getString());
             // The name of the world the player logged out
-            // todo: st.add("world", StringUtils.getWorldName(handler.player));
+            st.add("world", ChatStringUtils.getWorldName(handler.player.world));
             // The X coordinate of where the player logged out
             st.add("x", String.valueOf(handler.player.getBlockX()));
             // The Y coordinate of where the player logged out
@@ -80,7 +81,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
 
             DiscordDispatcher.embed((embed, entry) ->
                     embed.setDescription(st.format(entry.discord.leave)),
-                entry -> entry.discord.leave != null);
+                entry -> entry.discord.leave != null && entry.hasWorld(handler.player.world));
         });
     }
 }

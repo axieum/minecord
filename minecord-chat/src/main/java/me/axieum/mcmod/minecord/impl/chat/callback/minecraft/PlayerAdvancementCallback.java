@@ -47,7 +47,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
 
             DiscordDispatcher.embed((embed, entry) ->
                     embed.setDescription(st.format(entry.discord.advancement)),
-                entry -> entry.discord.advancement != null);
+                entry -> entry.discord.advancement != null && entry.hasWorld(player.world));
         });
     }
 }

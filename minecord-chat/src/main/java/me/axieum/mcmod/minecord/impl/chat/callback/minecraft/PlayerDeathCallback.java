@@ -9,6 +9,7 @@ import net.minecraft.stat.Stats;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
+import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
@@ -35,7 +36,7 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
                 "cause", source.getDeathMessage(player).getString().replaceFirst(playerName, "").trim()
             );
             // The name of the world the player died in
-            // todo: st.add("world", StringUtils.getWorldName(player.world));
+            st.add("world", ChatStringUtils.getWorldName(player.world));
             // The X coordinate of where the player died
             st.add("x", String.valueOf((int) player.prevX));
             // The Y coordinate of where the player died
@@ -59,7 +60,7 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
 
             DiscordDispatcher.embed((embed, entry) ->
                     embed.setDescription(st.format(entry.discord.death)),
-                entry -> entry.discord.death != null);
+                entry -> entry.discord.death != null && entry.hasWorld(player.world));
         });
     }
 }
