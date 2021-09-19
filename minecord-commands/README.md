@@ -1,0 +1,6 @@
+<img alt="Minecord Commands Icon" src="src/main/resources/assets/minecord-commands/icon.png" width="64">
+
+## Minecord Commands
+
+Minecord Commands is an addon to [Minecord](../README.md) that provides various
+commands to interact with your Minecraft server from Discord.
