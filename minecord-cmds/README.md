@@ -1,4 +1,4 @@
-<img alt="Minecord Commands Icon" src="src/main/resources/assets/minecord-commands/icon.png" width="64">
+<img alt="Minecord Commands Icon" src="src/main/resources/assets/minecord-cmds/icon.png" width="64">
 
 ## Minecord Commands
 

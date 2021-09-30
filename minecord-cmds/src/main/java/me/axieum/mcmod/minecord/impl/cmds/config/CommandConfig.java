@@ -1,4 +1,4 @@
-package me.axieum.mcmod.minecord.impl.commands.config;
+package me.axieum.mcmod.minecord.impl.cmds.config;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;

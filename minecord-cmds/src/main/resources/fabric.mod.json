@@ -14,15 +14,15 @@
     "wiki": "https://github.com/axieum/minecord/wiki"
   },
   "license": "MIT",
-  "icon": "assets/minecord-commands/icon.png",
+  "icon": "assets/minecord-cmds/icon.png",
   "environment": "server",
   "entrypoints": {
     "server": [
-      "me.axieum.mcmod.minecord.impl.commands.MinecordCommands"
+      "me.axieum.mcmod.minecord.impl.cmds.MinecordCommands"
     ]
   },
   "mixins": [
-    "minecord-commands.mixins.json"
+    "minecord-cmds.mixins.json"
   ],
   "depends": {
     "java": ">=16",

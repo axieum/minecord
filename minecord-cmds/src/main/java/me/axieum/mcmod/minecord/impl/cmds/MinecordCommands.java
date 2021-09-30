@@ -1,4 +1,4 @@
-package me.axieum.mcmod.minecord.impl.commands;
+package me.axieum.mcmod.minecord.impl.cmds;
 
 import me.shedaniel.autoconfig.ConfigHolder;
 import org.apache.logging.log4j.LogManager;
