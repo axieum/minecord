@@ -19,8 +19,10 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointUtils;
 
 import me.axieum.mcmod.minecord.api.Minecord;
+import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
 import me.axieum.mcmod.minecord.api.event.JDAEvents;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.impl.callback.DiscordLifecycleListener;
@@ -55,6 +57,9 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
                        .setMemberCachePolicy(MemberCachePolicy.ALL)  // cache all members
                        .setChunkingFilter(ChunkingFilter.ALL);  // eager-load all members
             }
+
+            // Register any Minecord addons
+            EntrypointUtils.invoke("minecord", MinecordAddon.class, addon -> addon.onInitializeMinecord(builder));
 
             // Build and login to the client
             JDAEvents.BUILD_CLIENT.invoker().onBuildClient(builder);
