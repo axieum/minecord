@@ -17,6 +17,9 @@
   "icon": "assets/minecord-chat/icon.png",
   "environment": "server",
   "entrypoints": {
+    "minecord": [
+      "me.axieum.mcmod.minecord.impl.chat.MinecordChat"
+    ],
     "server": [
       "me.axieum.mcmod.minecord.impl.chat.MinecordChat"
     ]
