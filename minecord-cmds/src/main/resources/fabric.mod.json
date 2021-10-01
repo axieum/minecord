@@ -17,7 +17,7 @@
   "icon": "assets/minecord-cmds/icon.png",
   "environment": "server",
   "entrypoints": {
-    "preLaunch": [
+    "minecord": [
       "me.axieum.mcmod.minecord.impl.cmds.MinecordCommands"
     ]
   },
