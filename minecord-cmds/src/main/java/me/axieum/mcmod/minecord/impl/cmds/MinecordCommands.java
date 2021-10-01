@@ -4,17 +4,17 @@ import me.shedaniel.autoconfig.ConfigHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 
-import me.axieum.mcmod.minecord.impl.commands.config.CommandConfig;
+import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
 
-public final class MinecordCommands implements DedicatedServerModInitializer
+public final class MinecordCommands implements PreLaunchEntrypoint
 {
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Commands");
     private static final ConfigHolder<CommandConfig> CONFIG = CommandConfig.init();
 
     @Override
-    public void onInitializeServer()
+    public void onPreLaunch()
     {
         LOGGER.info("Minecord Commands is getting ready...");
     }

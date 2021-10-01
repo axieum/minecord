@@ -31,7 +31,7 @@ shadowJar {
     // relocate 'com.sun.jna', "${dest}.com.sun.jna"
     relocate 'gnu.trove', "${dest}.gnu.trove"
     relocate 'javax.annotation', "${dest}.javax.annotation"
-    relocate 'net.dv8tion.jda', "${dest}.net.dv8tion.jda"
+    // relocate 'net.dv8tion.jda', "${dest}.net.dv8tion.jda"
     relocate 'okhttp3', "${dest}.okhttp3"
     relocate 'okio', "${dest}.okio"
     relocate 'org.apache.commons', "${dest}.org.apache.commons"
