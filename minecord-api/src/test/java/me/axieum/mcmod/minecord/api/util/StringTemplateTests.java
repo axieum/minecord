@@ -48,8 +48,8 @@ public class StringTemplateTests
     {
         st.add("now", LocalDateTime.of(2021, 9, 15, 9, 27, 0));
         assertEquals(
-            "The selected date is 15/09/2021 at 9:27am.",
-            st.format("The selected date is ${now:dd/MM/yyyy 'at' H:mma}.")
+            "The selected date is 15/09/2021 at 09:27.",
+            st.format("The selected date is ${now:dd/MM/yyyy 'at' HH:mm}.")
         );
         assertEquals(
             "The selected date is Wednesday, 15 September, 2021.",
