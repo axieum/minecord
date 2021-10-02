@@ -30,6 +30,7 @@ shadowJar {
     relocate 'com.iwebpp.crypto', "${dest}.com.iwebpp.crypto"
     relocate 'com.neovisionaries.ws', "${dest}.com.neovisionaries.ws"
     // relocate 'com.sun.jna', "${dest}.com.sun.jna"
+    // relocate 'com.vdurmont.emoji', "${dest}.com.vdurmont.emoji"
     relocate 'gnu.trove', "${dest}.gnu.trove"
     relocate 'javax.annotation', "${dest}.javax.annotation"
     // relocate 'net.dv8tion.jda', "${dest}.net.dv8tion.jda"

@@ -54,8 +54,8 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
             // Conditionally enable member caching
             if (getConfig().cacheMembers) {
                 builder.enableIntents(GatewayIntent.GUILD_MEMBERS) // enable required intents
-                       .setMemberCachePolicy(MemberCachePolicy.ALL)  // cache all members
-                       .setChunkingFilter(ChunkingFilter.ALL);  // eager-load all members
+                       .setMemberCachePolicy(MemberCachePolicy.ALL) // cache all members
+                       .setChunkingFilter(ChunkingFilter.ALL); // eager-load all members
             }
 
             // Register any Minecord addons
@@ -81,7 +81,7 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
         ServerLifecycleEvents.SERVER_STARTING.register(lifecycleCallback);
         ServerLifecycleEvents.SERVER_STARTED.register(lifecycleCallback);
         ServerLifecycleEvents.SERVER_STOPPING.register(lifecycleCallback);
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> // try to register as late as possible
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> // register as late as possible
             ServerShutdownCallback.EVENT.register(lifecycleCallback));
     }
 
