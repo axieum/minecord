@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import net.dv8tion.jda.api.JDA;
 
+import net.minecraft.server.MinecraftServer;
+
 import me.axieum.mcmod.minecord.impl.MinecordImpl;
 
 /**
@@ -20,6 +22,13 @@ public interface Minecord
     {
         return MinecordImpl.INSTANCE;
     }
+
+    /**
+     * Returns the underlying Minecraft server.
+     *
+     * @return the Minecraft server instance if present
+     */
+    Optional<MinecraftServer> getMinecraft();
 
     /**
      * Returns the underlying JDA client.
