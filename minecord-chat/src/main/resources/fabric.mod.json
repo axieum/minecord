@@ -3,7 +3,7 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "Bring your Minecraft world into your Discord guild",
+  "description": "Bridges chat-related events between Minecraft and Discord",
   "authors": [
     "Axieum"
   ],
@@ -14,15 +14,24 @@
     "wiki": "https://github.com/axieum/minecord/wiki"
   },
   "license": "MIT",
-  "icon": "assets/minecord/icon.png",
+  "icon": "assets/minecord-chat/icon.png",
   "environment": "server",
+  "entrypoints": {
+    "minecord": [
+      "me.axieum.mcmod.minecord.impl.chat.MinecordChat"
+    ],
+    "server": [
+      "me.axieum.mcmod.minecord.impl.chat.MinecordChat"
+    ]
+  },
+  "mixins": [
+    "minecord-chat.mixins.json"
+  ],
   "depends": {
     "java": ">=16",
     "minecraft": "1.17.x",
-    "fabricloader": ">=0.11.3"
-  },
-  "recommends": {
-    "minecord-api": "*",
-    "minecord-chat": "*"
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecord-api": "*"
   }
 }
