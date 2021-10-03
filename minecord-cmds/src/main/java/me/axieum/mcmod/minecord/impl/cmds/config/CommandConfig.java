@@ -10,7 +10,11 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 
+import net.minecraft.util.ActionResult;
+
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+
+import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
 
 @Config(name = "minecord/commands")
 public class CommandConfig implements ConfigData
@@ -126,6 +130,12 @@ public class CommandConfig implements ConfigData
         // Listen for when the server is reloading (i.e. /reload), and reload the config
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) ->
             AutoConfig.getConfigHolder(CommandConfig.class).load());
+
+        // Listen for when the config gets loaded
+        holder.registerLoadListener((h, c) -> {
+            MinecordCommands.getInstance().updateCommandList();
+            return ActionResult.PASS;
+        });
 
         return holder;
     }

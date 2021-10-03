@@ -18,7 +18,7 @@
   "environment": "server",
   "entrypoints": {
     "minecord": [
-      "me.axieum.mcmod.minecord.impl.cmds.MinecordCommands"
+      "me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl"
     ]
   },
   "mixins": [
