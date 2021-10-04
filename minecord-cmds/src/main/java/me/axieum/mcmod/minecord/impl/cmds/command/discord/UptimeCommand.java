@@ -43,7 +43,6 @@ public class UptimeCommand extends MinecordCommand
     @Override
     public void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server)
     {
-
         event.replyEmbeds(
             new EmbedBuilder().setDescription(
                 new StringTemplate()
