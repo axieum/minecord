@@ -27,7 +27,7 @@ public class CommandConfig implements ConfigData
     public static class Messages
     {
         @Comment("The error message used when the Minecraft server is unavailable")
-        public String unavailable = "The server is not yet ready - please wait. :warning:";
+        public String unavailable = "The server is not yet ready - please wait :warning:";
 
         @Comment("""
             The error message used when a user is denied permission to a command

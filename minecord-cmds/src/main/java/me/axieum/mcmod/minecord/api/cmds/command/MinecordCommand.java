@@ -4,6 +4,9 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.server.MinecraftServer;
 
 /**
  * A Minecord slash command.
@@ -83,8 +86,9 @@ public abstract class MinecordCommand extends ListenerAdapter
     /**
      * Executes the slash command.
      *
-     * @param event JDA slash command event
+     * @param event  JDA slash command event
+     * @param server Minecraft server, if present
      * @see net.dv8tion.jda.api.hooks.ListenerAdapter#onSlashCommand(SlashCommandEvent)
      */
-    public abstract void execute(@NotNull SlashCommandEvent event);
+    public abstract void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server);
 }

@@ -2,6 +2,9 @@ package me.axieum.mcmod.minecord.impl.cmds.command.discord;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.server.MinecraftServer;
 
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
@@ -27,8 +30,9 @@ public class CustomCommand extends MinecordCommand
     }
 
     @Override
-    public void execute(@NotNull SlashCommandEvent event)
+    public void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server)
     {
+        assert server != null;
         event.reply(String.format("You hit the %s command!", getName())).queue();
     }
 }
