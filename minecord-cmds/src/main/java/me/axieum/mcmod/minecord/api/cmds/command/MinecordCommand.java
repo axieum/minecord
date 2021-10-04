@@ -1,13 +1,14 @@
 package me.axieum.mcmod.minecord.api.cmds.command;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * A Minecord slash command.
  */
-public abstract class MinecordCommand
+public abstract class MinecordCommand extends ListenerAdapter
 {
     // The underlying JDA slash command data instance
     protected @NotNull CommandData data;
@@ -43,7 +44,7 @@ public abstract class MinecordCommand
      *
      * @return command name
      */
-    public String getName()
+    public @NotNull String getName()
     {
         return data.getName();
     }
@@ -53,7 +54,7 @@ public abstract class MinecordCommand
      *
      * @return JDA slash command data
      */
-    public CommandData getCommandData()
+    public @NotNull CommandData getCommandData()
     {
         return data;
     }
@@ -69,9 +70,21 @@ public abstract class MinecordCommand
     }
 
     /**
+     * Returns whether this command requires the Minecraft server to
+     * have *started* in order to execute.
+     *
+     * @return true if the command requires Minecraft
+     */
+    public boolean requiresMinecraft()
+    {
+        return true;
+    }
+
+    /**
      * Executes the slash command.
      *
      * @param event JDA slash command event
+     * @see net.dv8tion.jda.api.hooks.ListenerAdapter#onSlashCommand(SlashCommandEvent)
      */
-    public abstract void execute(SlashCommandEvent event);
+    public abstract void execute(@NotNull SlashCommandEvent event);
 }

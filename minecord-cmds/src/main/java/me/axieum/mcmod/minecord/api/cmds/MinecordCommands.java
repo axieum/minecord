@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
 import me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl;
@@ -28,16 +29,18 @@ public interface MinecordCommands
      *
      * <p>NB: It can take up to an hour for the changes to appear!
      *
-     * @see #addCommands(MinecordCommand...)
+     * @see #addCommand(String, MinecordCommand)
      */
     void updateCommandList();
 
     /**
-     * Registers new commands.
+     * Registers a new command, replacing any command with the same name.
      *
+     * @param name     command name
      * @param commands Minecord commands
+     * @return the previous command with the {@code name}, if any
      */
-    void addCommands(@NotNull MinecordCommand... commands);
+    @Nullable MinecordCommand addCommand(@NotNull String name, @NotNull MinecordCommand commands);
 
     /**
      * Unregisters a command given its unique name.
@@ -45,23 +48,7 @@ public interface MinecordCommands
      * @param name command name
      * @return the removed command instance, if any
      */
-    MinecordCommand removeCommand(@NotNull String name);
-
-    /**
-     * Unregisters a command given its implementation.
-     *
-     * @param command Minecord command
-     * @return the removed command instance, if any
-     */
-    MinecordCommand removeCommand(@NotNull MinecordCommand command);
-
-    /**
-     * Determines whether a given command name has been registered.
-     *
-     * @param name command name
-     * @return true if the command name has already been registered
-     */
-    boolean hasCommand(@NotNull String name);
+    @Nullable MinecordCommand removeCommand(@NotNull String name);
 
     /**
      * Returns a command given its previously registered name.
@@ -69,7 +56,15 @@ public interface MinecordCommands
      * @param name registered command name
      * @return registered Minecord command if present
      */
-    Optional<MinecordCommand> getCommand(@NotNull String name);
+    Optional<MinecordCommand> getCommand(@Nullable String name);
+
+    /**
+     * Determines whether a given command name has been registered.
+     *
+     * @param name command name
+     * @return true if the command name has already been registered
+     */
+    boolean hasCommand(@Nullable String name);
 
     /**
      * Returns an immutable list of all registered commands.

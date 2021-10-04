@@ -1,6 +1,7 @@
 package me.axieum.mcmod.minecord.impl.cmds.command.discord;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import org.jetbrains.annotations.NotNull;
 
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
@@ -22,7 +23,7 @@ public class TPSCommand extends MinecordCommand
     }
 
     @Override
-    public void execute(SlashCommandEvent event)
+    public void execute(@NotNull SlashCommandEvent event)
     {
         event.reply("You hit the ticks-per-second (TPS) command!").queue();
     }

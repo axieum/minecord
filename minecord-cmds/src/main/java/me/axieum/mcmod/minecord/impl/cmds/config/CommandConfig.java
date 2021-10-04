@@ -15,10 +15,31 @@ import net.minecraft.util.ActionResult;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
+import me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl;
 
 @Config(name = "minecord/commands")
 public class CommandConfig implements ConfigData
 {
+    @Category("Messages")
+    @Comment("Feedback provided to the user who triggered the command")
+    public Messages messages = new Messages();
+
+    public static class Messages
+    {
+        @Comment("The error message used when the Minecraft server is unavailable")
+        public String unavailable = "The server is not yet ready - please wait. :warning:";
+
+        @Comment("""
+            The error message used when a user is denied permission to a command
+            Usages: ${role}""")
+        public String denied = "You don't have permission to do that! :no_good:";
+
+        @Comment("""
+            The error message used when a user must wait before executing a command
+            Usages: ${cooldown}""")
+        public String cooldown = "Please wait another ${cooldown} before doing that! :alarm_clock:";
+    }
+
     @Category("Built-in Commands")
     @Comment("Built-in Discord commands")
     public BuiltinCommands builtin = new BuiltinCommands();
@@ -132,7 +153,10 @@ public class CommandConfig implements ConfigData
             AutoConfig.getConfigHolder(CommandConfig.class).load());
 
         // Listen for when the config gets loaded
-        holder.registerLoadListener((h, c) -> {
+        holder.registerLoadListener((hld, cfg) -> {
+            // Re-register all Minecord provided commands
+            MinecordCommandsImpl.initCommands(cfg);
+            // Update the command list in Discord
             MinecordCommands.getInstance().updateCommandList();
             return ActionResult.PASS;
         });

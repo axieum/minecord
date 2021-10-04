@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
@@ -35,16 +36,28 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
     public void onInitializeMinecord(JDABuilder builder)
     {
         LOGGER.info("Minecord Commands is getting ready...");
-        final CommandConfig config = getConfig();
 
         // Register Discord callbacks
         builder.addEventListeners(new DiscordCommandListener());
+
+        // Register all Minecord provided commands
+        initCommands(getConfig());
+    }
+
+    /**
+     * Initialises and registers all Minecord provided commands.
+     *
+     * @param config command config
+     */
+    public static void initCommands(CommandConfig config)
+    {
+        final MinecordCommands commands = MinecordCommands.getInstance();
 
         // Register the uptime command, if enabled
         if (config.builtin.uptime.enabled) {
             try {
                 LOGGER.info("Adding built-in uptime command as '/{}'", config.builtin.uptime.name);
-                addCommands(new UptimeCommand(config.builtin.uptime));
+                commands.addCommand(config.builtin.uptime.name, new UptimeCommand(config.builtin.uptime));
             } catch (IllegalArgumentException e) {
                 LOGGER.error("Encountered invalid built-in uptime command!", e);
             }
@@ -56,7 +69,7 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
         if (config.builtin.tps.enabled) {
             try {
                 LOGGER.info("Adding built-in ticks-per-second (TPS) command as '/{}'", config.builtin.uptime.name);
-                addCommands(new TPSCommand(config.builtin.tps));
+                commands.addCommand(config.builtin.tps.name, new TPSCommand(config.builtin.tps));
             } catch (IllegalArgumentException e) {
                 LOGGER.error("Encountered invalid built-in ticks-per-second (TPS) command!", e);
             }
@@ -69,7 +82,7 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
             if (c.enabled) {
                 try {
                     LOGGER.info("Adding custom command as '/{}' to run '{}'", c.name, c.command);
-                    addCommands(new CustomCommand(c));
+                    commands.addCommand(c.name, new CustomCommand(c));
                 } catch (IllegalArgumentException e) {
                     LOGGER.error("Encountered invalid custom '/{}' command!", c.name, e);
                 }
@@ -103,32 +116,38 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
     }
 
     @Override
-    public void addCommands(final @NotNull MinecordCommand... commands)
+    public @Nullable MinecordCommand addCommand(final @NotNull String name, final @NotNull MinecordCommand command)
     {
-        for (MinecordCommand command : commands)
-            COMMANDS.put(command.getCommandData().getName(), command);
+        // Add the new command, capturing the previous command with its name, if present
+        final @Nullable MinecordCommand oldCommand = COMMANDS.put(name, command);
+        // Update the command event listeners, if present
+        Minecord.getInstance().getJDA().ifPresent(jda -> {
+            // Remove the old event listener, if present
+            if (oldCommand != null) jda.removeEventListener(oldCommand);
+            // Add the new event listener
+            jda.addEventListener(command);
+        });
+        return oldCommand;
     }
 
     @Override
-    public MinecordCommand removeCommand(final @NotNull String name)
+    public @Nullable MinecordCommand removeCommand(final @NotNull String name)
     {
-        return COMMANDS.remove(name);
+        // Remove the command, capturing its instance, if present
+        final @Nullable MinecordCommand command = COMMANDS.remove(name);
+        // Remove the command as an event listener, if present
+        if (command != null) Minecord.getInstance().getJDA().ifPresent(jda -> jda.removeEventListener(command));
+        return command;
     }
 
     @Override
-    public MinecordCommand removeCommand(final @NotNull MinecordCommand command)
-    {
-        return COMMANDS.remove(command.getCommandData().getName());
-    }
-
-    @Override
-    public boolean hasCommand(final @NotNull String name)
+    public boolean hasCommand(final @Nullable String name)
     {
         return COMMANDS.containsKey(name);
     }
 
     @Override
-    public Optional<MinecordCommand> getCommand(final @NotNull String name)
+    public Optional<MinecordCommand> getCommand(final @Nullable String name)
     {
         return Optional.ofNullable(COMMANDS.get(name));
     }
