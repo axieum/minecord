@@ -46,7 +46,7 @@ public class DiscordCommandListener extends ListenerAdapter
                 // Attempt to cascade the event to the matched command
                 LOGGER.info("@{} used '{}'", username, raw);
                 command.execute(event, server);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 LOGGER.error("@{} failed to use '{}'", username, raw, e);
             }
         }, () -> LOGGER.warn("@{} used an unknown command '{}'", username, raw));

@@ -88,7 +88,8 @@ public abstract class MinecordCommand extends ListenerAdapter
      *
      * @param event  JDA slash command event
      * @param server Minecraft server, if present
+     * @throws Exception if the command could not be executed
      * @see net.dv8tion.jda.api.hooks.ListenerAdapter#onSlashCommand(SlashCommandEvent)
      */
-    public abstract void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server);
+    public abstract void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server) throws Exception;
 }

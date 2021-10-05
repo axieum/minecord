@@ -8,6 +8,8 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 
 import net.minecraft.util.ActionResult;
@@ -97,8 +99,12 @@ public class CommandConfig implements ConfigData
 
         @Comment("""
             A Minecraft command to execute
-            Usages: {n} for the nth argument, and {} for all""")
-        public String command = "/whitelist {}";
+            Usages: ${<name>} for "<name>" option value""")
+        public String command = "/whitelist ${args}";
+
+        @Category("Options")
+        @Comment("A list of command options")
+        public Option[] options = new Option[] {new Option()};
     }
 
     /**
@@ -122,6 +128,9 @@ public class CommandConfig implements ConfigData
         @Comment("A list of permissions that restrict access to the command")
         public Permission[] permissions = new Permission[] {new Permission()};
 
+        /**
+         * Command permission/privilege configuration schema.
+         */
         public static class Permission
         {
             @Comment("""
@@ -134,6 +143,67 @@ public class CommandConfig implements ConfigData
 
             @Comment("True if permission to use the command is granted")
             public boolean allow = true;
+        }
+
+        /**
+         * Command option configuration schema.
+         */
+        public static class Option
+        {
+            @Comment("""
+                The type of option
+                Allowed values: BOOLEAN, CHANNEL, INTEGER, MENTIONABLE, NUMBER, ROLE, STRING and USER""")
+            public OptionType type = OptionType.STRING;
+
+            @Comment("The option name")
+            public String name = "args";
+
+            @Comment("A brief description of what the option does")
+            public String description = "Any additional command arguments";
+
+            @Comment("True if the option is required")
+            public boolean required = false;
+
+            @Category("Choices")
+            @Comment("If non-empty, restricts the value to one of the allowed choices")
+            public Choice[] choices = new Choice[] {};
+
+            /**
+             * A command option's choice configuration schema.
+             */
+            public static class Choice
+            {
+                @Comment("The choice name")
+                public String name;
+
+                @Comment("The allowed value, which type matches that of the option")
+                public Object value;
+            }
+
+            /**
+             * Builds and returns the command option data.
+             *
+             * @return JDA command option data
+             * @throws IllegalArgumentException if an invalid choices was provided
+             */
+            public OptionData getOptionData() throws IllegalArgumentException
+            {
+                final OptionData option = new OptionData(type, name, description, required);
+                for (Choice choice : choices) {
+                    if (choice.value instanceof String) {
+                        option.addChoice(choice.name, (String) choice.value);
+                    } else if (choice.value instanceof Integer) {
+                        option.addChoice(choice.name, (int) choice.value);
+                    } else if (choice.value instanceof Double) {
+                        option.addChoice(choice.name, (double) choice.value);
+                    } else if (choice.value instanceof Long) {
+                        option.addChoice(choice.name, (long) choice.value);
+                    } else {
+                        throw new IllegalArgumentException("Could not derive type for command choice: " + choice.name);
+                    }
+                }
+                return option;
+            }
         }
     }
 
