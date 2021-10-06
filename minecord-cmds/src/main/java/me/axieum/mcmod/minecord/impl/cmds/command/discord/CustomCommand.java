@@ -23,6 +23,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
+import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.LOGGER;
@@ -46,17 +47,21 @@ public class CustomCommand extends MinecordCommand
     {
         super(config.name, config.description);
         this.config = config;
+        setEphemeral(config.ephemeral);
         data.setDefaultEnabled(config.allowByDefault);
         Arrays.stream(config.options).map(CommandConfig.BaseCommand.Option::getOptionData).forEach(data::addOptions);
+    }
+
+    @Override
+    public boolean isEphemeral()
+    {
+        return config.ephemeral;
     }
 
     @Override
     public void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server) throws Exception
     {
         assert server != null;
-
-        // Let them know that their request is in-progress
-        event.deferReply().queue();
 
         // Prepare the Minecraft command
         final String mcCommand;
@@ -66,7 +71,10 @@ public class CustomCommand extends MinecordCommand
             throw new Exception("Unable to prepare Minecraft command!", e);
         }
 
-        // todo: Fire an event to allow the command execution to be cancelled
+        // Fire an event to allow the command execution to be cancelled
+        if (!MinecordCommandEvents.Custom.BEFORE_EXECUTE.invoker().onBeforeExecuteCustom(mcCommand, event, server)) {
+            return;
+        }
 
         // Create a temporary command source and hence output, to relay command feedback
         final String username = event.getMember().getEffectiveName();
@@ -79,6 +87,7 @@ public class CustomCommand extends MinecordCommand
 
         // Attempt to proxy the Minecraft command
         try {
+            LOGGER.info("@{} is running '/{}'", event.getUser().getAsTag(), mcCommand);
             server.getCommandManager().getDispatcher().execute(mcCommand, source.withConsumer((c, s, r) -> {
                 // The command was proxied, however the actual feedback was sent to the source's command output
                 LOGGER.info("@{} ran '/{}' with result {}", event.getUser().getAsTag(), c.getInput(), r);
@@ -116,7 +125,7 @@ public class CustomCommand extends MinecordCommand
         }
 
         // Apply the template to the given command
-        String result = st.format(command);
+        String result = st.transform(String::trim).format(command);
 
         // Strip any leading '/' if present, and return
         return result.length() > 0 && result.charAt(0) == '/' ? result.substring(1) : result;
@@ -127,23 +136,26 @@ public class CustomCommand extends MinecordCommand
      *
      * @param event   JDA slash command event to reply to
      * @param server  Minecraft server
-     * @param command Minecraft command that was executed
+     * @param command Minecraft command that was executed (without leading '/')
      * @param result  Minecraft command execution feedback
      * @param success true if the command was a success
      */
     public void reply(SlashCommandEvent event, MinecraftServer server, String command, String result, boolean success)
     {
-        // Build an initial embed for the result, green for success and red for failure
-        // NB: We should still fire an event (with no embed) regardless of whether the command is 'quiet'
-        @Nullable EmbedBuilder embed = !config.quiet ? new EmbedBuilder().setColor(success ? 0x00ff00 : 0xff0000)
-                                                                         .setDescription(result) : null;
+        // Build an initial embed for the command feedback
+        EmbedBuilder embed = new EmbedBuilder()
+            // Set the colour to green for a success, and red for a failure
+            .setColor(success ? 0x00ff00 : 0xff0000)
+            // Set the message
+            .setDescription(result);
 
-        // todo: Fire an event to allow the command feedback to be mutated or cancelled
+        // Fire an event to allow the command feedback to be mutated or cancelled
+        embed = MinecordCommandEvents.Custom.AFTER_EXECUTE.invoker().onAfterExecuteCustom(
+            event, server, command, result, success, embed
+        );
 
         // Build and reply with the resulting embed
-        if (embed != null && !embed.isEmpty()) {
-            event.getHook().sendMessageEmbeds(embed.build()).queue();
-        }
+        event.getHook().sendMessageEmbeds(embed.build()).queue();
     }
 
     /**
@@ -178,7 +190,7 @@ public class CustomCommand extends MinecordCommand
         @Override
         public boolean shouldReceiveFeedback()
         {
-            return !config.quiet;
+            return true;
         }
 
         @Override

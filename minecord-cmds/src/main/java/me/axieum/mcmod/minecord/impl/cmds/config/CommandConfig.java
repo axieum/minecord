@@ -32,6 +32,11 @@ public class CommandConfig implements ConfigData
         public String unavailable = "The server is not yet ready - please wait :warning:";
 
         @Comment("""
+            The error message used when any command unexpectedly fails
+            Usages: ${reason}""")
+        public String failed = "**Oh no** - something went wrong! :warning:\n_${reason}_";
+
+        @Comment("""
             The error message used when a user is denied permission to a command
             Usages: ${role}""")
         public String denied = "You don't have permission to do that! :no_good:";
@@ -94,13 +99,10 @@ public class CommandConfig implements ConfigData
             enabled = false; // do not enable example commands by default
         }
 
-        @Comment("True if the execution should not provide any feedback")
-        public boolean quiet = false;
-
         @Comment("""
             A Minecraft command to execute
             Usages: ${<name>} for "<name>" option value""")
-        public String command = "/whitelist ${args}";
+        public String command = "/whitelist ${args:-}";
 
         @Category("Options")
         @Comment("A list of command options")
@@ -120,6 +122,9 @@ public class CommandConfig implements ConfigData
 
         @Comment("A brief description of what the command does")
         public String description;
+
+        @Comment("True if the command feedback is only visible to the executor")
+        public boolean ephemeral = false;
 
         @Comment("True if anyone can use the command by default")
         public boolean allowByDefault = true;

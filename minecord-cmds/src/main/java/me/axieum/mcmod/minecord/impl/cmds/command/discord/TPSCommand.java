@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.server.MinecraftServer;
 
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
+import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
 
 /**
@@ -27,6 +28,7 @@ public class TPSCommand extends MinecordCommand
     {
         super(config.name, config.description);
         data.setDefaultEnabled(config.allowByDefault);
+        setEphemeral(config.ephemeral);
     }
 
     @Override
@@ -39,14 +41,17 @@ public class TPSCommand extends MinecordCommand
         // Compute the server's mean ticks per second
         final double meanTPS = Math.min(1000f / meanTPSTime, 20);
 
-        // Build and send a message embed
-        event.replyEmbeds(new EmbedBuilder()
+        // Prepare an embed to be sent to the user
+        EmbedBuilder embed = new EmbedBuilder()
             // Set the message
             .setDescription(String.format("%.2f TPS @ %.3fms", meanTPS, meanTPSTime))
             // Set the embed colour on a red to green scale (scale down to a 4-step gradient)
-            .setColor(Color.HSBtoRGB(Math.round(meanTPS / 5d) / 4f / 3f, 1f, 1f))
-            // Build the embed
-            .build()
-        ).queue();
+            .setColor(Color.HSBtoRGB(Math.round(meanTPS / 5d) / 4f / 3f, 1f, 1f));
+
+        // Fire an event to allow the embed to be mutated or cancelled
+        embed = MinecordCommandEvents.TPS.AFTER_EXECUTE.invoker().onAfterExecuteTPS(event, server, embed);
+
+        // Build and reply with the resulting embed
+        event.getHook().sendMessageEmbeds(embed.build()).queue();
     }
 }

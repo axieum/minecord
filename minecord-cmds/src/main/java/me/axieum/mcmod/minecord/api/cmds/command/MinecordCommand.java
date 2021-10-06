@@ -15,6 +15,10 @@ public abstract class MinecordCommand extends ListenerAdapter
 {
     // The underlying JDA slash command data instance
     protected @NotNull CommandData data;
+    // True if the command requires Minecraft
+    protected boolean requiresMinecraft = true;
+    // True if the command feedback is only visible to the executor
+    protected boolean isEphemeral = false;
 
     /**
      * Constructs a new Minecord command instance.
@@ -73,6 +77,29 @@ public abstract class MinecordCommand extends ListenerAdapter
     }
 
     /**
+     * Returns whether this command's feedback is only visible to the executor.
+     *
+     * @return true if the command feedback is ephemeral
+     * @see net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction#setEphemeral(boolean)
+     */
+    public boolean isEphemeral()
+    {
+        return isEphemeral;
+    }
+
+    /**
+     * Sets whether this command's feedback is only visible to the executor.
+     *
+     * @param isEphemeral true if the command feedback is ephemeral
+     * @return {@code this} for chaining
+     */
+    public MinecordCommand setEphemeral(boolean isEphemeral)
+    {
+        this.isEphemeral = isEphemeral;
+        return this;
+    }
+
+    /**
      * Returns whether this command requires the Minecraft server to
      * have *started* in order to execute.
      *
@@ -80,7 +107,20 @@ public abstract class MinecordCommand extends ListenerAdapter
      */
     public boolean requiresMinecraft()
     {
-        return true;
+        return requiresMinecraft;
+    }
+
+    /**
+     * Sets whether this command requires the Minecraft server to have
+     * *started* in order to execute.
+     *
+     * @param requiresMinecraft true if the command requires Minecraft
+     * @return {@code this} for chaining
+     */
+    public MinecordCommand setRequiresMinecraft(boolean requiresMinecraft)
+    {
+        this.requiresMinecraft = requiresMinecraft;
+        return this;
     }
 
     /**
