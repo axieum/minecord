@@ -28,3 +28,4 @@ build:
 minecord: 'src/**/*'
 minecord-api: 'minecord-api/**/*'
 minecord-chat: 'minecord-chat/**/*'
+minecord-cmds: 'minecord-cmds/**/*'
