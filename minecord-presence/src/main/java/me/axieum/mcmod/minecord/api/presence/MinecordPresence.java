@@ -1,11 +1,12 @@
 package me.axieum.mcmod.minecord.api.presence;
 
 import java.util.List;
+import java.util.Optional;
 
-import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl;
 
 /**
@@ -24,109 +25,87 @@ public interface MinecordPresence
     }
 
     /**
-     * Starts (or restarts) the Discord bot presence update task.
-     *
-     * @param jda      JDA client
-     * @param interval number of seconds between presence updates (at least 15s)
-     * @param random   true if presences should be chosen randomly, else round-robin
+     * Starts the presence update task for the currently active category, if any.
      */
-    void start(@NotNull JDA jda, long interval, boolean random);
+    void start();
 
     /**
-     * Stops the Discord bot presence update task, if present.
+     * Pauses the presence update task, if present.
+     */
+    void pause();
+
+    /**
+     * Resumes the presence update task, if present.
+     */
+    void resume();
+
+    /**
+     * Restarts the presence update task, if present.
+     */
+    void restart();
+
+    /**
+     * Stops the presence update task, if present.
      */
     void stop();
 
     /**
-     * Returns the current stage (or category) that presences are chosen from.
+     * Returns the currently active presence category, if present.
      *
-     * @return stage name
+     * @return active category, if present
      */
-    @NotNull String getStage();
+    Optional<PresenceCategory> getCategory();
 
     /**
-     * Returns a list of all registered stage (or category) names.
+     * Returns the presence category with the given name, if present.
      *
-     * @return immutable list of stage names
+     * @param name registered category name
+     * @return active category, if present
      */
-    List<String> getStages();
+    Optional<PresenceCategory> getCategory(@NotNull String name);
 
     /**
-     * Sets the stage (or category) to choose presences from, and restarts the
-     * Discord bot presence update task.
+     * Returns an immutable list of all registered presence categories.
      *
-     * <p>NB: If the given stage (or category) is already in use, no action is taken.
+     * @return immutable list of categories
+     */
+    List<PresenceCategory> getCategories();
+
+    /**
+     * Returns true if a presence category with the given name exists.
      *
-     * @param name     stage name
-     * @param interval number of seconds between presence updates (at least 15s)
-     * @param random   true if presences should be chosen randomly, else round-robin
+     * @param name registered category name
+     * @return true if the presence category exist
+     */
+    boolean hasCategory(@NotNull String name);
+
+    /**
+     * Registers (or overwrites) a new presence category under the given name.
+     *
+     * @param name     category name
+     * @param category presence category
      * @return {@code this} for chaining
-     * @see #start(JDA, long, boolean)
      */
-    MinecordPresence setStage(@NotNull String name, long interval, boolean random);
+    MinecordPresence addCategory(@NotNull String name, @NotNull PresenceCategory category);
 
     /**
-     * Temporarily sets the stage (or category) to choose presences from,
-     * restarts the Discord bot presence update task, and executes a given
-     * runnable. After the given runnable finishes executing, reverts the
-     * stage (or category) back to how it was found.
+     * Removes a presence category by its name, if present.
      *
-     * @param name     stage name
-     * @param interval number of seconds between presence updates (at least 15s)
-     * @param random   true if presences should be chosen randomly, else round-robin
-     * @param runnable function to be run while the stage is active
-     * @return {@code this} for chaining
-     * @see #setStage(String, long, boolean)
-     */
-    MinecordPresence setStageTemporarily(@NotNull String name, long interval, boolean random, Runnable runnable);
-
-    /**
-     * Clears all presence entries from the given stage (or category).
+     * <p>NB: If the removed category is currently in use, the presence update
+     * task is stopped.
      *
-     * <p>NB: If the given stage (or category) is currently in use, the Discord
-     * bot presence update task is stopped.
-     *
-     * @param name stage name
-     * @return list of removed presences, if any
+     * @param name category name
+     * @return the removed category, if present
      * @see #stop()
      */
-    @Nullable List<PresenceSupplier> clearStage(@NotNull String name);
+    @Nullable PresenceCategory removeCategory(@NotNull String name);
 
     /**
-     * Returns the current stage (or category) presence update interval.
+     * Sets the currently active presence category by its name.
      *
-     * @return current presence update interval
-     */
-    long getInterval();
-
-    /**
-     * Returns true if the current stage (or category) chooses random presences, else round-robin.
-     *
-     * @return true if presences are chosen randomly, else round-robin
-     */
-    boolean isRandom();
-
-    /**
-     * Returns a list of all presence entries from the current stage (or category).
-     *
-     * @return list of current presences, if any
-     */
-    @Nullable List<PresenceSupplier> getPresences();
-
-    /**
-     * Returns a list of all presence entries from the given stage (or category).
-     *
-     * @param name stage name
-     * @return list of presences, if any
-     */
-    @Nullable List<PresenceSupplier> getPresences(@NotNull String name);
-
-    /**
-     * Adds presences to the given stage (or category).
-     *
-     * @param name      stage name
-     * @param presences list of presences
+     * @param name registered category name
      * @return {@code this} for chaining
+     * @throws IllegalArgumentException if the category does not exist
      */
-    MinecordPresence addPresences(@NotNull String name, @NotNull PresenceSupplier... presences);
+    MinecordPresence useCategory(@NotNull String name) throws IllegalArgumentException;
 }

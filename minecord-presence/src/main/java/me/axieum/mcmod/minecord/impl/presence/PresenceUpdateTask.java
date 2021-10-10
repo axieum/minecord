@@ -2,24 +2,24 @@ package me.axieum.mcmod.minecord.impl.presence;
 
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.TimerTask;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.managers.Presence;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.presence.MinecordPresence;
-import me.axieum.mcmod.minecord.api.presence.PresenceSupplier;
+import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
+import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
 import me.axieum.mcmod.minecord.api.presence.event.PlaceholderCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
+
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
 /**
@@ -27,47 +27,27 @@ import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER
  */
 public class PresenceUpdateTask extends TimerTask
 {
-    // An instance of random to aid in choosing presences
-    private static final Random RANDOM = new Random();
-
-    // The Minecord Presence instance
-    private final MinecordPresence instance = MinecordPresence.getInstance();
     // The JDA client
     private final JDA jda;
-    // True if presences are chosen randomly, else round-robin
-    private final boolean random;
-    // The index of the last presence entry used
-    private int last = -1;
+    // The Minecord presence category
+    private final PresenceCategory category;
 
     /**
      * Initialises a new Minecord bot presence update task.
      *
-     * @param jda    JDA client
-     * @param random true if presences are chosen randomly, else round-robin
+     * @param jda      JDA client
+     * @param category Minecord presence category
      */
-    public PresenceUpdateTask(@NotNull JDA jda, boolean random)
+    public PresenceUpdateTask(@NotNull JDA jda, @NotNull PresenceCategory category)
     {
         this.jda = jda;
-        this.random = random;
+        this.category = category;
     }
 
     @Override
     public void run()
     {
-        // Fetch a list presences for the current stage
-        final String stage = instance.getStage();
-        final List<PresenceSupplier> suppliers = instance.getPresences();
-        if (suppliers == null || suppliers.size() == 0) return;
-
-        // Choose a presence index to use
-        if (random) {
-            last = RANDOM.nextInt(suppliers.size());
-        } else {
-            last = (last + 1) % suppliers.size();
-        }
-
-        // Attempt to build and update the bot presence
-        final PresenceSupplier supplier = suppliers.get(last);
+        final PresenceSupplier supplier = category.getPresenceSupplier();
         try {
             /*
              * Prepare a message template.
@@ -97,43 +77,36 @@ public class PresenceUpdateTask extends TimerTask
                 st.add("player_count", server.getCurrentPlayerCount());
             }
 
-            PlaceholderCallback.EVENT.invoker().onPlaceholderPresence(st, stage, jda, server);
+            PlaceholderCallback.EVENT.invoker().onPlaceholderPresence(st, category, jda, server);
 
             /*
              * Build the various presence components.
              */
 
+            final Presence presence = jda.getPresence();
+
             final Optional<OnlineStatus> status = supplier.getStatus();
             final Optional<Boolean> idle = supplier.isIdle();
-            final Activity activity = supplier.getActivity(st);
+            final Optional<Activity> activity = supplier.getActivity(st);
 
             LOGGER.debug(
-                "Updating the Discord bot presence in stage '{}' to entry {}: [{}] {}... {} ({})",
-                stage, last + 1, status.orElse(jda.getPresence().getStatus()), activity.getType().name(),
-                activity.getName(), activity.getUrl()
+                "Updating the Discord bot presence to: [status={}] [idle={}] {}... {} ({})",
+                status.orElse(presence.getStatus()),
+                idle.orElse(presence.isIdle()),
+                activity.orElse(presence.getActivity()).getType().name(),
+                activity.orElse(presence.getActivity()).getName(),
+                activity.orElse(presence.getActivity()).getUrl()
             );
 
             /*
              * Update the bot.
              */
 
-            // Depending on what is changing, make one update call instead of multiple
-            if (status.isPresent() && idle.isPresent()) {
-                // Set all status, activity and idle
-                jda.getPresence().setPresence(status.get(), activity, idle.get());
-            } else if (status.isPresent()) {
-                // Set status and activity only, leaving idle untouched
-                jda.getPresence().setPresence(status.get(), activity);
-            } else if (idle.isPresent()) {
-                // Set idle and activity only, leaving status untouched
-                jda.getPresence().setPresence(activity, idle.get());
-            } else {
-                // Set the activity only, leaving both status and idle untouched
-                jda.getPresence().setActivity(activity);
-            }
+            status.ifPresent(presence::setStatus);
+            idle.ifPresent(presence::setIdle);
+            activity.ifPresent(presence::setActivity);
         } catch (Exception e) {
-            // The configured presence entry is invalid!
-            LOGGER.error("Could not set the Discord bot presence in stage '{}' to entry {}!", stage, last + 1, e);
+            LOGGER.error("Unable to update the Discord bot presence!", e);
         }
     }
 

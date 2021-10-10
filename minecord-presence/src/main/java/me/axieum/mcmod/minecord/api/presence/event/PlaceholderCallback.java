@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 
 public interface PlaceholderCallback
@@ -26,9 +27,11 @@ public interface PlaceholderCallback
      * Called when providing placeholder values to Discord bot presence messages.
      *
      * @param template mutable string template
-     * @param stage    stage (or category) name
+     * @param category Minecord presence category
      * @param jda      JDA client
      * @param server   Minecraft server, if present
      */
-    void onPlaceholderPresence(StringTemplate template, String stage, JDA jda, @Nullable MinecraftServer server);
+    void onPlaceholderPresence(
+        StringTemplate template, PresenceCategory category, JDA jda, @Nullable MinecraftServer server
+    );
 }
