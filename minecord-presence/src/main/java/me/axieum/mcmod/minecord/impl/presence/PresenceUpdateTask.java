@@ -19,7 +19,6 @@ import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
 import me.axieum.mcmod.minecord.api.presence.event.PlaceholderCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
-
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
 /**

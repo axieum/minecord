@@ -15,9 +15,9 @@ import me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl;
 public interface MinecordPresence
 {
     /**
-     * Returns the Minecord Commands instance.
+     * Returns the Minecord Presence instance.
      *
-     * @return Minecord Commands instance
+     * @return Minecord Presence instance
      */
     static MinecordPresence getInstance()
     {
@@ -82,9 +82,13 @@ public interface MinecordPresence
     /**
      * Registers (or overwrites) a new presence category under the given name.
      *
+     * <p>NB: If the category name is currently in use, the presence update
+     * task is restarted.
+     *
      * @param name     category name
      * @param category presence category
      * @return {@code this} for chaining
+     * @see #restart()
      */
     MinecordPresence addCategory(@NotNull String name, @NotNull PresenceCategory category);
 
