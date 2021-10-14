@@ -30,17 +30,10 @@ public interface MinecordPresence
     void start();
 
     /**
-     * Pauses the presence update task, if present.
-     */
-    void pause();
-
-    /**
-     * Resumes the presence update task, if present.
-     */
-    void resume();
-
-    /**
      * Restarts the presence update task, if present.
+     *
+     * @see #stop()
+     * @see #start()
      */
     void restart();
 
@@ -48,6 +41,13 @@ public interface MinecordPresence
      * Stops the presence update task, if present.
      */
     void stop();
+
+    /**
+     * Returns whether the presence update task was last started or stopped.
+     *
+     * @return true if the presence update task was last started
+     */
+    boolean isStarted();
 
     /**
      * Returns the currently active presence category, if present.
@@ -105,11 +105,15 @@ public interface MinecordPresence
     @Nullable PresenceCategory removeCategory(@NotNull String name);
 
     /**
-     * Sets the currently active presence category by its name.
+     * Sets the currently active presence category by its name, and restarts
+     * the presence update task.
+     *
+     * <p>NB: If the category does not exist, the presence update task is
+     * stopped.
      *
      * @param name registered category name
      * @return {@code this} for chaining
-     * @throws IllegalArgumentException if the category does not exist
+     * @see #restart()
      */
-    MinecordPresence useCategory(@NotNull String name) throws IllegalArgumentException;
+    MinecordPresence useCategory(@NotNull String name);
 }

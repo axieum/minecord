@@ -8,11 +8,17 @@ import java.util.Timer;
 
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.ShutdownEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+
+import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
 import me.axieum.mcmod.minecord.api.presence.MinecordPresence;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
@@ -26,19 +32,38 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
 
     // A mapping of presence category names to their implementation (initial capacity for all built-in categories)
     private static final HashMap<String, PresenceCategory> CATEGORIES = new HashMap<>(3);
-    // The current presence category in use, if any
-    private static @Nullable String category = null;
+    // The name of the current presence category in use, if any
+    private static @Nullable String curCategory = null;
     // The current timer that is responsible for scheduling presence updates
     private static @Nullable Timer timer = null;
+    // True if the presence update task was previously started (but not necessarily running due to no category, etc.)
+    private static boolean started = false;
 
     @Override
     public void onInitializeMinecord(JDABuilder builder)
     {
         LOGGER.info("Minecord Presence is getting ready...");
 
-        // todo: Update the current presence category throughout the lifecycle of the Minecraft server
+        // Update the current presence category throughout the lifecycle of the Minecraft server
+        ServerLifecycleEvents.SERVER_STARTING.register(s -> useCategory("starting"));
+        ServerLifecycleEvents.SERVER_STARTED.register(s -> useCategory("running"));
+        ServerLifecycleEvents.SERVER_STOPPING.register(s -> useCategory("stopping"));
 
-        // todo: Start and stop the presence update task with the Discord client
+        // Start and stop the presence update task with the Discord client
+        builder.addEventListeners(new ListenerAdapter()
+        {
+            @Override
+            public void onReady(ReadyEvent event)
+            {
+                start();
+            }
+
+            @Override
+            public void onShutdown(ShutdownEvent event)
+            {
+                stop();
+            }
+        });
 
         // Register all Minecord provided presence categories
         initPresenceCategories(getConfig());
@@ -69,37 +94,57 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
     @Override
     public void start()
     {
-        // todo
-    }
+        // Stop an existing presence update task, if applicable
+        stop();
 
-    @Override
-    public void pause()
-    {
-        // todo
-    }
+        // Fetch the instance of JDA, if present
+        Minecord.getInstance().getJDA().ifPresent(jda -> {
+            // Using the current presence category, if present
+            getCategory().ifPresent(category -> {
+                // Prepare a new timer and schedule the presence update task on it
+                LOGGER.info(
+                    "Scheduling Discord bot presence updates with category '{}' for every {} second(s)",
+                    curCategory, category.getInterval()
+                );
+                timer = new Timer("Minecord-Presence-Timer", true);
+                timer.schedule(new PresenceUpdateTask(jda, category), 0, category.getInterval() * 1000L);
+            });
+        });
 
-    @Override
-    public void resume()
-    {
-        // todo
+        // Remember that the presence update task was started
+        started = true;
     }
 
     @Override
     public void restart()
     {
-        // todo
+        start(); // implicitly calls #stop()
     }
 
     @Override
     public void stop()
     {
-        // todo
+        // Cancel the existing timer, if present
+        if (timer != null) {
+            LOGGER.info("Unscheduling Discord bot presence updates");
+            timer.cancel();
+            timer = null;
+        }
+
+        // Remember that the presence update task was stopped
+        started = false;
+    }
+
+    @Override
+    public boolean isStarted()
+    {
+        return started;
     }
 
     @Override
     public Optional<PresenceCategory> getCategory()
     {
-        return category != null ? getCategory(category) : Optional.empty();
+        return curCategory != null ? getCategory(curCategory) : Optional.empty();
     }
 
     @Override
@@ -121,12 +166,12 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
     }
 
     @Override
-    public MinecordPresence addCategory(@NotNull String name, @NotNull PresenceCategory cat)
+    public MinecordPresence addCategory(@NotNull String name, @NotNull PresenceCategory category)
     {
         // Add the new category
-        CATEGORIES.put(name, cat);
+        CATEGORIES.put(name, category);
         // Restart the presence update task if applicable
-        if (category != null && category.equals(name)) restart();
+        if (started && curCategory != null && curCategory.equals(name)) restart();
         return this;
     }
 
@@ -134,21 +179,21 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
     public @Nullable PresenceCategory removeCategory(@NotNull String name)
     {
         // Remove the category by its name
-        final @Nullable PresenceCategory cat = CATEGORIES.remove(name);
+        final @Nullable PresenceCategory category = CATEGORIES.remove(name);
         // Stop the presence update task if applicable
-        if (category != null && category.equals(name)) stop();
-        return cat;
+        if (started && curCategory != null && curCategory.equals(name)) stop();
+        return category;
     }
 
     @Override
-    public MinecordPresence useCategory(@NotNull String name) throws IllegalArgumentException
+    public MinecordPresence useCategory(@NotNull String name)
     {
         // Check that the category is actually changing
-        if (category == null || !category.equals(name)) {
+        if (curCategory == null || !curCategory.equals(name)) {
             // Update the currently active category name
-            category = name;
-            // Restart the presence update task
-            restart();
+            curCategory = name;
+            // Restart the presence update task if it's running
+            if (started) restart();
         }
         return this;
     }
