@@ -29,112 +29,23 @@ public class PresenceConfig implements ConfigData
 {
     @ConfigEntry.Category("Presence Categories")
     @Comment("A list of presence categories used to group presences together")
-    public Category[] categories = new Category[] {
-        // A category for presences shown while the Minecraft server is starting
-        new Category()
-        {
-            {
-                name = "starting";
-                random = false;
-                presences = new PresenceEntry[] {
-                    // Watching Minecraft startup
-                    new PresenceEntry()
-                    {
-                        {
-                            idle = true;
-                            status = OnlineStatus.IDLE;
-                            activity = new ActivityEntry();
-                            activity.type = ActivityType.WATCHING;
-                            activity.name = "Minecraft startup";
-                        }
-                    },
-                };
-            }
-        },
-
-        // A category for presences shown while the Minecraft server is running
-        new Category()
-        {
-            {
-                name = "running";
-                random = true;
-                presences = new PresenceEntry[] {
-                    // Playing Minecraft 1.17
-                    new PresenceEntry()
-                    {
-                        {
-                            idle = false;
-                            status = OnlineStatus.ONLINE;
-                            activity = new ActivityEntry();
-                            activity.type = ActivityType.DEFAULT;
-                            activity.name = "Minecraft ${version}";
-                        }
-                    },
-                    // Watching 2 player(s)
-                    new PresenceEntry()
-                    {
-                        {
-                            idle = false;
-                            status = OnlineStatus.ONLINE;
-                            activity = new ActivityEntry();
-                            activity.type = ActivityType.WATCHING;
-                            activity.name = "${player_count} player(s)";
-                        }
-                    },
-                    // Playing for 3 hours 24 minutes 10 seconds
-                    new PresenceEntry()
-                    {
-                        {
-                            idle = false;
-                            status = OnlineStatus.ONLINE;
-                            activity = new ActivityEntry();
-                            activity.type = ActivityType.DEFAULT;
-                            activity.name = "for ${uptime}";
-                        }
-                    },
-                    // Playing on hard mode
-                    new PresenceEntry()
-                    {
-                        {
-                            idle = false;
-                            status = OnlineStatus.ONLINE;
-                            activity = new ActivityEntry();
-                            activity.type = ActivityType.DEFAULT;
-                            activity.name = "on ${difficulty} mode";
-                        }
-                    },
-                };
-            }
-        },
-
-        // A category for presences shown while the Minecraft server is stopping
-        new Category()
-        {
-            {
-                name = "stopping";
-                random = false;
-                presences = new PresenceEntry[] {
-                    // Watching Minecraft shutdown
-                    new PresenceEntry()
-                    {
-                        {
-                            idle = false;
-                            status = OnlineStatus.DO_NOT_DISTURB;
-                            activity = new ActivityEntry();
-                            activity.type = ActivityType.WATCHING;
-                            activity.name = "Minecraft shutdown";
-                        }
-                    },
-                };
-            }
-        },
-    };
+    public Category[] categories;
 
     /**
      * Presence category configuration schema.
      */
     public static class Category
     {
+        public Category() {}
+
+        public Category(String name, int interval, boolean random, PresenceEntry... presences)
+        {
+            this.name = name;
+            this.interval = interval;
+            this.random = random;
+            if (presences != null) this.presences = presences;
+        }
+
         @Comment("The name of the category")
         public String name;
 
@@ -153,6 +64,17 @@ public class PresenceConfig implements ConfigData
          */
         public static class PresenceEntry
         {
+            public PresenceEntry() {}
+
+            public PresenceEntry(
+                @Nullable Boolean idle, @Nullable OnlineStatus status, @Nullable ActivityEntry activity
+            )
+            {
+                this.idle = idle;
+                this.status = status;
+                this.activity = activity;
+            }
+
             @Comment("If defined, overrides whether the bot is idling")
             public @Nullable Boolean idle = null;
 
@@ -170,6 +92,15 @@ public class PresenceConfig implements ConfigData
              */
             public static class ActivityEntry
             {
+                public ActivityEntry() {}
+
+                public ActivityEntry(ActivityType type, String name, @Nullable String url)
+                {
+                    this.type = type;
+                    this.name = name;
+                    this.url = url;
+                }
+
                 @Comment("""
                     The type of activity
                     Allowed values: COMPETING, DEFAULT, LISTENING, STREAMING and WATCHING""")
@@ -179,7 +110,7 @@ public class PresenceConfig implements ConfigData
                 @Comment("""
                     The name of the activity
                     Usages: ${version}, ${ip}, ${port}, ${motd}, ${difficulty}, ${max_players}, ${player_count} and ${uptime}""")
-                public String name = "Minecraft ${version}";
+                public String name = "Minecraft";
 
                 @Comment("If defined, provides a link to the activity, e.g. Twitch stream")
                 public @Nullable String url = null;
@@ -215,6 +146,49 @@ public class PresenceConfig implements ConfigData
                 };
             }
         }
+    }
+
+    /**
+     * Constructs a new presence configuration with appropriate defaults.
+     */
+    public PresenceConfig()
+    {
+        // Add default presence categories
+        categories = new Category[] {
+            // Presences shown while the Minecraft server is starting
+            new Category("starting", 60, false,
+                // Watching Minecraft startup
+                new Category.PresenceEntry(true, OnlineStatus.IDLE, new Category.PresenceEntry.ActivityEntry(
+                    ActivityType.WATCHING, "Minecraft startup", null
+                ))
+            ),
+            // Presences shown while the Minecraft server is running
+            new Category("running", 60, true,
+                // Playing Minecraft 1.17
+                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                    ActivityType.DEFAULT, "Minecraft ${version}", null
+                )),
+                // Watching 2 player(s)
+                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                    ActivityType.WATCHING, "${player_count} player(s)", null
+                )),
+                // Playing for 3 hours 24 minutes 10 seconds
+                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                    ActivityType.DEFAULT, "for ${uptime}", null
+                )),
+                // Playing on hard mode
+                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                    ActivityType.DEFAULT, "on ${difficulty} mode", null
+                ))
+            ),
+            // Presences shown while the Minecraft server is stopping
+            new Category("stopping", 60, false,
+                // Watching Minecraft shutdown
+                new Category.PresenceEntry(false, OnlineStatus.DO_NOT_DISTURB, new Category.PresenceEntry.ActivityEntry(
+                    ActivityType.WATCHING, "Minecraft shutdown", null
+                ))
+            ),
+        };
     }
 
     @Override

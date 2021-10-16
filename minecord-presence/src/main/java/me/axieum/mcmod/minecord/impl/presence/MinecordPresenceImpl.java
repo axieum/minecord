@@ -126,7 +126,7 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
     {
         // Cancel the existing timer, if present
         if (timer != null) {
-            LOGGER.info("Unscheduling Discord bot presence updates");
+            LOGGER.debug("Unscheduling Discord bot presence updates");
             timer.cancel();
             timer = null;
         }
