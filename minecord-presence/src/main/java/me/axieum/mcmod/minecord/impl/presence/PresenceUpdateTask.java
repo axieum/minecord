@@ -2,7 +2,8 @@ package me.axieum.mcmod.minecord.impl.presence;
 
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
-import java.util.Optional;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import java.util.TimerTask;
 
 import net.dv8tion.jda.api.JDA;
@@ -46,16 +47,19 @@ public class PresenceUpdateTask extends TimerTask
     @Override
     public void run()
     {
-        final PresenceSupplier supplier = category.getPresenceSupplier();
         try {
+            final PresenceSupplier supplier = category.getPresenceSupplier();
+
             /*
              * Prepare a message template.
              */
 
             final StringTemplate st = new StringTemplate();
 
-            // The total process uptime
-            st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
+            // The total process uptime (to the nearest minute)
+            st.add("uptime", Duration.ofMillis(
+                ManagementFactory.getRuntimeMXBean().getUptime()
+            ).truncatedTo(ChronoUnit.MINUTES));
 
             // The Minecraft server, if present
             final @Nullable MinecraftServer server = Minecord.getInstance().getMinecraft().orElse(null);
@@ -70,10 +74,13 @@ public class PresenceUpdateTask extends TimerTask
                 st.add("motd", server.getServerMotd());
                 // The world difficulty
                 st.add("difficulty", server.getSaveProperties().getDifficulty().getName());
-                // The server max player count
-                st.add("max_players", server.getMaxPlayerCount());
-                // The server current player count
-                st.add("player_count", server.getCurrentPlayerCount());
+                // The server player counts, if loaded
+                if (server.getPlayerManager() != null) {
+                    // The server max player count
+                    st.add("max_players", server.getMaxPlayerCount());
+                    // The server current player count
+                    st.add("player_count", server.getCurrentPlayerCount());
+                }
             }
 
             PlaceholderCallback.EVENT.invoker().onPlaceholderPresence(st, category, jda, server);
@@ -82,37 +89,34 @@ public class PresenceUpdateTask extends TimerTask
              * Build the various presence components.
              */
 
-            final Presence presence = jda.getPresence();
+            final Presence current = jda.getPresence();
 
-            final Optional<OnlineStatus> status = supplier.getStatus();
-            final Optional<Boolean> idle = supplier.isIdle();
-            final Optional<Activity> activity = supplier.getActivity(st);
-
-            LOGGER.debug(
-                "Updating the Discord bot presence to: [status={}] [idle={}] {}... {} ({})",
-                status.orElse(presence.getStatus()),
-                idle.orElse(presence.isIdle()),
-                activity.orElse(presence.getActivity()).getType().name(),
-                activity.orElse(presence.getActivity()).getName(),
-                activity.orElse(presence.getActivity()).getUrl()
-            );
+            final Boolean idle = supplier.isIdle().orElse(current.isIdle());
+            final OnlineStatus status = supplier.getStatus().orElse(current.getStatus());
+            final Activity activity = supplier.getActivity(st).orElse(current.getActivity());
 
             /*
              * Update the bot.
              */
 
-            status.ifPresent(presence::setStatus);
-            idle.ifPresent(presence::setIdle);
-            activity.ifPresent(presence::setActivity);
+            // Check that the presence is actually changing
+            if (
+                idle != current.isIdle()
+                    || status != current.getStatus()
+                    || activity.getType() != current.getActivity().getType()
+                    || !Objects.equals(activity.getName(), current.getActivity().getName())
+                    || !Objects.equals(activity.getUrl(), current.getActivity().getUrl())
+            ) {
+                LOGGER.debug(
+                    "Updating the Discord bot presence to: [idle={}] [status={}] {}... {} ({})",
+                    idle, status, activity.getType().name(), activity.getName(), activity.getUrl()
+                );
+                current.setPresence(status, activity, idle);
+            } else {
+                LOGGER.debug("Skipping Discord bot presence update as no change was detected!");
+            }
         } catch (Exception e) {
             LOGGER.error("Unable to update the Discord bot presence!", e);
         }
-    }
-
-    @Override
-    public boolean cancel()
-    {
-        jda.getPresence().setActivity(null); // reset the bot activity
-        return super.cancel();
     }
 }

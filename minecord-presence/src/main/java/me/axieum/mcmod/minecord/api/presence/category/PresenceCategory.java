@@ -42,7 +42,7 @@ public class PresenceCategory
     /**
      * Returns the next presence supplier in the category.
      *
-     * <p>In the case where {@link random} is {@code true}, the presence
+     * <p>In the case where {@link #isRandom()} is {@code true}, the presence
      * supplier is chosen randomly.
      *
      * @return presence supplier
@@ -50,20 +50,20 @@ public class PresenceCategory
      */
     public PresenceSupplier getPresenceSupplier() throws IllegalStateException
     {
-        // Ensure there exists any presence suppliers
-        if (presenceSuppliers.isEmpty()) {
+        // Ensure there exists at least one presence supplier
+        final int size = presenceSuppliers.size();
+        if (size == 0) {
             throw new IllegalStateException("No presence suppliers were provided!");
         }
 
-        // Select the next presence supplier index
-        if (isRandom()) {
-            index = RANDOM.nextInt(presenceSuppliers.size());
-        } else {
-            index = (index + 1) % presenceSuppliers.size();
+        // Select and return the first (and only) presence supplier if there is only one
+        if (size == 1) {
+            return presenceSuppliers.get(index = 0);
         }
 
-        // Return the presence supplier at the chosen index
-        return presenceSuppliers.get(index);
+        // Select and return the next presence supplier index
+        final int rotate = isRandom() ? RANDOM.nextInt(size - 1) + 1 : 1;
+        return presenceSuppliers.get(index = (index + rotate) % size);
     }
 
     /**
@@ -142,5 +142,15 @@ public class PresenceCategory
     {
         this.random = random;
         return this;
+    }
+
+    /**
+     * Returns the number of presences contained within the category.
+     *
+     * @return number of presence suppliers
+     */
+    public int size()
+    {
+        return presenceSuppliers.size();
     }
 }

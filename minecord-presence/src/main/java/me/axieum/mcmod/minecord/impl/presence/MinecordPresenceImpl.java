@@ -77,17 +77,16 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
     public static void initPresenceCategories(PresenceConfig config)
     {
         // Register each of the configured presence categories
-        Arrays.stream(config.categories).forEach(c -> {
-            // Unregister the category if it already exists
-            MinecordPresence.getInstance().removeCategory(c.name);
+        config.categories.forEach((name, entry) -> {
             // Instantiate a new presence category
-            final PresenceCategory category = new PresenceCategory(c.interval, c.random);
+            final PresenceCategory category = new PresenceCategory(entry.interval, entry.random);
             // Add all configured presence suppliers
-            Arrays.stream(c.presences)
+            Arrays.stream(entry.presences)
                   .map(PresenceConfig.Category.PresenceEntry::getPresenceSupplier)
                   .forEach(category::addPresenceSuppliers);
-            // Register the newly created presence category
-            MinecordPresence.getInstance().addCategory(c.name, category);
+            // Register (or overwrite) the newly created presence category
+            LOGGER.info("Adding presence category '{}' with {} presences", name, category.size());
+            MinecordPresence.getInstance().addCategory(name, category);
         });
     }
 

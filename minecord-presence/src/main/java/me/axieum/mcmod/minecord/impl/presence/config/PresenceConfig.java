@@ -1,5 +1,7 @@
 package me.axieum.mcmod.minecord.impl.presence.config;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import me.shedaniel.autoconfig.AutoConfig;
@@ -28,8 +30,8 @@ import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER
 public class PresenceConfig implements ConfigData
 {
     @ConfigEntry.Category("Presence Categories")
-    @Comment("A list of presence categories used to group presences together")
-    public Category[] categories;
+    @Comment("A collection of presence categories used to group presences together")
+    public HashMap<String, Category> categories = new HashMap<>(3);
 
     /**
      * Presence category configuration schema.
@@ -38,16 +40,12 @@ public class PresenceConfig implements ConfigData
     {
         public Category() {}
 
-        public Category(String name, int interval, boolean random, PresenceEntry... presences)
+        public Category(int interval, boolean random, PresenceEntry... presences)
         {
-            this.name = name;
             this.interval = interval;
             this.random = random;
             if (presences != null) this.presences = presences;
         }
-
-        @Comment("The name of the category")
-        public String name;
 
         @Comment("The number of seconds between presence updates (at least 15s)")
         public int interval = 60;
@@ -140,8 +138,9 @@ public class PresenceConfig implements ConfigData
                     @Override
                     public Optional<Activity> getActivity(StringTemplate template)
                     {
-                        return activity != null ? Optional.of(Activity.of(activity.type, activity.name, activity.url))
-                                                : Optional.empty();
+                        return activity != null ? Optional.of(
+                            Activity.of(activity.type, template.format(activity.name), activity.url)
+                        ) : Optional.empty();
                     }
                 };
             }
@@ -153,51 +152,53 @@ public class PresenceConfig implements ConfigData
      */
     public PresenceConfig()
     {
-        // Add default presence categories
-        categories = new Category[] {
-            // Presences shown while the Minecraft server is starting
-            new Category("starting", 60, false,
-                // Watching Minecraft startup
-                new Category.PresenceEntry(true, OnlineStatus.IDLE, new Category.PresenceEntry.ActivityEntry(
-                    ActivityType.WATCHING, "Minecraft startup", null
-                ))
-            ),
-            // Presences shown while the Minecraft server is running
-            new Category("running", 60, true,
-                // Playing Minecraft 1.17
-                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                    ActivityType.DEFAULT, "Minecraft ${version}", null
-                )),
-                // Watching 2 player(s)
-                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                    ActivityType.WATCHING, "${player_count} player(s)", null
-                )),
-                // Playing for 3 hours 24 minutes 10 seconds
-                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                    ActivityType.DEFAULT, "for ${uptime}", null
-                )),
-                // Playing on hard mode
-                new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                    ActivityType.DEFAULT, "on ${difficulty} mode", null
-                ))
-            ),
-            // Presences shown while the Minecraft server is stopping
-            new Category("stopping", 60, false,
-                // Watching Minecraft shutdown
-                new Category.PresenceEntry(false, OnlineStatus.DO_NOT_DISTURB, new Category.PresenceEntry.ActivityEntry(
-                    ActivityType.WATCHING, "Minecraft shutdown", null
-                ))
-            ),
-        };
+        // Add a default presence category to be used while the Minecraft server is starting
+        categories.put("starting", new Category(60, false,
+            // Watching Minecraft startup
+            new Category.PresenceEntry(true, OnlineStatus.IDLE, new Category.PresenceEntry.ActivityEntry(
+                ActivityType.WATCHING, "Minecraft startup", null
+            ))
+        ));
+
+        // Add a default presence category to be used while the Minecraft server is running
+        categories.put("running", new Category(60, true,
+            // Playing Minecraft 1.17
+            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                ActivityType.DEFAULT, "Minecraft ${version}", null
+            )),
+            // Watching 2 player(s)
+            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                ActivityType.WATCHING, "${player_count} player(s)", null
+            )),
+            // Playing for 3 hours 24 minutes 10 seconds
+            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                ActivityType.DEFAULT, "for ${uptime}", null
+            )),
+            // Playing on hard mode
+            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
+                ActivityType.DEFAULT, "on ${difficulty} mode", null
+            ))
+        ));
+
+        // Add a default presence category to be used while the Minecraft server is stopping
+        categories.put("stopping", new Category(60, false,
+            // Watching Minecraft shutdown
+            new Category.PresenceEntry(false, OnlineStatus.DO_NOT_DISTURB, new Category.PresenceEntry.ActivityEntry(
+                ActivityType.WATCHING, "Minecraft shutdown", null
+            ))
+        ));
     }
 
     @Override
     public void validatePostLoad() throws ValidationException
     {
         // Validate each configured category
-        for (Category category : categories) {
+        for (Map.Entry<String, Category> entry : categories.entrySet()) {
+            final String name = entry.getKey();
+            final Category category = entry.getValue();
+
             // Check that the category name is non-empty
-            if (category.name == null || category.name.isEmpty()) {
+            if (name == null || name.isEmpty()) {
                 throw new ValidationException("The presence category name must be non-empty!");
             }
 
@@ -206,7 +207,7 @@ public class PresenceConfig implements ConfigData
                 LOGGER.warn(
                     "A Discord presence update interval shorter than 15 seconds will lead to rate-limits! "
                         + "Reverting category '{}' to 15s.",
-                    category.name
+                    name
                 );
                 category.interval = 15;
             }
