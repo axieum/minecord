@@ -1,4 +1,4 @@
-<img alt="Minecord API Icon" src="src/main/resources/assets/minecord-api/icon.png" width="64">
+<img alt="Minecord API Icon" src="src/main/resources/assets/minecord-api/icon.svg" height="72">
 
 ## Minecord API
 

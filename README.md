@@ -1,6 +1,6 @@
 <div align="center">
 
-<img alt="Minecord Icon" src="src/main/resources/assets/minecord/icon.png" width="128">
+<img alt="Minecord Icon" src="src/main/resources/assets/minecord/icon.svg" width="128">
 
 # Minecord
 
@@ -12,7 +12,7 @@ Bring your Minecraft world into your Discord guild
 
 </div>
 
-Minecord is a **Minecraft mod** that bring your Minecraft world into your
+Minecord is a **Minecraft mod** that brings your Minecraft world into your
 Discord guild.
 
 It is a **server-side** only mod, built on the [Fabric][fabric] mod loader and

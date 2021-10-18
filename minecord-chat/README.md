@@ -1,4 +1,4 @@
-<img alt="Minecord Chat Icon" src="src/main/resources/assets/minecord-chat/icon.png" width="64">
+<img alt="Minecord Chat Icon" src="src/main/resources/assets/minecord-chat/icon.svg" height="72">
 
 ## Minecord Chat
 
