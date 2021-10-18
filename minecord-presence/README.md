@@ -1,4 +1,4 @@
-<img alt="Minecord Presence Icon" src="src/main/resources/assets/minecord-presence/icon.png" width="64">
+<img alt="Minecord Presence Icon" src="src/main/resources/assets/minecord-presence/icon.svg" height="72">
 
 ## Minecord Presence
 
