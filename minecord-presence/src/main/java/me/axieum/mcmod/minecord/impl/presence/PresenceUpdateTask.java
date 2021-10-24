@@ -18,7 +18,7 @@ import net.minecraft.server.MinecraftServer;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
-import me.axieum.mcmod.minecord.api.presence.event.PlaceholderCallback;
+import me.axieum.mcmod.minecord.api.presence.event.PresencePlaceholderCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
@@ -83,7 +83,7 @@ public class PresenceUpdateTask extends TimerTask
                 }
             }
 
-            PlaceholderCallback.EVENT.invoker().onPlaceholderPresence(st, category, jda, server);
+            PresencePlaceholderCallback.EVENT.invoker().onPresencePlaceholder(st, category, jda, server);
 
             /*
              * Build the various presence components.

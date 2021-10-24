@@ -24,14 +24,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 
 /**
- * A collection of callbacks for changing placeholder values provided to message formatters.
+ * A collection of callbacks for providing placeholder values to Minecraft/Discord message formatters.
  */
-public final class PlaceholderEvents
+public final class ChatPlaceholderEvents
 {
-    private PlaceholderEvents() {}
+    private ChatPlaceholderEvents() {}
 
     /**
-     * A collection of Discord-related placeholder events.
+     * A collection of Discord-related chat placeholder events.
      */
     public static final class Discord
     {
@@ -41,7 +41,7 @@ public final class PlaceholderEvents
         public static final Event<MessageReceived> MESSAGE_RECEIVED =
             EventFactory.createArrayBacked(MessageReceived.class, callbacks -> (st, event) -> {
                 for (MessageReceived callback : callbacks) {
-                    callback.onMessageReceived(st, event);
+                    callback.onMessageReceivedPlaceholder(st, event);
                 }
             });
 
@@ -51,7 +51,7 @@ public final class PlaceholderEvents
         public static final Event<MessageUpdated> MESSAGE_UPDATED =
             EventFactory.createArrayBacked(MessageUpdated.class, callbacks -> (st, event, context, diff) -> {
                 for (MessageUpdated callback : callbacks) {
-                    callback.onMessageUpdated(st, event, context, diff);
+                    callback.onMessageUpdatedPlaceholder(st, event, context, diff);
                 }
             });
 
@@ -61,7 +61,7 @@ public final class PlaceholderEvents
         public static final Event<AttachmentReceived> ATTACHMENT_RECEIVED =
             EventFactory.createArrayBacked(AttachmentReceived.class, callbacks -> (st, event, attachment) -> {
                 for (AttachmentReceived callback : callbacks) {
-                    callback.onAttachmentReceived(st, event, attachment);
+                    callback.onAttachmentReceivedPlaceholder(st, event, attachment);
                 }
             });
 
@@ -71,7 +71,7 @@ public final class PlaceholderEvents
         public static final Event<ReactionAdded> REACTION =
             EventFactory.createArrayBacked(ReactionAdded.class, callbacks -> (st, event) -> {
                 for (ReactionAdded callback : callbacks) {
-                    callback.onReaction(st, event);
+                    callback.onReactionPlaceholder(st, event);
                 }
             });
 
@@ -84,7 +84,7 @@ public final class PlaceholderEvents
              * @param template mutable string template
              * @param event    JDA message received event instance
              */
-            void onMessageReceived(StringTemplate template, MessageReceivedEvent event);
+            void onMessageReceivedPlaceholder(StringTemplate template, MessageReceivedEvent event);
         }
 
         @FunctionalInterface
@@ -98,7 +98,7 @@ public final class PlaceholderEvents
              * @param context  original JDA message instance
              * @param diff     computed textual differences
              */
-            void onMessageUpdated(
+            void onMessageUpdatedPlaceholder(
                 StringTemplate template, MessageUpdateEvent event, Message context, List<DiffRow> diff
             );
         }
@@ -112,9 +112,9 @@ public final class PlaceholderEvents
              * @param template   mutable string template
              * @param event      JDA message received event instance
              * @param attachment JDA message attachment
-             * @see MessageReceived#onMessageReceived(StringTemplate, MessageReceivedEvent) for handling of message text
+             * @see MessageReceived#onMessageReceivedPlaceholder(StringTemplate, MessageReceivedEvent) for message text
              */
-            void onAttachmentReceived(
+            void onAttachmentReceivedPlaceholder(
                 StringTemplate template, MessageReceivedEvent event, Message.Attachment attachment
             );
         }
@@ -128,12 +128,12 @@ public final class PlaceholderEvents
              * @param template mutable string template
              * @param event    JDA reaction event instance
              */
-            void onReaction(StringTemplate template, GenericGuildMessageReactionEvent event);
+            void onReactionPlaceholder(StringTemplate template, GenericGuildMessageReactionEvent event);
         }
     }
 
     /**
-     * A collection of Minecraft-related placeholder events.
+     * A collection of Minecraft-related chat placeholder events.
      */
     public static final class Minecraft
     {
@@ -143,7 +143,7 @@ public final class PlaceholderEvents
         public static final Event<ServerStarting> SERVER_STARTING =
             EventFactory.createArrayBacked(ServerStarting.class, callbacks -> (st, server) -> {
                 for (ServerStarting callback : callbacks) {
-                    callback.onServerStarting(st, server);
+                    callback.onServerStartingPlaceholder(st, server);
                 }
             });
 
@@ -153,7 +153,7 @@ public final class PlaceholderEvents
         public static final Event<ServerStarted> SERVER_STARTED =
             EventFactory.createArrayBacked(ServerStarted.class, callbacks -> (st, server) -> {
                 for (ServerStarted callback : callbacks) {
-                    callback.onServerStarted(st, server);
+                    callback.onServerStartedPlaceholder(st, server);
                 }
             });
 
@@ -163,7 +163,7 @@ public final class PlaceholderEvents
         public static final Event<ServerStopping> SERVER_STOPPING =
             EventFactory.createArrayBacked(ServerStopping.class, callbacks -> (st, server) -> {
                 for (ServerStopping callback : callbacks) {
-                    callback.onServerStopping(st, server);
+                    callback.onServerStoppingPlaceholder(st, server);
                 }
             });
 
@@ -173,7 +173,7 @@ public final class PlaceholderEvents
         public static final Event<ServerShutdown> SERVER_SHUTDOWN =
             EventFactory.createArrayBacked(ServerShutdown.class, callbacks -> (st, server, crashReport) -> {
                 for (ServerShutdown callback : callbacks) {
-                    callback.onServerShutdown(st, server, crashReport);
+                    callback.onServerShutdownPlaceholder(st, server, crashReport);
                 }
             });
 
@@ -183,7 +183,7 @@ public final class PlaceholderEvents
         public static final Event<EntityDeath> ENTITY_DEATH =
             EventFactory.createArrayBacked(EntityDeath.class, callbacks -> (st, entity, source) -> {
                 for (EntityDeath callback : callbacks) {
-                    callback.onEntityDeath(st, entity, source);
+                    callback.onEntityDeathPlaceholder(st, entity, source);
                 }
             });
 
@@ -193,7 +193,7 @@ public final class PlaceholderEvents
         public static final Event<PlayerConnect> PLAYER_CONNECT =
             EventFactory.createArrayBacked(PlayerConnect.class, callbacks -> (st, player) -> {
                 for (PlayerConnect callback : callbacks) {
-                    callback.onPlayerConnect(st, player);
+                    callback.onPlayerConnectPlaceholder(st, player);
                 }
             });
 
@@ -203,7 +203,7 @@ public final class PlaceholderEvents
         public static final Event<PlayerDisconnect> PLAYER_DISCONNECT =
             EventFactory.createArrayBacked(PlayerDisconnect.class, callbacks -> (st, player) -> {
                 for (PlayerDisconnect callback : callbacks) {
-                    callback.onPlayerDisconnect(st, player);
+                    callback.onPlayerDisconnectPlaceholder(st, player);
                 }
             });
 
@@ -213,7 +213,7 @@ public final class PlaceholderEvents
         public static final Event<PlayerChat> PLAYER_CHAT =
             EventFactory.createArrayBacked(PlayerChat.class, callbacks -> (st, player, message) -> {
                 for (PlayerChat callback : callbacks) {
-                    callback.onPlayerChat(st, player, message);
+                    callback.onPlayerChatPlaceholder(st, player, message);
                 }
             });
 
@@ -223,7 +223,7 @@ public final class PlaceholderEvents
         public static final Event<PlayerAdvancement> PLAYER_ADVANCEMENT =
             EventFactory.createArrayBacked(PlayerAdvancement.class, callbacks -> (st, player, adv, criterion) -> {
                 for (PlayerAdvancement callback : callbacks) {
-                    callback.onPlayerAdvancement(st, player, adv, criterion);
+                    callback.onPlayerAdvancementPlaceholder(st, player, adv, criterion);
                 }
             });
 
@@ -233,7 +233,7 @@ public final class PlaceholderEvents
         public static final Event<PlayerChangeWorld> PLAYER_CHANGE_WORLD =
             EventFactory.createArrayBacked(PlayerChangeWorld.class, callbacks -> (st, player, origin, destination) -> {
                 for (PlayerChangeWorld callback : callbacks) {
-                    callback.onPlayerChangeWorld(st, player, origin, destination);
+                    callback.onPlayerChangeWorldPlaceholder(st, player, origin, destination);
                 }
             });
 
@@ -243,7 +243,7 @@ public final class PlaceholderEvents
         public static final Event<PlayerDeath> PLAYER_DEATH =
             EventFactory.createArrayBacked(PlayerDeath.class, callbacks -> (st, player, source) -> {
                 for (PlayerDeath callback : callbacks) {
-                    callback.onPlayerDeath(st, player, source);
+                    callback.onPlayerDeathPlaceholder(st, player, source);
                 }
             });
 
@@ -256,7 +256,7 @@ public final class PlaceholderEvents
              * @param template mutable string template
              * @param server   Minecraft server
              */
-            void onServerStarting(StringTemplate template, MinecraftServer server);
+            void onServerStartingPlaceholder(StringTemplate template, MinecraftServer server);
         }
 
         @FunctionalInterface
@@ -268,7 +268,7 @@ public final class PlaceholderEvents
              * @param template mutable string template
              * @param server   Minecraft server
              */
-            void onServerStarted(StringTemplate template, MinecraftServer server);
+            void onServerStartedPlaceholder(StringTemplate template, MinecraftServer server);
         }
 
         @FunctionalInterface
@@ -280,7 +280,7 @@ public final class PlaceholderEvents
              * @param template mutable string template
              * @param server   Minecraft server
              */
-            void onServerStopping(StringTemplate template, MinecraftServer server);
+            void onServerStoppingPlaceholder(StringTemplate template, MinecraftServer server);
         }
 
         @FunctionalInterface
@@ -293,7 +293,9 @@ public final class PlaceholderEvents
              * @param server      Minecraft server
              * @param crashReport a crash report if the server crashed
              */
-            void onServerShutdown(StringTemplate template, MinecraftServer server, @Nullable CrashReport crashReport);
+            void onServerShutdownPlaceholder(
+                StringTemplate template, MinecraftServer server, @Nullable CrashReport crashReport
+            );
         }
 
         @FunctionalInterface
@@ -306,7 +308,7 @@ public final class PlaceholderEvents
              * @param entity   victim animal/monster
              * @param source   damage source
              */
-            void onEntityDeath(StringTemplate template, LivingEntity entity, DamageSource source);
+            void onEntityDeathPlaceholder(StringTemplate template, LivingEntity entity, DamageSource source);
         }
 
         @FunctionalInterface
@@ -318,7 +320,7 @@ public final class PlaceholderEvents
              * @param template mutable string template
              * @param player   player who logged in
              */
-            void onPlayerConnect(StringTemplate template, ServerPlayerEntity player);
+            void onPlayerConnectPlaceholder(StringTemplate template, ServerPlayerEntity player);
         }
 
         @FunctionalInterface
@@ -330,7 +332,7 @@ public final class PlaceholderEvents
              * @param template mutable string template
              * @param player   player who logged out
              */
-            void onPlayerDisconnect(StringTemplate template, ServerPlayerEntity player);
+            void onPlayerDisconnectPlaceholder(StringTemplate template, ServerPlayerEntity player);
         }
 
         @FunctionalInterface
@@ -343,7 +345,9 @@ public final class PlaceholderEvents
              * @param player   author of the message
              * @param message  received message contents
              */
-            void onPlayerChat(StringTemplate template, ServerPlayerEntity player, TextStream.Message message);
+            void onPlayerChatPlaceholder(
+                StringTemplate template, ServerPlayerEntity player, TextStream.Message message
+            );
         }
 
         @FunctionalInterface
@@ -357,7 +361,7 @@ public final class PlaceholderEvents
              * @param advancement parent advancement
              * @param criterion   name of the criterion granted
              */
-            void onPlayerAdvancement(
+            void onPlayerAdvancementPlaceholder(
                 StringTemplate template, ServerPlayerEntity player, Advancement advancement, String criterion
             );
         }
@@ -373,7 +377,7 @@ public final class PlaceholderEvents
              * @param origin      source world of the player
              * @param destination target world
              */
-            void onPlayerChangeWorld(
+            void onPlayerChangeWorldPlaceholder(
                 StringTemplate template, ServerPlayerEntity player, ServerWorld origin, ServerWorld destination
             );
         }
@@ -388,7 +392,7 @@ public final class PlaceholderEvents
              * @param player   victim player
              * @param source   damage source
              */
-            void onPlayerDeath(StringTemplate template, ServerPlayerEntity player, DamageSource source);
+            void onPlayerDeathPlaceholder(StringTemplate template, ServerPlayerEntity player, DamageSource source);
         }
     }
 }

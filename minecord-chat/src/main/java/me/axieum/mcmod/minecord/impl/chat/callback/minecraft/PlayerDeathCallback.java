@@ -7,7 +7,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
@@ -52,7 +52,7 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
             // The player's number of experience levels before they died
             st.add("exp", String.valueOf(player.experienceLevel));
 
-            PlaceholderEvents.Minecraft.PLAYER_DEATH.invoker().onPlayerDeath(st, player, source);
+            ChatPlaceholderEvents.Minecraft.PLAYER_DEATH.invoker().onPlayerDeathPlaceholder(st, player, source);
 
             /*
              * Dispatch the message.

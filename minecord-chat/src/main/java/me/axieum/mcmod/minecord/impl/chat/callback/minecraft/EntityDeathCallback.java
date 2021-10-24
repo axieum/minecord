@@ -6,7 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
@@ -44,7 +44,7 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
             // The Z coordinate of where the entity died
             st.add("z", String.valueOf((int) entity.prevZ));
 
-            PlaceholderEvents.Minecraft.ENTITY_DEATH.invoker().onEntityDeath(st, entity, source);
+            ChatPlaceholderEvents.Minecraft.ENTITY_DEATH.invoker().onEntityDeathPlaceholder(st, entity, source);
 
             /*
              * Dispatch the message.

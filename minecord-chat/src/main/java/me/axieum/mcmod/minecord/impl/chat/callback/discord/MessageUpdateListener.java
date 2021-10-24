@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import net.minecraft.util.Formatting;
 
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
@@ -77,7 +77,9 @@ public class MessageUpdateListener extends ListenerAdapter
                 // The difference between the original and new message
                 st.add("diff", StringUtils.discordToMinecraft(diffs.get(0).getOldLine()));
 
-                PlaceholderEvents.Discord.MESSAGE_UPDATED.invoker().onMessageUpdated(st, event, context, diffs);
+                ChatPlaceholderEvents.Discord.MESSAGE_UPDATED.invoker().onMessageUpdatedPlaceholder(
+                    st, event, context, diffs
+                );
 
                 /*
                  * Dispatch the message.

@@ -5,7 +5,7 @@ import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
@@ -37,7 +37,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
             // A description of the advancement
             st.add("description", info.getDescription().getString());
 
-            PlaceholderEvents.Minecraft.PLAYER_ADVANCEMENT.invoker().onPlayerAdvancement(
+            ChatPlaceholderEvents.Minecraft.PLAYER_ADVANCEMENT.invoker().onPlayerAdvancementPlaceholder(
                 st, player, advancement, criterion
             );
 
