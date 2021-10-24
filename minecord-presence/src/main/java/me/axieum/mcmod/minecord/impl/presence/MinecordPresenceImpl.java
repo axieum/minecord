@@ -82,7 +82,7 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
             final PresenceCategory category = new PresenceCategory(entry.interval, entry.random);
             // Add all configured presence suppliers
             Arrays.stream(entry.presences)
-                  .map(PresenceConfig.Category.PresenceEntry::getPresenceSupplier)
+                  .map(PresenceConfig.CategorySchema.PresenceSchema::getPresenceSupplier)
                   .forEach(category::addPresenceSuppliers);
             // Register (or overwrite) the newly created presence category
             LOGGER.info("Adding presence category '{}' with {} presences", name, category.size());

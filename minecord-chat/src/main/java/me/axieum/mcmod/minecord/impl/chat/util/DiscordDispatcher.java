@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
-import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig.ChatEntry;
+import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig.ChatEntrySchema;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -20,7 +20,7 @@ import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
  * Utility methods for dispatching configured messages to Discord.
  *
  * @see ChatConfig#entries
- * @see ChatConfig.ChatEntry.Discord
+ * @see ChatEntrySchema.DiscordSchema
  */
 public final class DiscordDispatcher
 {
@@ -33,7 +33,7 @@ public final class DiscordDispatcher
      * @param predicate predicate that filters configured chat entries
      * @see #embed(BiConsumer, BiConsumer, Predicate)
      */
-    public static void embed(BiConsumer<EmbedBuilder, ChatEntry> builder, Predicate<ChatEntry> predicate)
+    public static void embed(BiConsumer<EmbedBuilder, ChatEntrySchema> builder, Predicate<ChatEntrySchema> predicate)
     {
         embed(builder, (action, entry) -> action.queue(), predicate);
     }
@@ -47,9 +47,9 @@ public final class DiscordDispatcher
      * @see #dispatch(BiConsumer, BiConsumer, Predicate)
      */
     public static void embed(
-        BiConsumer<EmbedBuilder, ChatEntry> builder,
-        BiConsumer<MessageAction, ChatEntry> action,
-        Predicate<ChatEntry> predicate
+        BiConsumer<EmbedBuilder, ChatEntrySchema> builder,
+        BiConsumer<MessageAction, ChatEntrySchema> action,
+        Predicate<ChatEntrySchema> predicate
     )
     {
         dispatch(
@@ -68,7 +68,9 @@ public final class DiscordDispatcher
      * @param predicate predicate that filters configured chat entries
      * @see #dispatch(BiConsumer, BiConsumer, Predicate)
      */
-    public static void dispatch(BiConsumer<MessageBuilder, ChatEntry> builder, Predicate<ChatEntry> predicate)
+    public static void dispatch(
+        BiConsumer<MessageBuilder, ChatEntrySchema> builder, Predicate<ChatEntrySchema> predicate
+    )
     {
         dispatch(builder, (action, entry) -> action.queue(), predicate);
     }
@@ -82,9 +84,9 @@ public final class DiscordDispatcher
      * @see ChatConfig#entries
      */
     public static void dispatch(
-        BiConsumer<MessageBuilder, ChatEntry> builder,
-        BiConsumer<MessageAction, ChatEntry> action,
-        Predicate<ChatEntry> predicate
+        BiConsumer<MessageBuilder, ChatEntrySchema> builder,
+        BiConsumer<MessageAction, ChatEntrySchema> action,
+        Predicate<ChatEntrySchema> predicate
     )
     {
         Minecord.getInstance().getJDA().ifPresent(jda ->

@@ -22,9 +22,12 @@ public class MinecordConfig implements ConfigData
 
     @Category("Bot Status")
     @Comment("Bot statuses relayed during the lifecycle of the server")
-    public Status status = new Status();
+    public StatusSchema status = new StatusSchema();
 
-    public static class Status
+    /**
+     * Bot status configuration schema.
+     */
+    public static class StatusSchema
     {
         @Comment("Status while the server is starting")
         public OnlineStatus starting = OnlineStatus.IDLE;

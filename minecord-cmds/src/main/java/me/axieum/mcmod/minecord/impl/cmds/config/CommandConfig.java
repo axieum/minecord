@@ -24,9 +24,12 @@ public class CommandConfig implements ConfigData
 {
     @Category("Messages")
     @Comment("Feedback provided to the user who triggered the command")
-    public Messages messages = new Messages();
+    public MessagesSchema messages = new MessagesSchema();
 
-    public static class Messages
+    /**
+     * Messages configuration schema.
+     */
+    public static class MessagesSchema
     {
         @Comment("The error message used when the Minecraft server is unavailable")
         public String unavailable = "The server is not yet ready - please wait :warning:";
@@ -49,17 +52,23 @@ public class CommandConfig implements ConfigData
 
     @Category("Built-in Commands")
     @Comment("Built-in Discord commands")
-    public BuiltinCommands builtin = new BuiltinCommands();
+    public BuiltinCommandsSchema builtin = new BuiltinCommandsSchema();
 
-    public static class BuiltinCommands
+    /**
+     * Built-in commands configuration schema.
+     */
+    public static class BuiltinCommandsSchema
     {
         @Category("Uptime Command")
         @Comment("Displays for how long the Minecraft server has been online")
-        public UptimeCommand uptime = new UptimeCommand();
+        public UptimeCommandSchema uptime = new UptimeCommandSchema();
 
-        public static class UptimeCommand extends BaseCommand
+        /**
+         * Uptime built-in command configuration schema.
+         */
+        public static class UptimeCommandSchema extends BaseCommandSchema
         {
-            public UptimeCommand()
+            public UptimeCommandSchema()
             {
                 name = "uptime";
                 description = "Shows for how long the server has been online";
@@ -72,26 +81,32 @@ public class CommandConfig implements ConfigData
         }
 
         @Category("TPS Command")
-        @Comment("Displays the Minecraft server's current ticks per second")
-        public TPSCommand tps = new TPSCommand();
+        @Comment("Displays the Minecraft server's current ticks-per-second")
+        public TPSCommandSchema tps = new TPSCommandSchema();
 
-        public static class TPSCommand extends BaseCommand
+        /**
+         * Ticks-per-second (TPS) built-in command configuration schema.
+         */
+        public static class TPSCommandSchema extends BaseCommandSchema
         {
-            public TPSCommand()
+            public TPSCommandSchema()
             {
                 name = "tps";
-                description = "Shows the server's current ticks per second";
+                description = "Shows the server's current ticks-per-second";
             }
         }
     }
 
     @Category("Custom Commands")
     @Comment("Custom Discord commands")
-    public CustomCommand[] custom = new CustomCommand[] {new CustomCommand()};
+    public CustomCommandSchema[] custom = new CustomCommandSchema[] {new CustomCommandSchema()};
 
-    public static class CustomCommand extends BaseCommand
+    /**
+     * Custom command configuration schema.
+     */
+    public static class CustomCommandSchema extends BaseCommandSchema
     {
-        public CustomCommand()
+        public CustomCommandSchema()
         {
             name = "whitelist";
             description = "Manages the whitelist for the server";
@@ -106,13 +121,13 @@ public class CommandConfig implements ConfigData
 
         @Category("Options")
         @Comment("A list of command options")
-        public Option[] options = new Option[] {new Option()};
+        public OptionSchema[] options = new OptionSchema[] {new OptionSchema()};
     }
 
     /**
      * Base command configuration schema.
      */
-    public abstract static class BaseCommand
+    public abstract static class BaseCommandSchema
     {
         @Comment("True if the command should be available for use")
         public boolean enabled = true;
@@ -131,12 +146,12 @@ public class CommandConfig implements ConfigData
 
         @Category("Permissions")
         @Comment("A list of permissions that restrict access to the command")
-        public Permission[] permissions = new Permission[] {new Permission()};
+        public PermissionSchema[] permissions = new PermissionSchema[] {new PermissionSchema()};
 
         /**
          * Command permission/privilege configuration schema.
          */
-        public static class Permission
+        public static class PermissionSchema
         {
             @Comment("""
                 The type of entity this permission relates to
@@ -153,7 +168,7 @@ public class CommandConfig implements ConfigData
         /**
          * Command option configuration schema.
          */
-        public static class Option
+        public static class OptionSchema
         {
             @Comment("""
                 The type of option
@@ -171,12 +186,12 @@ public class CommandConfig implements ConfigData
 
             @Category("Choices")
             @Comment("If non-empty, restricts the value to one of the allowed choices")
-            public Choice[] choices = new Choice[] {};
+            public ChoiceSchema[] choices = new ChoiceSchema[] {};
 
             /**
              * A command option's choice configuration schema.
              */
-            public static class Choice
+            public static class ChoiceSchema
             {
                 @Comment("The choice name")
                 public String name;
@@ -194,7 +209,7 @@ public class CommandConfig implements ConfigData
             public OptionData getOptionData() throws IllegalArgumentException
             {
                 final OptionData option = new OptionData(type, name, description, required);
-                for (Choice choice : choices) {
+                for (ChoiceSchema choice : choices) {
                     if (choice.value instanceof String) {
                         option.addChoice(choice.name, (String) choice.value);
                     } else if (choice.value instanceof Integer) {
