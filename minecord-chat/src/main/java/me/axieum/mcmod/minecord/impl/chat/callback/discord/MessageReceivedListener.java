@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
@@ -53,7 +53,7 @@ public class MessageReceivedListener extends ListenerAdapter
         // The raw message contents
         st.add("raw", event.getMessage().getContentRaw());
 
-        PlaceholderEvents.Discord.MESSAGE_RECEIVED.invoker().onMessageReceived(st, event);
+        ChatPlaceholderEvents.Discord.MESSAGE_RECEIVED.invoker().onMessageReceivedPlaceholder(st, event);
 
         /*
          * Dispatch the message.
@@ -93,7 +93,9 @@ public class MessageReceivedListener extends ListenerAdapter
         // The file size for humans
         st.add("size", StringUtils.bytesToHuman(attachment.getSize()));
 
-        PlaceholderEvents.Discord.ATTACHMENT_RECEIVED.invoker().onAttachmentReceived(st, event, attachment);
+        ChatPlaceholderEvents.Discord.ATTACHMENT_RECEIVED.invoker().onAttachmentReceivedPlaceholder(
+            st, event, attachment
+        );
 
         /*
          * Dispatch the message.

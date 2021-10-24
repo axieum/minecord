@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactio
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
@@ -57,7 +57,7 @@ public class MessageReactionListener extends ListenerAdapter
             // The emote used to react
             st.add("emote", emote);
 
-            PlaceholderEvents.Discord.REACTION.invoker().onReaction(st, event);
+            ChatPlaceholderEvents.Discord.REACTION.invoker().onReactionPlaceholder(st, event);
 
             /*
              * Dispatch the message.

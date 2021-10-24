@@ -11,15 +11,15 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 
-public interface PlaceholderCallback
+public interface PresencePlaceholderCallback
 {
     /**
      * Called when providing placeholder values to Discord bot presence messages.
      */
-    Event<PlaceholderCallback> EVENT =
-        EventFactory.createArrayBacked(PlaceholderCallback.class, callbacks -> (st, stage, jda, server) -> {
-            for (PlaceholderCallback callback : callbacks) {
-                callback.onPlaceholderPresence(st, stage, jda, server);
+    Event<PresencePlaceholderCallback> EVENT =
+        EventFactory.createArrayBacked(PresencePlaceholderCallback.class, callbacks -> (st, stage, jda, server) -> {
+            for (PresencePlaceholderCallback callback : callbacks) {
+                callback.onPresencePlaceholder(st, stage, jda, server);
             }
         });
 
@@ -31,7 +31,7 @@ public interface PlaceholderCallback
      * @param jda      JDA client
      * @param server   Minecraft server, if present
      */
-    void onPlaceholderPresence(
+    void onPresencePlaceholder(
         StringTemplate template, PresenceCategory category, JDA jda, @Nullable MinecraftServer server
     );
 }

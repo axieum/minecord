@@ -4,7 +4,7 @@ import net.minecraft.server.filter.TextStream;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.ReceiveChatCallback;
 import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
@@ -32,7 +32,7 @@ public class PlayerChatCallback implements ReceiveChatCallback
             // The formatted message contents
             st.add("message", StringUtils.minecraftToDiscord(message.getRaw()));
 
-            PlaceholderEvents.Minecraft.PLAYER_CHAT.invoker().onPlayerChat(st, player, message);
+            ChatPlaceholderEvents.Minecraft.PLAYER_CHAT.invoker().onPlayerChatPlaceholder(st, player, message);
 
             /*
              * Dispatch the message.

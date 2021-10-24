@@ -16,7 +16,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerSt
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerStopping;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
@@ -33,7 +33,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
 
             final StringTemplate st = new StringTemplate();
 
-            PlaceholderEvents.Minecraft.SERVER_STARTING.invoker().onServerStarting(st, server);
+            ChatPlaceholderEvents.Minecraft.SERVER_STARTING.invoker().onServerStartingPlaceholder(st, server);
 
             /*
              * Dispatch the message.
@@ -58,7 +58,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             // The time taken for the server to start
             st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
 
-            PlaceholderEvents.Minecraft.SERVER_STARTED.invoker().onServerStarted(st, server);
+            ChatPlaceholderEvents.Minecraft.SERVER_STARTED.invoker().onServerStartedPlaceholder(st, server);
 
             /*
              * Dispatch the message.
@@ -83,7 +83,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             // The total time for which the server has been online for
             st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
 
-            PlaceholderEvents.Minecraft.SERVER_STOPPING.invoker().onServerStopping(st, server);
+            ChatPlaceholderEvents.Minecraft.SERVER_STOPPING.invoker().onServerStoppingPlaceholder(st, server);
 
             /*
              * Dispatch the message.
@@ -110,7 +110,9 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             // The reason for the server stopping, if crashed
             if (crashReport != null) st.add("reason", crashReport.getMessage());
 
-            PlaceholderEvents.Minecraft.SERVER_SHUTDOWN.invoker().onServerShutdown(st, server, crashReport);
+            ChatPlaceholderEvents.Minecraft.SERVER_SHUTDOWN.invoker().onServerShutdownPlaceholder(
+                st, server, crashReport
+            );
 
             /*
              * Dispatch the message.

@@ -6,7 +6,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.PlaceholderEvents;
+import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
@@ -44,7 +44,9 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
             // The Z coordinate of where the player left
             st.add("origin_z", String.valueOf((int) player.prevZ));
 
-            PlaceholderEvents.Minecraft.PLAYER_CHANGE_WORLD.invoker().onPlayerChangeWorld(st, player, origin, dest);
+            ChatPlaceholderEvents.Minecraft.PLAYER_CHANGE_WORLD.invoker().onPlayerChangeWorldPlaceholder(
+                st, player, origin, dest
+            );
 
             /*
              * Dispatch the message.
