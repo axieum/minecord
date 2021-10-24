@@ -8,13 +8,13 @@ i18n: '**/assets/*/lang/*'
 
 # Add 'assets' label for changes to assets (except localisation)
 assets:
-  - '**/assets/**/*'
-  - '!**/assets/*/lang/*'
+  - any: ['**/assets/**/*', '!**/assets/*/lang/*']
 
 # Add 'ci' label for changes to the deployment process
 ci:
   - '.releaserc*'
-  - '.github/workflows/publish.yml'
+  - any: [ '.github/workflows/**/*', '!.github/workflows/build.yml' ]
+  - '.github/labeler.yml'
 
 # Add 'build' label for changes to the build process
 build:
