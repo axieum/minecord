@@ -24,7 +24,7 @@ public class TPSCommand extends MinecordCommand
      *
      * @param config ticks-per-second (TPS) command config
      */
-    public TPSCommand(CommandConfig.BaseCommand config)
+    public TPSCommand(CommandConfig.BaseCommandSchema config)
     {
         super(config.name, config.description);
         data.setDefaultEnabled(config.allowByDefault);

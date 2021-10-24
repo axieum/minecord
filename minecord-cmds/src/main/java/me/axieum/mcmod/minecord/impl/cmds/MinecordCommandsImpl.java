@@ -78,7 +78,7 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
         }
 
         // Register all custom commands, if any
-        for (CommandConfig.CustomCommand c : config.custom) {
+        for (CommandConfig.CustomCommandSchema c : config.custom) {
             if (c.enabled) {
                 try {
                     LOGGER.info("Adding custom command as '/{}' to run '{}'", c.name, c.command);

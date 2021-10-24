@@ -36,20 +36,22 @@ public class CustomCommand extends MinecordCommand
     // The permission level all Minecraft commands should run at
     private static final int PERMISSION_LEVEL = 4;
     // The custom command config instance
-    private final CommandConfig.CustomCommand config;
+    private final CommandConfig.CustomCommandSchema config;
 
     /**
      * Initialises a new custom command.
      *
      * @param config custom command config
      */
-    public CustomCommand(CommandConfig.CustomCommand config)
+    public CustomCommand(CommandConfig.CustomCommandSchema config)
     {
         super(config.name, config.description);
         this.config = config;
         setEphemeral(config.ephemeral);
         data.setDefaultEnabled(config.allowByDefault);
-        Arrays.stream(config.options).map(CommandConfig.BaseCommand.Option::getOptionData).forEach(data::addOptions);
+        Arrays.stream(config.options)
+              .map(CommandConfig.BaseCommandSchema.OptionSchema::getOptionData)
+              .forEach(data::addOptions);
     }
 
     @Override

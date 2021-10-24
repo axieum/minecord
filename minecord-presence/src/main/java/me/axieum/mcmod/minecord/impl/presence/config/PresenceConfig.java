@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
@@ -29,18 +29,18 @@ import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER
 @Config(name = "minecord/presence")
 public class PresenceConfig implements ConfigData
 {
-    @ConfigEntry.Category("Presence Categories")
+    @Category("Presence Categories")
     @Comment("A collection of presence categories used to group presences together")
-    public HashMap<String, Category> categories = new HashMap<>(3);
+    public HashMap<String, CategorySchema> categories = new HashMap<>(3);
 
     /**
      * Presence category configuration schema.
      */
-    public static class Category
+    public static class CategorySchema
     {
-        public Category() {}
+        public CategorySchema() {}
 
-        public Category(int interval, boolean random, PresenceEntry... presences)
+        public CategorySchema(int interval, boolean random, PresenceSchema... presences)
         {
             this.interval = interval;
             this.random = random;
@@ -53,19 +53,19 @@ public class PresenceConfig implements ConfigData
         @Comment("True if presences should be chosen randomly, else round-robin")
         public boolean random = false;
 
-        @ConfigEntry.Category("Presences")
+        @Category("Presences")
         @Comment("A list of presences shown by the Discord bot while the category is active")
-        public PresenceEntry[] presences = new PresenceEntry[] {};
+        public PresenceSchema[] presences = new PresenceSchema[] {};
 
         /**
          * Presence entry configuration schema.
          */
-        public static class PresenceEntry
+        public static class PresenceSchema
         {
-            public PresenceEntry() {}
+            public PresenceSchema() {}
 
-            public PresenceEntry(
-                @Nullable Boolean idle, @Nullable OnlineStatus status, @Nullable ActivityEntry activity
+            public PresenceSchema(
+                @Nullable Boolean idle, @Nullable OnlineStatus status, @Nullable ActivitySchema activity
             )
             {
                 this.idle = idle;
@@ -81,18 +81,18 @@ public class PresenceConfig implements ConfigData
                 Allowed values: null, ONLINE, IDLE, DO_NOT_DISTURB, INVISIBLE and OFFLINE""")
             public @Nullable OnlineStatus status = null;
 
-            @ConfigEntry.Category("Activity")
+            @Category("Activity")
             @Comment("If defined, overrides the game activity")
-            public @Nullable ActivityEntry activity = null;
+            public @Nullable ActivitySchema activity = null;
 
             /**
              * Presence activity configuration schema.
              */
-            public static class ActivityEntry
+            public static class ActivitySchema
             {
-                public ActivityEntry() {}
+                public ActivitySchema() {}
 
-                public ActivityEntry(ActivityType type, String name, @Nullable String url)
+                public ActivitySchema(ActivityType type, String name, @Nullable String url)
                 {
                     this.type = type;
                     this.name = name;
@@ -153,39 +153,51 @@ public class PresenceConfig implements ConfigData
     public PresenceConfig()
     {
         // Add a default presence category to be used while the Minecraft server is starting
-        categories.put("starting", new Category(60, false,
+        categories.put("starting", new CategorySchema(60, false,
             // Watching Minecraft startup
-            new Category.PresenceEntry(true, OnlineStatus.IDLE, new Category.PresenceEntry.ActivityEntry(
-                ActivityType.WATCHING, "Minecraft startup", null
-            ))
+            new CategorySchema.PresenceSchema(true, OnlineStatus.IDLE,
+                new CategorySchema.PresenceSchema.ActivitySchema(
+                    ActivityType.WATCHING, "Minecraft startup", null
+                )
+            )
         ));
 
         // Add a default presence category to be used while the Minecraft server is running
-        categories.put("running", new Category(60, true,
+        categories.put("running", new CategorySchema(60, true,
             // Playing Minecraft 1.17
-            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                ActivityType.DEFAULT, "Minecraft ${version}", null
-            )),
+            new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
+                new CategorySchema.PresenceSchema.ActivitySchema(
+                    ActivityType.DEFAULT, "Minecraft ${version}", null
+                )
+            ),
             // Watching 2 player(s)
-            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                ActivityType.WATCHING, "${player_count} player(s)", null
-            )),
+            new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
+                new CategorySchema.PresenceSchema.ActivitySchema(
+                    ActivityType.WATCHING, "${player_count} player(s)", null
+                )
+            ),
             // Playing for 3 hours 24 minutes 10 seconds
-            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                ActivityType.DEFAULT, "for ${uptime}", null
-            )),
+            new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
+                new CategorySchema.PresenceSchema.ActivitySchema(
+                    ActivityType.DEFAULT, "for ${uptime}", null
+                )
+            ),
             // Playing on hard mode
-            new Category.PresenceEntry(false, OnlineStatus.ONLINE, new Category.PresenceEntry.ActivityEntry(
-                ActivityType.DEFAULT, "on ${difficulty} mode", null
-            ))
+            new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
+                new CategorySchema.PresenceSchema.ActivitySchema(
+                    ActivityType.DEFAULT, "on ${difficulty} mode", null
+                )
+            )
         ));
 
         // Add a default presence category to be used while the Minecraft server is stopping
-        categories.put("stopping", new Category(60, false,
+        categories.put("stopping", new CategorySchema(60, false,
             // Watching Minecraft shutdown
-            new Category.PresenceEntry(false, OnlineStatus.DO_NOT_DISTURB, new Category.PresenceEntry.ActivityEntry(
-                ActivityType.WATCHING, "Minecraft shutdown", null
-            ))
+            new CategorySchema.PresenceSchema(false, OnlineStatus.DO_NOT_DISTURB,
+                new CategorySchema.PresenceSchema.ActivitySchema(
+                    ActivityType.WATCHING, "Minecraft shutdown", null
+                )
+            )
         ));
     }
 
@@ -193,9 +205,9 @@ public class PresenceConfig implements ConfigData
     public void validatePostLoad() throws ValidationException
     {
         // Validate each configured category
-        for (Map.Entry<String, Category> entry : categories.entrySet()) {
+        for (Map.Entry<String, CategorySchema> entry : categories.entrySet()) {
             final String name = entry.getKey();
-            final Category category = entry.getValue();
+            final CategorySchema category = entry.getValue();
 
             // Check that the category name is non-empty
             if (name == null || name.isEmpty()) {

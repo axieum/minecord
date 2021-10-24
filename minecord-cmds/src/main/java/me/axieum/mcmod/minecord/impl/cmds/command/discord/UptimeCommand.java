@@ -28,7 +28,7 @@ public class UptimeCommand extends MinecordCommand
      *
      * @param config uptime command config
      */
-    public UptimeCommand(CommandConfig.BaseCommand config)
+    public UptimeCommand(CommandConfig.BaseCommandSchema config)
     {
         super(config.name, config.description);
         data.setDefaultEnabled(config.allowByDefault);

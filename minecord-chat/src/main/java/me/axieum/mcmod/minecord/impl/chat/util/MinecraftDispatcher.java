@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
-import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig.ChatEntry;
+import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig.ChatEntrySchema;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -23,7 +23,7 @@ import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
  * Utility methods for dispatching configured messages to Minecraft.
  *
  * @see ChatConfig#entries
- * @see ChatConfig.ChatEntry.Minecraft
+ * @see ChatEntrySchema.MinecraftSchema
  */
 public final class MinecraftDispatcher
 {
@@ -36,7 +36,7 @@ public final class MinecraftDispatcher
      * @param predicate predicate that filters configured chat entries
      * @see #json(Function, TriConsumer, Predicate)
      */
-    public static void json(Function<ChatEntry, @NotNull String> supplier, Predicate<ChatEntry> predicate)
+    public static void json(Function<ChatEntrySchema, @NotNull String> supplier, Predicate<ChatEntrySchema> predicate)
     {
         json(supplier, (player, text, entry) -> player.sendMessage(text, false), predicate);
     }
@@ -51,9 +51,9 @@ public final class MinecraftDispatcher
      * @see #dispatch(Function, TriConsumer, Predicate)
      */
     public static void json(
-        Function<ChatEntry, @NotNull String> supplier,
-        TriConsumer<ServerPlayerEntity, @NotNull Text, ChatEntry> action,
-        Predicate<ChatEntry> predicate
+        Function<ChatEntrySchema, @NotNull String> supplier,
+        TriConsumer<ServerPlayerEntity, @NotNull Text, ChatEntrySchema> action,
+        Predicate<ChatEntrySchema> predicate
     )
     {
         dispatch(
@@ -77,7 +77,9 @@ public final class MinecraftDispatcher
      * @param predicate predicate that filters configured chat entries
      * @see #dispatch(Function, TriConsumer, Predicate)
      */
-    public static void dispatch(Function<ChatEntry, @Nullable Text> supplier, Predicate<ChatEntry> predicate)
+    public static void dispatch(
+        Function<ChatEntrySchema, @Nullable Text> supplier, Predicate<ChatEntrySchema> predicate
+    )
     {
         dispatch(supplier, (player, text, entry) -> player.sendMessage(text, false), predicate);
     }
@@ -91,9 +93,9 @@ public final class MinecraftDispatcher
      * @see ChatConfig#entries
      */
     public static void dispatch(
-        Function<ChatEntry, @Nullable Text> supplier,
-        TriConsumer<ServerPlayerEntity, @NotNull Text, ChatEntry> action,
-        Predicate<ChatEntry> predicate
+        Function<ChatEntrySchema, @Nullable Text> supplier,
+        TriConsumer<ServerPlayerEntity, @NotNull Text, ChatEntrySchema> action,
+        Predicate<ChatEntrySchema> predicate
     )
     {
         // Fetch the Minecraft server instance, only if there is at least one player logged in

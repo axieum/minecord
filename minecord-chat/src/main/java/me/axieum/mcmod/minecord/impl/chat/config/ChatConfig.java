@@ -21,9 +21,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class ChatConfig implements ConfigData
 {
     @Comment("Chat Configurations")
-    public ChatEntry[] entries = {new ChatEntry()};
+    public ChatEntrySchema[] entries = {new ChatEntrySchema()};
 
-    public static class ChatEntry
+    /**
+     * Chat entry configuration schema.
+     */
+    public static class ChatEntrySchema
     {
         @Comment("A channel identifier in Discord to observe")
         public long id;
@@ -34,9 +37,12 @@ public class ChatConfig implements ConfigData
 
         @Category("Discord")
         @Comment("Minecraft events relayed to Discord")
-        public Discord discord = new Discord();
+        public DiscordSchema discord = new DiscordSchema();
 
-        public static class Discord
+        /**
+         * Discord events configuration schema.
+         */
+        public static class DiscordSchema
         {
             @Comment("""
                 A player sent an in-game chat message
@@ -102,10 +108,13 @@ public class ChatConfig implements ConfigData
 
         @Category("Minecraft")
         @Comment("Discord events relayed to Minecraft")
-        public Minecraft minecraft = new Minecraft();
+        public MinecraftSchema minecraft = new MinecraftSchema();
 
+        /**
+         * Minecraft events configuration schema.
+         */
         @SuppressWarnings("checkstyle:linelength")
-        public static class Minecraft
+        public static class MinecraftSchema
         {
             @Comment("""
                 A user sent a message
