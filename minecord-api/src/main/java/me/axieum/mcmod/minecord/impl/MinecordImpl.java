@@ -19,7 +19,7 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.entrypoint.minecraft.hooks.EntrypointUtils;
+import net.fabricmc.loader.impl.entrypoint.EntrypointUtils;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
