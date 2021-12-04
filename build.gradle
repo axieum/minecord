@@ -170,12 +170,7 @@ task modrinth(type: TaskModrinthUpload) {
 publishing {
     // Declare all publications
     publications {
-        mavenJava(MavenPublication) {
-            // Main
-            artifact(remapJar) { builtBy remapJar }
-            // Sources
-            artifact(sourcesJar) { builtBy remapSourcesJar }
-        }
+        mavenJava(MavenPublication) { from components.java }
     }
 
     // Add repositories to publish to
