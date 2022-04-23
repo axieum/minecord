@@ -1,0 +1,26 @@
+{
+  "release-type": "simple",
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "group-pull-request-title-pattern": "chore: release v${version}",
+  "extra-files": ["gradle.properties"],
+  "packages": {
+    ".": {
+      "component": "minecord",
+      "include-component-in-tag": false,
+      "pull-request-title-pattern": "chore: release v${version}"
+    },
+    "minecord-api": {
+      "component": "api"
+    },
+    "minecord-chat": {
+      "component": "chat"
+    },
+    "minecord-cmds": {
+      "component": "cmds"
+    },
+    "minecord-presence": {
+      "component": "presence"
+    }
+  }
+}
