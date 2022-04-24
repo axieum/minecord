@@ -1,26 +1,4 @@
-plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-}
-
-apply plugin: 'com.github.johnrengelman.shadow'
-configurations { shadow; implementation.extendsFrom shadow }
-
 // Declare dependencies
 dependencies {
     implementation project(path: ':minecord-api', configuration: 'shadow')
-}
-
-// Produce a fat-jar of all the shaded dependencies
-shadowJar {
-    archiveClassifier.set('dev')
-    configurations = [project.configurations.shadow]
-
-    // Minify the result - remove unused classes
-    minimize()
-}
-
-// Provide the fat-jar to Fabric's remapping task
-remapJar {
-    dependsOn tasks.shadowJar
-    inputFile.set(tasks.shadowJar.archiveFile)
 }

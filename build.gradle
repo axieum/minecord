@@ -19,6 +19,7 @@ allprojects {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
     // Declare dependencies
+    configurations { devElements { extendsFrom implementation, namedElements } }
     dependencies {
         // Fabric
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -36,7 +37,7 @@ allprojects {
 
         // Subprojects
         subprojects.each {
-            implementation project(path: ":${it.name}", configuration: 'namedElements')
+            implementation project(path: ":${it.name}", configuration: 'devElements')
             include project("${it.name}:") // nest within distribution
         }
     }
