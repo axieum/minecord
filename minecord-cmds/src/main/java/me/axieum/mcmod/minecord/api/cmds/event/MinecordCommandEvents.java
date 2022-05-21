@@ -1,7 +1,7 @@
 package me.axieum.mcmod.minecord.api.cmds.event;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +45,7 @@ public final class MinecordCommandEvents
              * @return embed builder used to build the embed that will be sent to Discord
              */
             @NotNull EmbedBuilder onAfterExecuteUptime(
-                SlashCommandEvent event, @Nullable MinecraftServer server, EmbedBuilder embed
+                SlashCommandInteractionEvent event, @Nullable MinecraftServer server, EmbedBuilder embed
             );
         }
     }
@@ -78,7 +78,7 @@ public final class MinecordCommandEvents
              * @return embed builder used to build the embed that will be sent to Discord
              */
             @NotNull EmbedBuilder onAfterExecuteTPS(
-                SlashCommandEvent event, @NotNull MinecraftServer server, EmbedBuilder embed
+                SlashCommandInteractionEvent event, @NotNull MinecraftServer server, EmbedBuilder embed
             );
         }
     }
@@ -121,7 +121,7 @@ public final class MinecordCommandEvents
              * @param command Minecraft command that will be executed (without leading '/')
              * @return true if the execution should go ahead, or false to cancel
              */
-            boolean onBeforeExecuteCustom(String command, SlashCommandEvent event, MinecraftServer server);
+            boolean onBeforeExecuteCustom(String command, SlashCommandInteractionEvent event, MinecraftServer server);
         }
 
         @FunctionalInterface
@@ -139,7 +139,7 @@ public final class MinecordCommandEvents
              * @return embed builder used to build the embed that will be sent to Discord
              */
             @NotNull EmbedBuilder onAfterExecuteCustom(
-                SlashCommandEvent event,
+                SlashCommandInteractionEvent event,
                 MinecraftServer server,
                 String command,
                 String result,
