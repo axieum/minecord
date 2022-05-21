@@ -1,8 +1,8 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.discord;
 
 import net.dv8tion.jda.api.entities.MessageReaction;
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
@@ -14,7 +14,7 @@ import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 public class MessageReactionListener extends ListenerAdapter
 {
     @Override
-    public void onGenericGuildMessageReaction(GenericGuildMessageReactionEvent event)
+    public void onGenericMessageReaction(GenericMessageReactionEvent event)
     {
         // Ignore the reaction if there is no member associated with it
         if (event.getMember() == null) return;
@@ -26,7 +26,7 @@ public class MessageReactionListener extends ListenerAdapter
         // First, retrieve the message context
         event.retrieveMessage().queue(context -> {
             // Compute some useful properties of the event
-            final boolean isAdded = event instanceof GuildMessageReactionAddEvent;
+            final boolean isAdded = event instanceof MessageReactionAddEvent;
             final MessageReaction.ReactionEmote reaction = event.getReactionEmote();
             final String emote = reaction.isEmote() ? ":" + reaction.getName() + ":" : reaction.getName();
 
