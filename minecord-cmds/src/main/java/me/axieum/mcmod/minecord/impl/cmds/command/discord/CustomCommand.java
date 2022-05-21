@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ParsingException;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,7 @@ public class CustomCommand extends MinecordCommand
     }
 
     @Override
-    public void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server) throws Exception
+    public void execute(@NotNull SlashCommandInteractionEvent event, @Nullable MinecraftServer server) throws Exception
     {
         assert server != null;
 
@@ -140,7 +140,9 @@ public class CustomCommand extends MinecordCommand
      * @param result  Minecraft command execution feedback
      * @param success true if the command was a success
      */
-    public void reply(SlashCommandEvent event, MinecraftServer server, String command, String result, boolean success)
+    public void reply(
+        SlashCommandInteractionEvent event, MinecraftServer server, String command, String result, boolean success
+    )
     {
         // Build an initial embed for the command feedback
         EmbedBuilder embed = new EmbedBuilder()
@@ -163,7 +165,7 @@ public class CustomCommand extends MinecordCommand
      */
     private final class DiscordCommandOutput implements CommandOutput
     {
-        private final SlashCommandEvent event;
+        private final SlashCommandInteractionEvent event;
         private final MinecraftServer server;
         private final String mcCommand;
 
@@ -174,7 +176,7 @@ public class CustomCommand extends MinecordCommand
          * @param server    Minecraft server
          * @param mcCommand command to be executed in Minecraft (without leading '/')
          */
-        private DiscordCommandOutput(SlashCommandEvent event, MinecraftServer server, String mcCommand)
+        private DiscordCommandOutput(SlashCommandInteractionEvent event, MinecraftServer server, String mcCommand)
         {
             this.event = event;
             this.server = server;

@@ -102,7 +102,7 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
             CommandListUpdateAction commands = jda.updateCommands();
 
             // Extract and add all registered command data
-            COMMANDS.values().stream().map(MinecordCommand::getCommandData).forEach(commands::addCommands);
+            COMMANDS.values().stream().map(MinecordCommand::getSlashCommandData).forEach(commands::addCommands);
 
             // Fire an event to allow the action be mutated
             commands = JDACommandEvents.BEFORE_UPDATE_COMMAND_LIST.invoker().onUpdatingCommandList(commands);

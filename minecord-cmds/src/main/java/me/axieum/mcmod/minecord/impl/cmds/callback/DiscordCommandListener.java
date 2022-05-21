@@ -2,7 +2,7 @@ package me.axieum.mcmod.minecord.impl.cmds.callback;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import net.minecraft.server.MinecraftServer;
@@ -26,7 +26,7 @@ public class DiscordCommandListener extends ListenerAdapter
     }
 
     @Override
-    public void onSlashCommand(SlashCommandEvent event)
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
     {
         final String username = event.getUser().getAsTag();
         final String raw = event.getCommandString();

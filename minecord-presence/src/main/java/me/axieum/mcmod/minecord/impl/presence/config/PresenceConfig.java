@@ -101,8 +101,8 @@ public class PresenceConfig implements ConfigData
 
                 @Comment("""
                     The type of activity
-                    Allowed values: COMPETING, DEFAULT, LISTENING, STREAMING and WATCHING""")
-                public ActivityType type = ActivityType.DEFAULT;
+                    Allowed values: COMPETING, LISTENING, PLAYING, STREAMING and WATCHING""")
+                public ActivityType type = ActivityType.PLAYING;
 
                 @SuppressWarnings("checkstyle:linelength")
                 @Comment("""
@@ -167,7 +167,7 @@ public class PresenceConfig implements ConfigData
             // Playing Minecraft 1.17
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.DEFAULT, "Minecraft ${version}", null
+                    ActivityType.PLAYING, "Minecraft ${version}", null
                 )
             ),
             // Watching 2 player(s)
@@ -179,13 +179,13 @@ public class PresenceConfig implements ConfigData
             // Playing for 3 hours 24 minutes 10 seconds
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.DEFAULT, "for ${uptime}", null
+                    ActivityType.PLAYING, "for ${uptime}", null
                 )
             ),
             // Playing on hard mode
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.DEFAULT, "on ${difficulty} mode", null
+                    ActivityType.PLAYING, "on ${difficulty} mode", null
                 )
             )
         ));

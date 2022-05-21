@@ -4,7 +4,7 @@ import java.lang.management.ManagementFactory;
 import java.time.Duration;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +37,7 @@ public class UptimeCommand extends MinecordCommand
     }
 
     @Override
-    public void execute(@NotNull SlashCommandEvent event, @Nullable MinecraftServer server)
+    public void execute(@NotNull SlashCommandInteractionEvent event, @Nullable MinecraftServer server)
     {
         // Prepare an embed to be sent to the user
         EmbedBuilder embed = new EmbedBuilder()

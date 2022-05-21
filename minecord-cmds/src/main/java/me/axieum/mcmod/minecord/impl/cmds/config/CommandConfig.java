@@ -172,7 +172,7 @@ public class CommandConfig implements ConfigData
         {
             @Comment("""
                 The type of option
-                Allowed values: BOOLEAN, CHANNEL, INTEGER, MENTIONABLE, NUMBER, ROLE, STRING and USER""")
+                Allowed values: ATTACHMENT, BOOLEAN, CHANNEL, INTEGER, MENTIONABLE, NUMBER, ROLE, STRING and USER""")
             public OptionType type = OptionType.STRING;
 
             @Comment("The option name")
