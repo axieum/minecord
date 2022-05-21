@@ -2,7 +2,6 @@ package me.axieum.mcmod.minecord.impl.cmds.command.discord;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -16,7 +15,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -83,7 +81,7 @@ public class CustomCommand extends MinecordCommand
         final ServerCommandSource source = new ServerCommandSource(
             new DiscordCommandOutput(event, server, mcCommand),
             Vec3d.ZERO, Vec2f.ZERO, server.getOverworld(),
-            PERMISSION_LEVEL, username, new LiteralText(username),
+            PERMISSION_LEVEL, username, Text.literal(username),
             server, null
         );
 
@@ -184,7 +182,7 @@ public class CustomCommand extends MinecordCommand
         }
 
         @Override
-        public void sendSystemMessage(Text message, UUID senderUuid)
+        public void sendMessage(Text message)
         {
             reply(event, server, mcCommand, message.getString(), true);
         }

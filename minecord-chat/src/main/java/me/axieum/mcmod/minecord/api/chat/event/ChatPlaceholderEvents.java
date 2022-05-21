@@ -6,14 +6,14 @@ import com.github.difflib.text.DiffRow;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
+import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.network.encryption.SignedChatMessage;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.filter.TextStream;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.crash.CrashReport;
@@ -128,7 +128,7 @@ public final class ChatPlaceholderEvents
              * @param template mutable string template
              * @param event    JDA reaction event instance
              */
-            void onReactionPlaceholder(StringTemplate template, GenericGuildMessageReactionEvent event);
+            void onReactionPlaceholder(StringTemplate template, GenericMessageReactionEvent event);
         }
     }
 
@@ -346,7 +346,9 @@ public final class ChatPlaceholderEvents
              * @param message  received message contents
              */
             void onPlayerChatPlaceholder(
-                StringTemplate template, ServerPlayerEntity player, TextStream.Message message
+                StringTemplate template,
+                ServerPlayerEntity player,
+                net.minecraft.server.filter.Message<SignedChatMessage> message
             );
         }
 

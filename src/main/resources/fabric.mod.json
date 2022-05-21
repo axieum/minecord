@@ -18,7 +18,7 @@
   "environment": "server",
   "depends": {
     "java": ">=17",
-    "minecraft": "1.18.x",
+    "minecraft": "1.19.x",
     "fabricloader": ">=0.11.3"
   },
   "recommends": {
