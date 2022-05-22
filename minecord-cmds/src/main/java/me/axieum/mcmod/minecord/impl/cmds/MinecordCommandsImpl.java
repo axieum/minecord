@@ -199,6 +199,13 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
         COOLDOWNS.clear();
     }
 
+    @Override
+    public void clearInactiveCooldowns()
+    {
+        final long now = System.currentTimeMillis();
+        COOLDOWNS.values().removeIf(endsAt -> now >= endsAt);
+    }
+
     /**
      * Returns the Minecord Commands config instance.
      *

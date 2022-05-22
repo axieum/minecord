@@ -111,4 +111,9 @@ public interface MinecordCommands
      * Clears all cooldown keys.
      */
     void clearCooldowns();
+
+    /**
+     * Clears any inactive/stale cooldown keys.
+     */
+    void clearInactiveCooldowns();
 }

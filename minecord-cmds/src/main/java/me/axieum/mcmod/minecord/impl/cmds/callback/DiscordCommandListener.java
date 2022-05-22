@@ -84,6 +84,9 @@ public class DiscordCommandListener extends ListenerAdapter
                         new StringTemplate().add("reason", e.getMessage()).format(getConfig().messages.failed)
                     ).build()
                 ).queue();
+            } finally {
+                // Clear any inactive/stale cooldowns
+                minecordCommands.clearInactiveCooldowns();
             }
         }, () -> LOGGER.warn("@{} used an unknown command '{}'", username, raw));
     }
