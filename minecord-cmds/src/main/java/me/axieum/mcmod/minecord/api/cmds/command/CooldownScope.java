@@ -37,7 +37,7 @@ public enum CooldownScope
      * Applies the cooldown to the calling {@link net.dv8tion.jda.api.entities.User User} local to the
      * {@link net.dv8tion.jda.api.entities.Guild Guild} the command is called in.
      *
-     * <p>This will automatically fall back to {@link CooldownScope#USER_CHANNEL} when called in a private channel.
+     * <p>This will automatically fall back to {@link CooldownScope#CHANNEL} when called in a private channel.
      */
     USER_GUILD("U:%1$d|G:%3$d"),
 
@@ -83,8 +83,20 @@ public enum CooldownScope
      * @param event JDA slash command event
      * @return formatted cooldown key prefixed with the command name
      */
-    public String getKey(@NotNull SlashCommandInteractionEvent event)
+    public @NotNull String getKey(@NotNull SlashCommandInteractionEvent event)
     {
+        // Guild-less scope fallback
+        if (!event.isFromGuild() && (this == GUILD || this == USER_GUILD)) {
+            return CHANNEL.getKey(event);
+        }
+
+        // Shard-less scope fallback
+        if (event.getJDA().getShardInfo() == null) {
+            if (this == SHARD) return GLOBAL.getKey(event);
+            else if (this == USER_SHARD) return USER.getKey(event);
+        }
+
+        // Build, prefix, and return the cooldown key
         return event.getName() + "|" + String.format(
             format,
             event.getUser() != null ? event.getUser().getIdLong() : -1L,

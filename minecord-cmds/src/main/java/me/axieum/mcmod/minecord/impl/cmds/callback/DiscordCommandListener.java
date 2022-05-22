@@ -59,7 +59,7 @@ public class DiscordCommandListener extends ListenerAdapter
                     final int remaining = minecordCommands.getCooldown(cooldownKey);
                     if (remaining > 0) {
                         LOGGER.warn("@{} used '{}' but must wait another {} seconds!", username, raw, remaining);
-                        event.getHook().sendMessageEmbeds(
+                        event.getHook().setEphemeral(true).sendMessageEmbeds(
                             new EmbedBuilder().setColor(0xff8800).setDescription(
                                 new StringTemplate()
                                     .add("cooldown", Duration.ofSeconds(command.getCooldown()))
