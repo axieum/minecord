@@ -69,7 +69,7 @@ public class DiscordCommandListener extends ListenerAdapter
                         ).queue();
                         return;
                     } else {
-                        LOGGER.info("Applying cooldown '{}' for {} seconds", cooldownKey, command.getCooldown());
+                        LOGGER.debug("Applying cooldown '{}' for {} seconds", cooldownKey, command.getCooldown());
                         minecordCommands.applyCooldown(cooldownKey, command.getCooldown());
                     }
                 }
