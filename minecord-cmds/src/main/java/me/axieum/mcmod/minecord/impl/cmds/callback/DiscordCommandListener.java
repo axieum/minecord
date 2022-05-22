@@ -1,5 +1,7 @@
 package me.axieum.mcmod.minecord.impl.cmds.callback;
 
+import java.time.Duration;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -28,11 +30,12 @@ public class DiscordCommandListener extends ListenerAdapter
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
     {
+        final MinecordCommands minecordCommands = MinecordCommands.getInstance();
         final String username = event.getUser().getAsTag();
         final String raw = event.getCommandString();
 
         // Lookup the command name against all registered commands
-        MinecordCommands.getInstance().getCommand(event.getName()).ifPresentOrElse(command -> {
+        minecordCommands.getCommand(event.getName()).ifPresentOrElse(command -> {
             // Let them know that their request is in-progress
             final boolean isEphemeral = command.isEphemeral();
             event.deferReply(isEphemeral).queue();
@@ -50,6 +53,27 @@ public class DiscordCommandListener extends ListenerAdapter
                     return;
                 }
 
+                // Check and apply any command cooldowns where required
+                if (command.getCooldown() > 0) {
+                    final String cooldownKey = command.getCooldownScope().getKey(event);
+                    final int remaining = minecordCommands.getCooldown(cooldownKey);
+                    if (remaining > 0) {
+                        LOGGER.warn("@{} used '{}' but must wait another {} seconds!", username, raw, remaining);
+                        event.getHook().setEphemeral(true).sendMessageEmbeds(
+                            new EmbedBuilder().setColor(0xff8800).setDescription(
+                                new StringTemplate()
+                                    .add("cooldown", Duration.ofSeconds(command.getCooldown()))
+                                    .add("remaining", Duration.ofSeconds(remaining))
+                                    .format(getConfig().messages.cooldown)
+                            ).build()
+                        ).queue();
+                        return;
+                    } else {
+                        LOGGER.debug("Applying cooldown '{}' for {} seconds", cooldownKey, command.getCooldown());
+                        minecordCommands.applyCooldown(cooldownKey, command.getCooldown());
+                    }
+                }
+
                 // Attempt to cascade the event to the matched command
                 LOGGER.info("@{} used '{}'", username, raw);
                 command.execute(event, server);
@@ -60,6 +84,9 @@ public class DiscordCommandListener extends ListenerAdapter
                         new StringTemplate().add("reason", e.getMessage()).format(getConfig().messages.failed)
                     ).build()
                 ).queue();
+            } finally {
+                // Clear any inactive/stale cooldowns
+                minecordCommands.clearInactiveCooldowns();
             }
         }, () -> LOGGER.warn("@{} used an unknown command '{}'", username, raw));
     }

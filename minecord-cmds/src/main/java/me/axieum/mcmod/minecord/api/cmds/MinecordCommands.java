@@ -1,6 +1,7 @@
 package me.axieum.mcmod.minecord.api.cmds;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
@@ -72,4 +73,47 @@ public interface MinecordCommands
      * @return immutable list of Minecord commands
      */
     List<MinecordCommand> getCommands();
+
+    /**
+     * Applies a given cooldown against a key.
+     *
+     * @param key cooldown key
+     * @param seconds number of seconds the cooldown is active for
+     */
+    void applyCooldown(@NotNull String key, int seconds);
+
+    /**
+     * Looks up a given cooldown key and returns its remaining seconds.
+     *
+     * <p>Note: If the returned cooldown is zero, its key is removed!
+     *
+     * @param key cooldown key
+     * @return seconds before the cooldown ends, defaults to {@code 0}
+     */
+    int getCooldown(@NotNull String key);
+
+    /**
+     * Returns an immutable mapping of all command cooldowns.
+     *
+     * @return immutable mapping of cooldown keys to their end timestamps
+     */
+    Map<String, Long> getCooldowns();
+
+    /**
+     * Clears a cooldown by its key.
+     *
+     * @param key cooldown key
+     * @return the cleared cooldown end timestamp if present
+     */
+    @Nullable Long clearCooldown(@NotNull String key);
+
+    /**
+     * Clears all cooldown keys.
+     */
+    void clearCooldowns();
+
+    /**
+     * Clears any inactive/stale cooldown keys.
+     */
+    void clearInactiveCooldowns();
 }

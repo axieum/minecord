@@ -21,6 +21,10 @@ public abstract class MinecordCommand extends ListenerAdapter
     protected boolean requiresMinecraft = true;
     // True if the command feedback is only visible to the executor
     protected boolean isEphemeral = false;
+    // The number of seconds a user must wait before using the command again
+    protected int cooldown = 0;
+    // To whom the cooldown applies
+    protected CooldownScope cooldownScope = CooldownScope.USER;
 
     /**
      * Constructs a new Minecord command instance.
@@ -122,6 +126,52 @@ public abstract class MinecordCommand extends ListenerAdapter
     public MinecordCommand setRequiresMinecraft(boolean requiresMinecraft)
     {
         this.requiresMinecraft = requiresMinecraft;
+        return this;
+    }
+
+    /**
+     * Returns the number of seconds a user must wait before using the
+     * command again.
+     *
+     * @return cooldown in seconds
+     */
+    public int getCooldown()
+    {
+        return cooldown;
+    }
+
+    /**
+     * Sets the number of seconds a user must wait before using the command
+     * again.
+     *
+     * @param cooldown cooldown in seconds
+     * @return {@code this} for chaining
+     */
+    public MinecordCommand setCooldown(int cooldown)
+    {
+        this.cooldown = cooldown;
+        return this;
+    }
+
+    /**
+     * Returns whom the cooldown applies.
+     *
+     * @return cooldown scope
+     */
+    public CooldownScope getCooldownScope()
+    {
+        return cooldownScope;
+    }
+
+    /**
+     * Sets to whom the cooldown applies.
+     *
+     * @param cooldownScope cooldown scope
+     * @return {@code this} for chaining
+     */
+    public MinecordCommand setCooldownScope(CooldownScope cooldownScope)
+    {
+        this.cooldownScope = cooldownScope;
         return this;
     }
 

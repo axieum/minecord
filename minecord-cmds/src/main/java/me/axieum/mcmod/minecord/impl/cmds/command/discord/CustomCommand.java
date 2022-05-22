@@ -46,10 +46,12 @@ public class CustomCommand extends MinecordCommand
         super(config.name, config.description);
         this.config = config;
         setEphemeral(config.ephemeral);
+        setCooldown(config.cooldown);
+        setCooldownScope(config.cooldownScope);
         data.setDefaultEnabled(config.allowByDefault);
         Arrays.stream(config.options)
-              .map(CommandConfig.BaseCommandSchema.OptionSchema::getOptionData)
-              .forEach(data::addOptions);
+            .map(CommandConfig.BaseCommandSchema.OptionSchema::getOptionData)
+            .forEach(data::addOptions);
     }
 
     @Override
@@ -77,7 +79,9 @@ public class CustomCommand extends MinecordCommand
         }
 
         // Create a temporary command source and hence output, to relay command feedback
-        final String username = event.getMember().getEffectiveName();
+        final String username = event.getMember() != null
+            ? event.getMember().getEffectiveName()
+            : event.getUser().getName();
         final ServerCommandSource source = new ServerCommandSource(
             new DiscordCommandOutput(event, server, mcCommand),
             Vec3d.ZERO, Vec2f.ZERO, server.getOverworld(),

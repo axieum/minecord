@@ -34,6 +34,8 @@ public class UptimeCommand extends MinecordCommand
         data.setDefaultEnabled(config.allowByDefault);
         setRequiresMinecraft(false); // we only report the total uptime of the process, not the server itself!
         setEphemeral(config.ephemeral);
+        setCooldown(config.cooldown);
+        setCooldownScope(config.cooldownScope);
     }
 
     @Override
