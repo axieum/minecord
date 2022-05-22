@@ -46,6 +46,8 @@ public class CustomCommand extends MinecordCommand
         super(config.name, config.description);
         this.config = config;
         setEphemeral(config.ephemeral);
+        setCooldown(config.cooldown);
+        setCooldownScope(config.cooldownScope);
         data.setDefaultEnabled(config.allowByDefault);
         Arrays.stream(config.options)
               .map(CommandConfig.BaseCommandSchema.OptionSchema::getOptionData)

@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.impl.cmds;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -31,6 +32,8 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
 
     // A mapping of command names to their implementation (initial capacity for all built-in commands)
     private static final HashMap<String, MinecordCommand> COMMANDS = new HashMap<>(2);
+    // A mapping of cooldown keys to their end timestamp (millis since epoch)
+    private static final HashMap<String, Long> COOLDOWNS = new HashMap<>();
 
     @Override
     public void onInitializeMinecord(JDABuilder builder)
@@ -90,6 +93,9 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
                 LOGGER.info("Skipping disabled custom command '/{}'", c.name);
             }
         }
+
+        // Clear any existing command cooldowns
+        commands.clearCooldowns();
     }
 
     @Override
@@ -156,6 +162,41 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
     public List<MinecordCommand> getCommands()
     {
         return List.copyOf(COMMANDS.values()); // immutable
+    }
+
+    @Override
+    public void applyCooldown(@NotNull String key, int seconds)
+    {
+        if (seconds > 0) COOLDOWNS.put(key, System.currentTimeMillis() + seconds * 1000L);
+    }
+
+    @Override
+    public int getCooldown(@NotNull String key)
+    {
+        int remaining = 0;
+        if (COOLDOWNS.containsKey(key)) {
+            remaining = Math.max(0, (int) Math.round((COOLDOWNS.get(key) - System.currentTimeMillis()) / 1000D));
+            if (remaining == 0) clearCooldown(key);
+        }
+        return remaining;
+    }
+
+    @Override
+    public Map<String, Long> getCooldowns()
+    {
+        return Map.copyOf(COOLDOWNS); // immutable
+    }
+
+    @Override
+    public @Nullable Long clearCooldown(@NotNull String key)
+    {
+        return COOLDOWNS.remove(key);
+    }
+
+    @Override
+    public void clearCooldowns()
+    {
+        COOLDOWNS.clear();
     }
 
     /**

@@ -10,13 +10,13 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 
 import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
+import me.axieum.mcmod.minecord.api.cmds.command.CooldownScope;
 import me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl;
 
 @Config(name = "minecord/commands")
@@ -40,14 +40,9 @@ public class CommandConfig implements ConfigData
         public String failed = "**Oh no** - something went wrong! :warning:\n_${reason}_";
 
         @Comment("""
-            The error message used when a user is denied permission to a command
-            Usages: ${role}""")
-        public String denied = "You don't have permission to do that! :no_good:";
-
-        @Comment("""
             The error message used when a user must wait before executing a command
-            Usages: ${cooldown}""")
-        public String cooldown = "Please wait another ${cooldown} before doing that! :alarm_clock:";
+            Usages: ${cooldown} and ${remaining}""")
+        public String cooldown = "Please wait another ${remaining} before doing that! :alarm_clock:";
     }
 
     @Category("Built-in Commands")
@@ -144,26 +139,13 @@ public class CommandConfig implements ConfigData
         @Comment("True if anyone can use the command by default")
         public boolean allowByDefault = true;
 
-        @Category("Permissions")
-        @Comment("A list of permissions that restrict access to the command")
-        public PermissionSchema[] permissions = new PermissionSchema[] {new PermissionSchema()};
+        @Comment("The number of seconds a user must wait before using the command again")
+        public int cooldown = 0;
 
-        /**
-         * Command permission/privilege configuration schema.
-         */
-        public static class PermissionSchema
-        {
-            @Comment("""
-                The type of entity this permission relates to
-                Allowed values: ROLE and USER""")
-            public CommandPrivilege.Type type = CommandPrivilege.Type.ROLE;
-
-            @Comment("The identifier within Discord this permission relates to")
-            public String id = "252653832427929601";
-
-            @Comment("True if permission to use the command is granted")
-            public boolean allow = true;
-        }
+        @Comment("""
+            To whom the cooldown applies
+            Allowed values: USER, CHANNEL, USER_CHANNEL, GUILD, USER_GUILD, SHARD, USER_SHARD and GLOBAL""")
+        public CooldownScope cooldownScope = CooldownScope.USER;
 
         /**
          * Command option configuration schema.

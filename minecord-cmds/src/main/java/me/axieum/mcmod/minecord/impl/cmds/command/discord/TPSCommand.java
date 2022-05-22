@@ -29,6 +29,8 @@ public class TPSCommand extends MinecordCommand
         super(config.name, config.description);
         data.setDefaultEnabled(config.allowByDefault);
         setEphemeral(config.ephemeral);
+        setCooldown(config.cooldown);
+        setCooldownScope(config.cooldownScope);
     }
 
     @Override
