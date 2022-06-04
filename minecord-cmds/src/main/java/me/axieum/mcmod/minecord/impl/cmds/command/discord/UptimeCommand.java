@@ -21,7 +21,9 @@ import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
  */
 public class UptimeCommand extends MinecordCommand
 {
-    // todo: Prepare a reusable string template for all uptime commands
+    // Prepare a reusable string template for all uptime commands
+    public static final StringTemplate TEMPLATE = new StringTemplate()
+        .add("uptime", () -> Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
 
     /**
      * Initialises a new uptime command.
@@ -42,13 +44,7 @@ public class UptimeCommand extends MinecordCommand
     public void execute(@NotNull SlashCommandInteractionEvent event, @Nullable MinecraftServer server)
     {
         // Prepare an embed to be sent to the user
-        EmbedBuilder embed = new EmbedBuilder()
-            // Set the message
-            .setDescription(
-                new StringTemplate()
-                    .add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()))
-                    .format(getConfig().builtin.uptime.message)
-            );
+        EmbedBuilder embed = new EmbedBuilder().setDescription(TEMPLATE.format(getConfig().builtin.uptime.message));
 
         // Fire an event to allow the embed to be mutated or cancelled
         embed = MinecordCommandEvents.Uptime.AFTER_EXECUTE.invoker().onAfterExecuteUptime(event, server, embed);
