@@ -3,10 +3,12 @@ package me.axieum.mcmod.minecord.api.util;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("String Template")
@@ -32,6 +34,29 @@ public class StringTemplateTests
             "Hi, John Doe! I was born 1999-09-09 and am 18 years old. The task took 1 hour 2 minutes.",
             st.format("Hi, ${name}! I was born ${dob} and am ${age} years old. The task took ${elapsed}.")
         );
+    }
+
+    @Test
+    @DisplayName("Resolve lazy variables")
+    public void lazyVariables()
+    {
+        final Random random = new Random(9);
+        st.add("roll", () -> random.nextInt(1, 6));
+        assertEquals("You rolled a 5!", st.format("You rolled a ${roll}!"));
+        assertEquals("You rolled a 2!", st.format("You rolled a ${roll}!"));
+    }
+
+    @Test
+    @DisplayName("Resolve erroneous lazy variables")
+    public void erroneousLazyVariables()
+    {
+        assertDoesNotThrow(() -> {
+            st.add("name", () -> {
+                throw new RuntimeException("Intended.");
+            });
+            assertEquals("Hi, !", st.format("Hi, ${name}!"));
+            assertEquals("Hi, John Doe!", st.format("Hi, ${name:-John Doe}!"));
+        }, "Exceptions raised when evaluating lazy variables should be caught");
     }
 
     @Test
@@ -69,6 +94,17 @@ public class StringTemplateTests
         assertEquals(
             "It took 8m 2s.",
             st.format("It took ${elapsed:m'm' s's'}.")
+        );
+    }
+
+    @Test
+    @DisplayName("Handle erroneous formats")
+    public void erroneousFormats()
+    {
+        st.add("price", 1351.4781f);
+        assertDoesNotThrow(
+            () -> assertEquals("The cost is ${price:\\$#,$###.##}.", st.format("The cost is ${price:\\$#,$###.##}.")),
+            "Exceptions raised when formatting variables should be caught"
         );
     }
 
