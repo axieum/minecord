@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability within Example, please send an e-mail
+If you discover a security vulnerability within Minecord, please send an e-mail
 to Axieum at imaxieum@gmail.com. All security vulnerabilities will be promptly
 addressed.
 
