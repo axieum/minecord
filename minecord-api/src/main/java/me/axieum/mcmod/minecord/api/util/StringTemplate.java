@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,6 +64,23 @@ import org.jetbrains.annotations.Nullable;
  * The output is:
  * <blockquote><pre>${var} ->  -> lorem</pre></blockquote>
  *
+ * <p>To reduce the need for new {@link StringTemplate} instances, you can add a
+ * {@link java.util.function.Supplier Supplier} that will be evaluated during string formatting:
+ *
+ * <blockquote><pre><code>
+ * // Prepare the string template builder
+ * final StringTemplate st = new StringTemplate();
+ * final Random random = new Random(9);
+ * st.add("roll", () -> random.nextInt(1, 6));
+ *
+ * // Apply, and hence format a string
+ * String result_1 = st.format("You rolled a ${roll}.");
+ * String result_2 = st.format("You rolled a ${roll}.");
+ * </code></pre></blockquote>
+ * The output is:
+ * <blockquote>You rolled a 5.</blockquote>
+ * <blockquote>You rolled a 2.</blockquote>
+ *
  * @author Axieum
  */
 public class StringTemplate
@@ -109,6 +127,19 @@ public class StringTemplate
     public StringTemplate add(final @NotNull String name, final @Nullable Object value)
     {
         variables.put(name, value);
+        return this;
+    }
+
+    /**
+     * Adds a lazy variable to be substituted by a name and given value.
+     *
+     * @param name     token name
+     * @param supplier supplier of the value to be substituted
+     * @return {@code this} for chaining
+     */
+    public StringTemplate add(final @NotNull String name, final @Nullable Supplier<Object> supplier)
+    {
+        variables.put(name, supplier);
         return this;
     }
 
@@ -195,7 +226,17 @@ public class StringTemplate
             final @Nullable String fallback = matcher.group("default");
 
             // Attempt to match the token name to a known variable
-            final @Nullable Object value = variables.get(name);
+            @Nullable Object value = variables.get(name);
+
+            // If the matched variable is a supplier, resolve it
+            if (value instanceof Supplier) {
+                try {
+                    value = ((Supplier<?>) value).get();
+                } catch (Exception e) {
+                    LOGGER.warn("Failed to evaluate lazy variable '{}': {}", name, e.getMessage());
+                    value = null;
+                }
+            }
 
             // If the matched variable is non-null, replace the token with its value
             if (value != null) {
