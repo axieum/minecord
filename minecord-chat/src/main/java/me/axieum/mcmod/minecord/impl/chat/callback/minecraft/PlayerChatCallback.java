@@ -1,7 +1,7 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
-import net.minecraft.network.encryption.SignedChatMessage;
-import net.minecraft.server.filter.Message;
+import net.minecraft.network.message.SignedMessage;
+import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import me.axieum.mcmod.minecord.api.Minecord;
@@ -15,7 +15,7 @@ import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 public class PlayerChatCallback implements ReceiveChatCallback
 {
     @Override
-    public void onReceiveChat(ServerPlayerEntity player, Message<SignedChatMessage> message)
+    public void onReceiveChat(ServerPlayerEntity player, FilteredMessage<SignedMessage> message)
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
@@ -32,7 +32,7 @@ public class PlayerChatCallback implements ReceiveChatCallback
             st.add("world", ChatStringUtils.getWorldName(player.world));
             // The formatted message contents
             st.add("message", StringUtils.minecraftToDiscord(
-                message.method_44153(message.raw()).getContent().getString()
+                message.filteredOrElse(message.raw()).getContent().getString()
             ));
 
             ChatPlaceholderEvents.Minecraft.PLAYER_CHAT.invoker().onPlayerChatPlaceholder(st, player, message);

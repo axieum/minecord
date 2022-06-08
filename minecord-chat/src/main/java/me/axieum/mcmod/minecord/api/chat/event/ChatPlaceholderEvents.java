@@ -12,8 +12,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.network.encryption.SignedChatMessage;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.crash.CrashReport;
@@ -346,9 +347,7 @@ public final class ChatPlaceholderEvents
              * @param message  received message contents
              */
             void onPlayerChatPlaceholder(
-                StringTemplate template,
-                ServerPlayerEntity player,
-                net.minecraft.server.filter.Message<SignedChatMessage> message
+                StringTemplate template, ServerPlayerEntity player, FilteredMessage<SignedMessage> message
             );
         }
 
