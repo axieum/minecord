@@ -1,7 +1,7 @@
 package me.axieum.mcmod.minecord.api.chat.event.minecraft;
 
-import net.minecraft.network.encryption.SignedChatMessage;
-import net.minecraft.server.filter.Message;
+import net.minecraft.network.message.SignedMessage;
+import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -25,5 +25,5 @@ public interface ReceiveChatCallback
      * @param player  author of the message
      * @param message received message
      */
-    void onReceiveChat(ServerPlayerEntity player, Message<SignedChatMessage> message);
+    void onReceiveChat(ServerPlayerEntity player, FilteredMessage<SignedMessage> message);
 }
