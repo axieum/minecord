@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "Provides various commands to interact with your Minecraft server from Discord",
+  "authors": [
+    "Axieum"
+  ],
+  "contact": {
+    "homepage": "https://github.com/axieum/minecord",
+    "sources": "https://github.com/axieum/minecord",
+    "issues": "https://github.com/axieum/minecord/issues",
+    "wiki": "https://github.com/axieum/minecord/wiki"
+  },
+  "license": "MIT",
+  "icon": "assets/minecord-cmds/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "minecord": [
+      "me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl"
+    ]
+  },
+  "mixins": [
+    "minecord-cmds.mixins.json"
+  ],
+  "depends": {
+    "java": ">=17",
+    "minecraft": "1.19.x",
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecord-api": "*"
+  }
+}

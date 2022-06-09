@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "Equips developers with the tools necessary to integrate their mods with Discord",
+  "authors": [
+    "Axieum"
+  ],
+  "contact": {
+    "homepage": "https://github.com/axieum/minecord",
+    "sources": "https://github.com/axieum/minecord",
+    "issues": "https://github.com/axieum/minecord/issues",
+    "wiki": "https://github.com/axieum/minecord/wiki"
+  },
+  "license": "MIT",
+  "icon": "assets/minecord-api/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "preLaunch": [
+      "me.axieum.mcmod.minecord.impl.MinecordImpl"
+    ],
+    "server": [
+      "me.axieum.mcmod.minecord.impl.MinecordImpl"
+    ]
+  },
+  "mixins": [
+    "minecord.mixins.json"
+  ],
+  "depends": {
+    "java": ">=17",
+    "minecraft": "1.19.x",
+    "fabricloader": ">=0.11.3",
+    "fabric": "*"
+  }
+}

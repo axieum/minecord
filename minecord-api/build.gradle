@@ -1,0 +1,51 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+configurations { shadow; implementation.extendsFrom shadow }
+
+// Declare dependencies
+dependencies {
+    include "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
+    shadow "com.vdurmont:emoji-java:${project.emoji_java_version}"
+    shadow("net.dv8tion:JDA:${project.jda_version}") {
+        exclude module: 'opus-java' // exclude audio
+    }
+    shadow("org.apache.logging.log4j:log4j-slf4j18-impl:${project.log4j_version}") {
+        exclude module: 'log4j-api' // exclude log4j itself, we transitively use via Minecraft
+        exclude module: 'log4j-core'
+    }
+}
+
+// Produce a fat-jar of all the shaded dependencies
+shadowJar {
+    archiveClassifier.set('dev')
+    configurations = [project.configurations.shadow]
+
+    // Relocate dependencies
+    final dest = "${project.group}.shadow.api"
+    // relocate 'club.minnced.opus', "${dest}.club.minnced.opus"
+    relocate 'com.fasterxml.jackson', "${dest}.com.fasterxml.jackson"
+    relocate 'com.iwebpp.crypto', "${dest}.com.iwebpp.crypto"
+    relocate 'com.neovisionaries.ws', "${dest}.com.neovisionaries.ws"
+    // relocate 'com.sun.jna', "${dest}.com.sun.jna"
+    // relocate 'com.vdurmont.emoji', "${dest}.com.vdurmont.emoji"
+    relocate 'gnu.trove', "${dest}.gnu.trove"
+    relocate 'javax.annotation', "${dest}.javax.annotation"
+    // relocate 'net.dv8tion.jda', "${dest}.net.dv8tion.jda"
+    relocate 'okhttp3', "${dest}.okhttp3"
+    relocate 'okio', "${dest}.okio"
+    relocate 'org.apache.commons', "${dest}.org.apache.commons"
+    relocate 'org.jetbrains.annotations', "${dest}.org.jetbrains.annotations"
+    // relocate 'tomp2p.opuswrapper', "${dest}.tomp2p.opuswrapper"
+
+    // Minify the result - remove unused classes
+    minimize()
+}
+
+// Provide the fat-jar to Fabric's remapping task
+remapJar {
+    dependsOn tasks.shadowJar
+    inputFile.set(tasks.shadowJar.archiveFile)
+}

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.axieum.mcmod.minecord.mixin.api",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [],
+  "server": [
+    "CrashReportAccessor",
+    "MinecraftServerMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

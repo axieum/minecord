@@ -1,0 +1,4 @@
+// Declare dependencies
+dependencies {
+    implementation project(path: ':minecord-api', configuration: 'shadow')
+}
