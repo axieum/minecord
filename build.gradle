@@ -116,11 +116,11 @@ curseforge {
         // Add any additional artifacts
         addArtifact sourcesJar
         addArtifact jar
-        subprojects.each {
-            addArtifact it.remapJar
-            addArtifact it.sourcesJar
-            addArtifact it.jar
-        }
+//        subprojects.each {
+//            addArtifact it.remapJar
+//            addArtifact it.sourcesJar
+//            addArtifact it.jar
+//        }
         // Add any dependencies
         relations {
             if (project.cf_relations_required) project.cf_relations_required.split(', ').each { requiredDependency it }
@@ -164,11 +164,11 @@ modrinth {
     // Add any additional artifacts
     additionalFiles.add sourcesJar
     additionalFiles.add jar
-    subprojects.each {
-        additionalFiles.add it.remapJar
-        additionalFiles.add it.sourcesJar
-        additionalFiles.add it.jar
-    }
+//    subprojects.each {
+//        additionalFiles.add it.remapJar
+//        additionalFiles.add it.sourcesJar
+//        additionalFiles.add it.jar
+//    }
     // Add any dependencies
     if (project.mr_relations_required) dependencies.addAll project.mr_relations_required.split(', ').collect { new ModDependency(it, 'required') }
     if (project.mr_relations_optional) dependencies.addAll project.mr_relations_optional.split(', ').collect { new ModDependency(it, 'optional') }
