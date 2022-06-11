@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'checkstyle'
     id 'maven-publish'
-    id 'com.modrinth.minotaur' version '2.2.0'
+    id 'com.modrinth.minotaur' version '2.2.1'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'fabric-loom' version '0.12-SNAPSHOT'
 }
@@ -49,9 +49,10 @@ allprojects {
         useJUnitPlatform()
     }
 
-    // Produce a sources distribution
+    // Produce additional distributions
     java {
         withSourcesJar()
+//        withJavadocJar()
     }
 
     // Add the licence to all distributions
@@ -114,12 +115,12 @@ curseforge {
         // Add the main artifact
         mainArtifact(remapJar) { displayName = "${project.mod_name} v${project.version} for Minecraft ${project.minecraft_version}" }
         // Add any additional artifacts
-        addArtifact sourcesJar
-        addArtifact jar
+        addArtifact remapSourcesJar
+//        addArtifact javadocJar
         subprojects.each {
             addArtifact it.remapJar
-            addArtifact it.sourcesJar
-            addArtifact it.jar
+            addArtifact it.remapSourcesJar
+//            addArtifact it.javadocJar
         }
         // Add any dependencies
         relations {
@@ -162,12 +163,12 @@ modrinth {
     // Add the main artifact
     uploadFile = remapJar
     // Add any additional artifacts
-    additionalFiles.add sourcesJar
-    additionalFiles.add jar
+    additionalFiles.add remapSourcesJar
+//    additionalFiles.add javadocJar
     subprojects.each {
         additionalFiles.add it.remapJar
-        additionalFiles.add it.sourcesJar
-        additionalFiles.add it.jar
+        additionalFiles.add it.remapSourcesJar
+//        additionalFiles.add it.javadocJar
     }
     // Add any dependencies
     if (project.mr_relations_required) dependencies.addAll project.mr_relations_required.split(', ').collect { new ModDependency(it, 'required') }
