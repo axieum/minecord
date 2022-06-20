@@ -27,6 +27,7 @@ build:
 # Add 'modid' labels for changes to their respective codebases
 minecord: 'src/**/*'
 minecord-api: 'minecord-api/**/*'
+minecord-avatars: 'minecord-avatars/**/*'
 minecord-chat: 'minecord-chat/**/*'
 minecord-cmds: 'minecord-cmds/**/*'
 minecord-presence: 'minecord-presence/**/*'

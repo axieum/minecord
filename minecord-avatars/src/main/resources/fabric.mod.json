@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "Injects player avatars into various messages sent to Discord",
+  "authors": [
+    "Axieum"
+  ],
+  "contact": {
+    "homepage": "https://github.com/axieum/minecord",
+    "sources": "https://github.com/axieum/minecord",
+    "issues": "https://github.com/axieum/minecord/issues",
+    "wiki": "https://github.com/axieum/minecord/wiki"
+  },
+  "license": "MIT",
+  "icon": "assets/minecord-avatars/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "minecord": [
+      "me.axieum.mcmod.minecord.impl.avatars.MinecordAvatarsImpl"
+    ]
+  },
+  "mixins": [
+    "minecord-avatars.mixins.json"
+  ],
+  "depends": {
+    "java": ">=17",
+    "minecraft": "1.19.x",
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecord-api": "*"
+  },
+  "recommends": {
+    "minecord-chat": "*",
+    "minecord-cmds": "*"
+  }
+}
