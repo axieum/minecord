@@ -48,7 +48,7 @@ between Minecraft and Discord.
   * The server began to stop
   * The server stopped and is offline
   * The server stopped unexpectedly and is inaccessible
-  * True if a crash report should be attached to any server crash messages
+    * Optionally attach the crash report when available
 
 ### 🪄 Commands
 
