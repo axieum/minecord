@@ -78,6 +78,11 @@ presence in Discord to show more detailed statuses.
   * Name of activity (supports placeholder values)
 * Mod developers can register and trigger their own presence categories
 
+### 😁 Avatars
+
+[Avatars](minecord-avatars/README.md) is an addon that injects player avatars
+into various messages sent to Discord.
+
 ### 📦 API
 
 [API](minecord-api/README.md) is a gateway into the Minecord mod. It equips
