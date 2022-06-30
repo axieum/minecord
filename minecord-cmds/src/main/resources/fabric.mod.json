@@ -21,9 +21,7 @@
       "me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl"
     ]
   },
-  "mixins": [
-    "minecord-cmds.mixins.json"
-  ],
+  "mixins": [],
   "depends": {
     "java": ">=17",
     "minecraft": "1.19.x",
