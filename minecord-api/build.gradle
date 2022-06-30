@@ -41,7 +41,7 @@ shadowJar {
     // relocate 'tomp2p.opuswrapper', "${dest}.tomp2p.opuswrapper"
 
     // Minify the result - remove unused classes
-    minimize()
+    // minimize()
 }
 
 // Provide the fat-jar to Fabric's remapping task
