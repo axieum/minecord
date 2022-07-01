@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.0-beta.3](https://github.com/axieum/minecord/compare/api-v1.0.0-beta.2...api-v1.0.0-beta.3) (2022-07-01)
+
+
+### Bug Fixes
+
+* `lang3` classes should not be relocated (fixes [#40](https://github.com/axieum/minecord/issues/40)) ([#42](https://github.com/axieum/minecord/issues/42)) ([9c107f3](https://github.com/axieum/minecord/commit/9c107f32d5e5566a96ce2d8c05d2e9e8ff7ea0f5))
+* **chat:** unused `java-diff-utils` classes should remain ([9c107f3](https://github.com/axieum/minecord/commit/9c107f32d5e5566a96ce2d8c05d2e9e8ff7ea0f5))
+
+
+### Miscellaneous Chores
+
+* force release as v1.0.0-beta.3 ([b36b83a](https://github.com/axieum/minecord/commit/b36b83a64e8d5d78b27d58dab932d55f7937e1f8))
+
 ## [1.0.0-beta.2](https://github.com/axieum/minecord/compare/api-v1.0.0-beta.1...api-v1.0.0-beta.2) (2022-06-30)
 
 
