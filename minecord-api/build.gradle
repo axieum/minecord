@@ -36,12 +36,8 @@ shadowJar {
     // relocate 'net.dv8tion.jda', "${dest}.net.dv8tion.jda"
     relocate 'okhttp3', "${dest}.okhttp3"
     relocate 'okio', "${dest}.okio"
-    relocate 'org.apache.commons', "${dest}.org.apache.commons"
     relocate 'org.jetbrains.annotations', "${dest}.org.jetbrains.annotations"
     // relocate 'tomp2p.opuswrapper', "${dest}.tomp2p.opuswrapper"
-
-    // Minify the result - remove unused classes
-    // minimize()
 }
 
 // Provide the fat-jar to Fabric's remapping task
