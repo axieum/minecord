@@ -66,6 +66,8 @@ allprojects {
         inputFile.set(tasks.shadowJar.archiveFile)
     }
 
+    components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) { skip() }
+
     // Add the licence to all distributions
     tasks.withType(Jar).configureEach {
         it.from rootProject.file('LICENCE.txt')
