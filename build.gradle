@@ -58,8 +58,7 @@ allprojects {
     // Produce a fat-jar of all shaded dependencies
     shadowJar {
         configurations = [project.configurations.shadow]
-        // archiveClassifier.set('dev')
-        // destinationDirectory.set(layout.buildDirectory.dir('devlibs'))
+        destinationDirectory.set(layout.buildDirectory.dir('devlibs'))
     }
 
     remapJar {
