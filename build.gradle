@@ -22,7 +22,7 @@ allprojects {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
     // Declare dependencies
-    configurations { shadow; namedElements { extendsFrom shadow } }
+    configurations { shade }
     dependencies {
         // Fabric
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -39,6 +39,7 @@ allprojects {
 
         // Subprojects
         subprojects.each {
+            implementation project(path: ":${it.name}", configuration: 'shadow')
             implementation project(path: ":${it.name}", configuration: 'namedElements')
             include project("${it.name}:") // nest within distribution
         }
@@ -57,7 +58,7 @@ allprojects {
 
     // Produce a fat-jar of all shaded dependencies
     shadowJar {
-        configurations = [project.configurations.shadow]
+        configurations = [project.configurations.shade]
         destinationDirectory.set(layout.buildDirectory.dir('devlibs'))
     }
 

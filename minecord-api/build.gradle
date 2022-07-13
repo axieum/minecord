@@ -3,12 +3,18 @@ dependencies {
     modApi include("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
         exclude module: 'modmenu'
     }
-    api shadow("com.vdurmont:emoji-java:${project.emoji_java_version}")
-    api shadow("net.dv8tion:JDA:${project.jda_version}") {
+    implementation shade("com.vdurmont:emoji-java:${project.emoji_java_version}")
+    implementation shade("net.dv8tion:JDA:${project.jda_version}") {
         exclude module: 'opus-java' // exclude audio
     }
-    api shadow("org.apache.logging.log4j:log4j-slf4j18-impl:${project.log4j_version}") {
+    implementation shade("org.apache.logging.log4j:log4j-slf4j18-impl:${project.log4j_version}") {
         exclude module: 'log4j-api' // exclude log4j itself, we transitively use via Minecraft
         exclude module: 'log4j-core'
     }
+}
+
+// Configure the fat-jar of shaded dependencies
+shadowJar {
+    // Relocate problematic dependencies
+    relocate 'kotlin', "${project.group}.shadow.kotlin"
 }
