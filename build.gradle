@@ -172,7 +172,7 @@ curseforge {
     // Configure other options
     options {
         forgeGradleIntegration = false
-        debug = System.getenv('CURSEFORGE_DEBUG') as boolean ?: false
+        debug = (System.getenv('CURSEFORGE_DEBUG') ?: 'false').toBoolean()
     }
 }
 
@@ -182,7 +182,7 @@ modrinth {
     // Set the API token from the environment
     token = System.getenv('MODRINTH_TOKEN') ?: ''
     // Set whether debug mode is enabled
-    debugMode = System.getenv('MODRINTH_DEBUG') as boolean ?: false
+    debugMode = (System.getenv('MODRINTH_DEBUG') ?: 'false').toBoolean()
     // Set the project id
     projectId = project.mr_project_id
     // Set the release name
