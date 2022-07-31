@@ -113,7 +113,35 @@ allprojects {
     publishing {
         // Declare all publications
         publications {
-            mavenJava(MavenPublication) { from components.java }
+            mavenJava(MavenPublication) {
+                from components.java
+                pom {
+                    name = project.mod_name
+                    description = project.mod_description
+                    url = "https://github.com/${project.github_repo}"
+                    licenses { license { name = 'MIT'; url = 'https://opensource.org/licenses/MIT' } }
+                    developers {
+                        developer {
+                            name = 'Axieum'
+                            email = 'imaxieum@gmail.com'
+                            url = 'https://github.com/axieum'
+                        }
+                    }
+                    scm {
+                        connection = "scm:git:git://github.com/${project.github_repo}.git"
+                        developerConnection = "scm:git:ssh://git@github.com:${project.github_repo}.git"
+                        url = "https://github.com/${project.github_repo}"
+                    }
+                    issueManagement { system = 'GitHub'; url = "https://github.com/${project.github_repo}/issues" }
+                    ciManagement { system = 'GitHub'; url = "https://github.com/${project.github_repo}/actions" }
+                    properties = [
+                        'mod_id': project.mod_id,
+                        'minecraft_version': project.minecraft_version,
+                        'loader_version': project.loader_version,
+                        'yarn_mappings': project.yarn_mappings,
+                    ]
+                }
+            }
         }
 
         // Add repositories to publish to
