@@ -21,7 +21,6 @@
       "me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl"
     ]
   },
-  "mixins": [],
   "depends": {
     "java": ">=17",
     "minecraft": "1.19.x",
