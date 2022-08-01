@@ -3,16 +3,22 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "Bring your Minecraft world into your Discord guild",
-  "authors": [
-    "Axieum"
-  ],
+  "description": "${description}",
   "contact": {
     "homepage": "https://github.com/axieum/minecord",
     "sources": "https://github.com/axieum/minecord",
     "issues": "https://github.com/axieum/minecord/issues",
     "wiki": "https://github.com/axieum/minecord/wiki"
   },
+  "authors": [
+    {
+      "name": "Axieum",
+      "contact": {
+        "email": "imaxieum@gmail.com",
+        "homepage": "https://github.com/axieum"
+      }
+    }
+  ],
   "license": "MIT",
   "icon": "assets/minecord/icon.png",
   "environment": "server",
@@ -23,6 +29,8 @@
   },
   "recommends": {
     "minecord-api": "*",
-    "minecord-chat": "*"
+    "minecord-chat": "*",
+    "minecord-cmds": "*",
+    "minecord-presence": "*"
   }
 }

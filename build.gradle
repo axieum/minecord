@@ -4,6 +4,7 @@ plugins {
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.2.1'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'fabric-loom' version '0.12-SNAPSHOT'
 }
 
@@ -11,6 +12,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'checkstyle'
     apply plugin: 'maven-publish'
+    apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'fabric-loom'
 
     group = project.maven_group
@@ -20,7 +22,7 @@ allprojects {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
     // Declare dependencies
-    configurations { devElements { extendsFrom implementation, namedElements } }
+    configurations { shade }
     dependencies {
         // Fabric
         minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -29,20 +31,11 @@ allprojects {
 
         // Mods
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-        modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-            exclude module: 'modmenu'
-        }
 
         // Code Quality
         compileOnly "org.jetbrains:annotations:${project.jetbrains_annotations_version}"
         testImplementation "org.junit.jupiter:junit-jupiter-api:${project.junit_jupiter_version}"
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project.junit_jupiter_version}"
-
-        // Subprojects
-        subprojects.each {
-            implementation project(path: ":${it.name}", configuration: 'devElements')
-            include project("${it.name}:") // nest within distribution
-        }
     }
 
     // Perform tests using the JUnit test suite
@@ -56,6 +49,19 @@ allprojects {
 //        withJavadocJar()
     }
 
+    // Produce a fat-jar of all shaded dependencies
+    shadowJar {
+        configurations = [project.configurations.shade]
+        destinationDirectory.set(layout.buildDirectory.dir('devlibs'))
+    }
+
+    remapJar {
+        dependsOn tasks.shadowJar
+        inputFile.set(tasks.shadowJar.archiveFile)
+    }
+
+    components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) { skip() }
+
     // Add the licence to all distributions
     tasks.withType(Jar).configureEach {
         it.from rootProject.file('LICENCE.txt')
@@ -65,11 +71,17 @@ allprojects {
     processResources {
         inputs.property 'id', project.mod_id
         inputs.property 'name', project.mod_name
+        inputs.property 'description', project.mod_description
         inputs.property 'version', project.version
 
         // fabric.mod.json
         filesMatching('fabric.mod.json') {
-            expand(['id': project.mod_id, 'name': project.mod_name, 'version': project.version])
+            expand([
+                'id': project.mod_id,
+                'name': project.mod_name,
+                'description': project.mod_description,
+                'version': project.version,
+            ])
         }
     }
 
@@ -101,7 +113,35 @@ allprojects {
     publishing {
         // Declare all publications
         publications {
-            mavenJava(MavenPublication) { from components.java }
+            mavenJava(MavenPublication) {
+                from components.java
+                pom {
+                    name = project.mod_name
+                    description = project.mod_description
+                    url = "https://github.com/${project.github_repo}"
+                    licenses { license { name = 'MIT'; url = 'https://opensource.org/licenses/MIT' } }
+                    developers {
+                        developer {
+                            name = 'Axieum'
+                            email = 'imaxieum@gmail.com'
+                            url = 'https://github.com/axieum'
+                        }
+                    }
+                    scm {
+                        connection = "scm:git:git://github.com/${project.github_repo}.git"
+                        developerConnection = "scm:git:ssh://git@github.com:${project.github_repo}.git"
+                        url = "https://github.com/${project.github_repo}"
+                    }
+                    issueManagement { system = 'GitHub'; url = "https://github.com/${project.github_repo}/issues" }
+                    ciManagement { system = 'GitHub'; url = "https://github.com/${project.github_repo}/actions" }
+                    properties = [
+                        'mod_id': project.mod_id,
+                        'minecraft_version': project.minecraft_version,
+                        'loader_version': project.loader_version,
+                        'yarn_mappings': project.yarn_mappings,
+                    ]
+                }
+            }
         }
 
         // Add repositories to publish to
@@ -118,6 +158,9 @@ allprojects {
         }
     }
 }
+
+// Nest all subproject artifacts within the main/bundle distribution
+dependencies { subprojects.each { include project("${it.name}:") } }
 
 // Define how artifacts are published to CurseForge (https://curseforge.com)
 curseforge {
@@ -157,7 +200,7 @@ curseforge {
     // Configure other options
     options {
         forgeGradleIntegration = false
-        debug = System.getenv('CURSEFORGE_DEBUG') as boolean ?: false
+        debug = (System.getenv('CURSEFORGE_DEBUG') ?: 'false').toBoolean()
     }
 }
 
@@ -167,7 +210,7 @@ modrinth {
     // Set the API token from the environment
     token = System.getenv('MODRINTH_TOKEN') ?: ''
     // Set whether debug mode is enabled
-    debugMode = System.getenv('MODRINTH_DEBUG') as boolean ?: false
+    debugMode = (System.getenv('MODRINTH_DEBUG') ?: 'false').toBoolean()
     // Set the project id
     projectId = project.mr_project_id
     // Set the release name

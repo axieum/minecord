@@ -3,16 +3,22 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "Updates the bot presence in Discord to show more detailed statuses",
-  "authors": [
-    "Axieum"
-  ],
+  "description": "${description}",
   "contact": {
     "homepage": "https://github.com/axieum/minecord",
     "sources": "https://github.com/axieum/minecord",
     "issues": "https://github.com/axieum/minecord/issues",
     "wiki": "https://github.com/axieum/minecord/wiki"
   },
+  "authors": [
+    {
+      "name": "Axieum",
+      "contact": {
+        "email": "imaxieum@gmail.com",
+        "homepage": "https://github.com/axieum"
+      }
+    }
+  ],
   "license": "MIT",
   "icon": "assets/minecord-presence/icon.png",
   "environment": "server",
@@ -21,7 +27,6 @@
       "me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl"
     ]
   },
-  "mixins": [],
   "depends": {
     "java": ">=17",
     "minecraft": "1.19.x",

@@ -3,16 +3,22 @@
   "id": "${id}",
   "version": "${version}",
   "name": "${name}",
-  "description": "Equips developers with the tools necessary to integrate their mods with Discord",
-  "authors": [
-    "Axieum"
-  ],
+  "description": "${description}",
   "contact": {
     "homepage": "https://github.com/axieum/minecord",
     "sources": "https://github.com/axieum/minecord",
     "issues": "https://github.com/axieum/minecord/issues",
     "wiki": "https://github.com/axieum/minecord/wiki"
   },
+  "authors": [
+    {
+      "name": "Axieum",
+      "contact": {
+        "email": "imaxieum@gmail.com",
+        "homepage": "https://github.com/axieum"
+      }
+    }
+  ],
   "license": "MIT",
   "icon": "assets/minecord-api/icon.png",
   "environment": "server",
