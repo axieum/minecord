@@ -160,7 +160,13 @@ allprojects {
 }
 
 // Nest all subproject artifacts within the main/bundle distribution
-dependencies { subprojects.each { include project("${it.name}:") } }
+dependencies {
+    subprojects.each {
+        implementation project(path: ":${it.name}", configuration: 'namedElements')
+        implementation project(path: ":${it.name}", configuration: 'shadow')
+        include project("${it.name}:")
+    }
+}
 
 // Define how artifacts are published to CurseForge (https://curseforge.com)
 curseforge {
