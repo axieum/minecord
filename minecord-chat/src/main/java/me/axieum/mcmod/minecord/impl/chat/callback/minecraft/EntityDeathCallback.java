@@ -8,8 +8,8 @@ import net.minecraft.entity.damage.DamageSource;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
-import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
 public class EntityDeathCallback implements EntityDeathEvents.Entity
@@ -36,7 +36,7 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
                 "cause", source.getDeathMessage(entity).getString().replaceFirst(entityName, "").trim()
             );
             // The name of the world the entity died in
-            st.add("world", ChatStringUtils.getWorldName(entity.world));
+            st.add("world", StringUtils.getWorldName(entity.world));
             // The X coordinate of where the entity died
             st.add("x", String.valueOf((int) entity.prevX));
             // The Y coordinate of where the entity died

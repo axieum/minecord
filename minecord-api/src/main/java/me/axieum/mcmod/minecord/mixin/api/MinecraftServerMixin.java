@@ -24,10 +24,10 @@ public abstract class MinecraftServerMixin
     /**
      * Broadcasts a server shutdown event, be it gracefully or forcefully exited.
      *
-     * @param info mixin callback info
+     * @param ci mixin callback info
      */
     @Inject(method = "runServer", at = @At("TAIL"))
-    private void runServer(CallbackInfo info)
+    private void runServer(CallbackInfo ci)
     {
         ServerShutdownCallback.EVENT.invoker().onServerShutdown((MinecraftServer) (Object) this, crashReport);
     }
@@ -36,10 +36,10 @@ public abstract class MinecraftServerMixin
      * Captures any server crash reports.
      *
      * @param crashReport Minecraft crash report being set
-     * @param info        mixin callback info
+     * @param ci          mixin callback info
      */
     @Inject(method = "setCrashReport", at = @At("TAIL"))
-    private void setCrashReport(CrashReport crashReport, CallbackInfo info)
+    private void setCrashReport(CrashReport crashReport, CallbackInfo ci)
     {
         MinecraftServerMixin.crashReport = crashReport;
     }

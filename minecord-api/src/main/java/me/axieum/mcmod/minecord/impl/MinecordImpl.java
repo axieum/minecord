@@ -45,14 +45,14 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
 
         try {
             // Prepare the JDA client
-            final JDABuilder builder = JDABuilder.createDefault(getConfig().token)
+            final JDABuilder builder = JDABuilder.createDefault(getConfig().bot.token)
                                                  // set initial bot status
-                                                 .setStatus(getConfig().status.starting)
+                                                 .setStatus(getConfig().bot.status.starting)
                                                  // add event listeners
                                                  .addEventListeners(new DiscordLifecycleListener());
 
             // Conditionally enable member caching
-            if (getConfig().cacheMembers) {
+            if (getConfig().bot.cacheMembers) {
                 builder.enableIntents(GatewayIntent.GUILD_MEMBERS) // enable required intents
                        .setMemberCachePolicy(MemberCachePolicy.ALL) // cache all members
                        .setChunkingFilter(ChunkingFilter.ALL); // eager-load all members

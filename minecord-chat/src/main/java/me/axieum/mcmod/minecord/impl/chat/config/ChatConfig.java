@@ -1,8 +1,6 @@
 package me.axieum.mcmod.minecord.impl.chat.config;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -156,13 +154,6 @@ public class ChatConfig implements ConfigData
                 || Arrays.asList(dimensions).contains(world.getRegistryKey().getValue().toString());
         }
     }
-
-    @Comment("A mapping of Minecraft dimension IDs to their respective names")
-    public Map<String, String> worldNames = new HashMap<>(Map.ofEntries(
-        Map.entry("minecraft:overworld", "Overworld"),
-        Map.entry("minecraft:the_nether", "Nether"),
-        Map.entry("minecraft:the_end", "The End")
-    ));
 
     /**
      * Determines whether the given channel identifier relates to any chat entries.

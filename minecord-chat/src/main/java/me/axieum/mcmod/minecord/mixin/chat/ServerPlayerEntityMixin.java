@@ -20,11 +20,11 @@ public abstract class ServerPlayerEntityMixin
      * Broadcasts any player deaths.
      *
      * @param source damage source
-     * @param info   mixin callback info
+     * @param ci     mixin callback info
      */
     @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;sendEntityStatus("
         + "Lnet/minecraft/entity/Entity;B)V"))
-    public void onDeath(DamageSource source, CallbackInfo info)
+    public void onDeath(DamageSource source, CallbackInfo ci)
     {
         EntityDeathEvents.PLAYER.invoker().onPlayerDeath((ServerPlayerEntity) (Object) this, source);
     }

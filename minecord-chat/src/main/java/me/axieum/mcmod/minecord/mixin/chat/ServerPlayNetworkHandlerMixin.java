@@ -26,7 +26,7 @@ public abstract class ServerPlayNetworkHandlerMixin
      * Broadcasts any player chat messages.
      *
      * @param message received message contents
-     * @param info    mixin callback info
+     * @param ci      mixin callback info
      */
     @Inject(
         method = "handleDecoratedMessage",
@@ -35,7 +35,7 @@ public abstract class ServerPlayNetworkHandlerMixin
             + "Lnet/minecraft/server/network/ServerPlayerEntity;"
             + "Lnet/minecraft/util/registry/RegistryKey;)V")
     )
-    private void onChatMessage(FilteredMessage<SignedMessage> message, CallbackInfo info)
+    private void onChatMessage(FilteredMessage<SignedMessage> message, CallbackInfo ci)
     {
         ReceiveChatCallback.EVENT.invoker().onReceiveChat(player, message);
     }

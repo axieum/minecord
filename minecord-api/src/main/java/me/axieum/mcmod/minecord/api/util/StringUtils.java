@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.api.util;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.MatchResult;
@@ -10,15 +11,24 @@ import java.util.regex.Pattern;
 import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.entities.IMentionable;
 
+import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 import me.axieum.mcmod.minecord.api.Minecord;
+import static me.axieum.mcmod.minecord.impl.MinecordImpl.getConfig;
 
 /**
  * Utility methods for building and manipulating strings.
  */
 public final class StringUtils
 {
+    // Mapping of Minecraft world identifiers to their human-readable names
+    public static final HashMap<Identifier, String> WORLD_NAMES = new HashMap<>(3);
+    // String templates for translating between Minecraft and Discord formatted strings
+    public static StringTemplate discordMinecraftST, minecraftDiscordST;
+
     private StringUtils() {}
 
     /**
@@ -37,9 +47,6 @@ public final class StringUtils
         }
         return String.format("%.1f %cB", bytes / 1000.0, ci.current());
     }
-
-    // String templates for translating between Minecraft and Discord formatted strings
-    public static StringTemplate discordMinecraftST, minecraftDiscordST;
 
     static {
         final Pattern bold = Pattern.compile("\\*\\*(.+?)\\*\\*");
@@ -83,21 +90,21 @@ public final class StringUtils
         final Pattern channel = Pattern.compile("#([^\\s]+)");
         final Function<MatchResult, String> resolveMention = m ->
             Minecord.getInstance().getJDA()
-                    .flatMap(jda -> Optional.ofNullable(jda.getUserByTag(m.group(1), m.group(2))))
-                    .map(IMentionable::getAsMention)
-                    .orElse(m.group(0));
+                .flatMap(jda -> Optional.ofNullable(jda.getUserByTag(m.group(1), m.group(2))))
+                .map(IMentionable::getAsMention)
+                .orElse(m.group(0));
         final Function<MatchResult, String> resolveMention2 = m ->
             Minecord.getInstance().getJDA()
-                    .flatMap(jda -> jda.getGuilds().stream()
-                                       .flatMap(g -> g.getMembersByEffectiveName(m.group(1), true).stream())
-                                       .findFirst())
-                    .map(IMentionable::getAsMention)
-                    .orElse(m.group(0));
+                .flatMap(jda -> jda.getGuilds().stream()
+                    .flatMap(g -> g.getMembersByEffectiveName(m.group(1), true).stream())
+                    .findFirst())
+                .map(IMentionable::getAsMention)
+                .orElse(m.group(0));
         final Function<MatchResult, String> resolveChannel = m ->
             Minecord.getInstance().getJDA()
-                    .flatMap(jda -> jda.getTextChannelsByName(m.group(1), true).stream().findFirst())
-                    .map(IMentionable::getAsMention)
-                    .orElse(m.group(0));
+                .flatMap(jda -> jda.getTextChannelsByName(m.group(1), true).stream().findFirst())
+                .map(IMentionable::getAsMention)
+                .orElse(m.group(0));
         // Construct the string template
         minecraftDiscordST = new StringTemplate()
             // Collapse line breaks
@@ -121,7 +128,7 @@ public final class StringUtils
             // Suppress @everyone and @here mentions
             .transform(s -> s.replace("@everyone", "@_everyone_"))
             .transform(s -> s.replace("@here", "@_here_"))
-            // Strip any left over formatting
+            // Strip any leftover formatting
             .transform(Formatting::strip);
     }
 
@@ -132,7 +139,7 @@ public final class StringUtils
      * @param contents Discord flavoured markdown string
      * @return Minecraft-formatted string
      */
-    public static String discordToMinecraft(String contents)
+    public static String discordToMinecraft(final String contents)
     {
         // Apply the appropriate string template against the given contents and return
         return discordMinecraftST.format(contents);
@@ -148,5 +155,60 @@ public final class StringUtils
     {
         // Apply the appropriate string template against the given contents and return
         return minecraftDiscordST.format(contents);
+    }
+
+    /**
+     * Attempts to retrieve the world name from the config files first,
+     * otherwise derives it from the registry key.
+     *
+     * @param world Minecraft world
+     * @return name of the given world
+     * @see #deriveWorldName(Identifier)
+     */
+    public static String getWorldName(final World world)
+    {
+        final Identifier identifier = world.getRegistryKey().getValue();
+        return getConfig().i18n.worlds.getOrDefault(identifier.toString(), deriveWorldName(identifier));
+    }
+
+    /**
+     * Attempts to compute and cache the world name from its registry key.
+     * NB: At present, the world name is not stored in any resources, apart
+     * from in the registry key, e.g. 'the_nether'.
+     *
+     * @param identifier Minecraft world identifier
+     * @return derived name of the given world identifier
+     */
+    public static String deriveWorldName(final Identifier identifier)
+    {
+        return WORLD_NAMES.computeIfAbsent(identifier, id -> {
+            // Space delimited identifier path, with leading 'the' keywords removed
+            final String path = id.getPath().replace('_', ' ').replaceFirst("(?i)the\\s", "");
+            // Capitalise the first character in each word
+            char[] chars = path.toCharArray();
+            boolean capitalizeNext = true;
+            for (int i = 0; i < chars.length; i++) {
+                if (chars[i] == ' ') {
+                    capitalizeNext = true;
+                } else if (capitalizeNext) {
+                    chars[i] = Character.toTitleCase(chars[i]);
+                    capitalizeNext = false;
+                }
+            }
+            // Return the computed world name
+            return new String(chars);
+        });
+    }
+
+    /**
+     * Attempts to retrieve the advancement type name from the config files
+     * first, otherwise uses it symbol name.
+     *
+     * @param type Minecraft advancement frame/type
+     * @return name of the advancement type
+     */
+    public static String getAdvancementTypeName(final AdvancementFrame type)
+    {
+        return getConfig().i18n.advancementTypes.getOrDefault(type.getId(), type.getId());
     }
 }
