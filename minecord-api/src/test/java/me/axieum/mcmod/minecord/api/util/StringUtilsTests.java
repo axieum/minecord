@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import net.minecraft.util.Identifier;
+
 @DisplayName("String Utils")
 public class StringUtilsTests
 {
@@ -210,5 +212,19 @@ public class StringUtilsTests
                 StringUtils.minecraftToDiscord("This is \u00A7agreen\u00A7r text!")
             );
         }
+    }
+
+    @Test
+    @DisplayName("Derive World Name")
+    public void deriveWorldName()
+    {
+        assertEquals(
+            "Overworld",
+            StringUtils.deriveWorldName(new Identifier("minecraft", "overworld"))
+        );
+        assertEquals(
+            "Deep Dark",
+            StringUtils.deriveWorldName(new Identifier("extrautils", "the_deep_dark"))
+        );
     }
 }

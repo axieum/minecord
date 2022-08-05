@@ -26,11 +26,11 @@ public abstract class PlayerAdvancementTrackerMixin
      *
      * @param advancement parent advancement
      * @param criterion   name of the criterion granted
-     * @param info        mixin callback info
+     * @param cir         mixin callback info
      */
     @Inject(method = "grantCriterion", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/"
         + "AdvancementRewards;apply(Lnet/minecraft/server/network/ServerPlayerEntity;)V"))
-    public void grantCriterion(Advancement advancement, String criterion, CallbackInfoReturnable<Boolean> info)
+    public void grantCriterion(Advancement advancement, String criterion, CallbackInfoReturnable<Boolean> cir)
     {
         GrantCriterionCallback.EVENT.invoker().onGrantCriterion(owner, advancement, criterion);
     }

@@ -10,8 +10,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.Join;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
-import me.axieum.mcmod.minecord.api.chat.util.ChatStringUtils;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
 public class PlayerConnectionCallback implements Join, Disconnect
@@ -32,7 +32,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The name of the world the player logged into
-            st.add("world", ChatStringUtils.getWorldName(player.world));
+            st.add("world", StringUtils.getWorldName(player.world));
             // The X coordinate of where the player logged into
             st.add("x", String.valueOf(player.getBlockX()));
             // The Y coordinate of where the player logged into
@@ -68,7 +68,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The name of the world the player logged out
-            st.add("world", ChatStringUtils.getWorldName(player.world));
+            st.add("world", StringUtils.getWorldName(player.world));
             // The X coordinate of where the player logged out
             st.add("x", String.valueOf(player.getBlockX()));
             // The Y coordinate of where the player logged out

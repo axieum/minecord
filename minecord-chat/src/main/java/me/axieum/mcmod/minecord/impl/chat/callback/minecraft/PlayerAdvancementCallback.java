@@ -8,6 +8,7 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
 public class PlayerAdvancementCallback implements GrantCriterionCallback
@@ -31,7 +32,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The type of advancement
-            st.add("type", info.getFrame().getId());
+            st.add("type", StringUtils.getAdvancementTypeName(info.getFrame()));
             // The title of the advancement
             st.add("title", info.getTitle().getString());
             // A description of the advancement

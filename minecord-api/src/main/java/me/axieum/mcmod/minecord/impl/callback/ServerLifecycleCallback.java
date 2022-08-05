@@ -20,21 +20,21 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     public void onServerStarting(MinecraftServer server)
     {
         // Update the Discord bot status
-        Minecord.getInstance().getJDA().ifPresent(jda -> jda.getPresence().setStatus(getConfig().status.starting));
+        Minecord.getInstance().getJDA().ifPresent(jda -> jda.getPresence().setStatus(getConfig().bot.status.starting));
     }
 
     @Override
     public void onServerStarted(MinecraftServer server)
     {
         // Update the Discord bot status
-        Minecord.getInstance().getJDA().ifPresent(jda -> jda.getPresence().setStatus(getConfig().status.started));
+        Minecord.getInstance().getJDA().ifPresent(jda -> jda.getPresence().setStatus(getConfig().bot.status.started));
     }
 
     @Override
     public void onServerStopping(MinecraftServer server)
     {
         // Update the Discord bot status
-        Minecord.getInstance().getJDA().ifPresent(jda -> jda.getPresence().setStatus(getConfig().status.stopping));
+        Minecord.getInstance().getJDA().ifPresent(jda -> jda.getPresence().setStatus(getConfig().bot.status.stopping));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             // Update the Discord bot status
-            jda.getPresence().setStatus(getConfig().status.stopped);
+            jda.getPresence().setStatus(getConfig().bot.status.stopped);
             // Shutdown the JDA client
             LOGGER.info("Minecord is wrapping up...");
             jda.shutdown();
