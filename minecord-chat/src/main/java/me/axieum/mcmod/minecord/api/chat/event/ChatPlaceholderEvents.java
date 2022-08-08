@@ -12,12 +12,14 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -212,9 +214,9 @@ public final class ChatPlaceholderEvents
          * Called when a player sent an in-game chat message.
          */
         public static final Event<PlayerChat> PLAYER_CHAT =
-            EventFactory.createArrayBacked(PlayerChat.class, callbacks -> (st, player, message) -> {
+            EventFactory.createArrayBacked(PlayerChat.class, callbacks -> (st, player, message, typeKey) -> {
                 for (PlayerChat callback : callbacks) {
-                    callback.onPlayerChatPlaceholder(st, player, message);
+                    callback.onPlayerChatPlaceholder(st, player, message, typeKey);
                 }
             });
 
@@ -345,9 +347,14 @@ public final class ChatPlaceholderEvents
              * @param template mutable string template
              * @param player   author of the message
              * @param message  received message contents
+             * @param typeKey  received message type
+             * @see net.fabricmc.fabric.api.message.v1.ServerMessageEvents#CHAT_MESSAGE
              */
             void onPlayerChatPlaceholder(
-                StringTemplate template, ServerPlayerEntity player, FilteredMessage<SignedMessage> message
+                StringTemplate template,
+                ServerPlayerEntity player,
+                FilteredMessage<SignedMessage> message,
+                RegistryKey<MessageType> typeKey
             );
         }
 

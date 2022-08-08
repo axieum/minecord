@@ -8,12 +8,12 @@ import org.apache.logging.log4j.Logger;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
-import me.axieum.mcmod.minecord.api.chat.event.minecraft.ReceiveChatCallback;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReactionListener;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReceivedListener;
@@ -21,10 +21,10 @@ import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageUpdateListener
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.EntityDeathCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerAdvancementCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerChangeWorldCallback;
-import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerChatCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerConnectionCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerDeathCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerLifecycleCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerMessageCallback;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
 
 public final class MinecordChat implements MinecordAddon, DedicatedServerModInitializer
@@ -83,7 +83,7 @@ public final class MinecordChat implements MinecordAddon, DedicatedServerModInit
         // A player left the game
         ServerPlayConnectionEvents.DISCONNECT.register(playerConnectionCallback);
         // A player sent an in-game chat message
-        ReceiveChatCallback.EVENT.register(new PlayerChatCallback());
+        ServerMessageEvents.CHAT_MESSAGE.register(new ServerMessageCallback());
         // A player unlocked an advancement
         GrantCriterionCallback.EVENT.register(new PlayerAdvancementCallback());
         // A player teleported to another dimension
