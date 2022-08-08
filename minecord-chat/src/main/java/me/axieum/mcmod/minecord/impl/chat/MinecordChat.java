@@ -21,10 +21,10 @@ import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageUpdateListener
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.EntityDeathCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerAdvancementCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerChangeWorldCallback;
-import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerMessageCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerConnectionCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.PlayerDeathCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerLifecycleCallback;
+import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerMessageCallback;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
 
 public final class MinecordChat implements MinecordAddon, DedicatedServerModInitializer
