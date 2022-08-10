@@ -15,9 +15,11 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.registry.RegistryKey;
 
@@ -250,6 +252,36 @@ public final class ChatPlaceholderEvents
                 }
             });
 
+        /**
+         * Called when a player sent an in-game message via the {@code /me} command.
+         */
+        public static final Event<EmoteCommand> EMOTE_COMMAND =
+            EventFactory.createArrayBacked(EmoteCommand.class, callbacks -> (st, source, action) -> {
+                for (EmoteCommand callback : callbacks) {
+                    callback.onEmoteCommandPlaceholder(st, source, action);
+                }
+            });
+
+        /**
+         * Called when an admin broadcast an in-game message via the {@code /say} command.
+         */
+        public static final Event<SayCommand> SAY_COMMAND =
+            EventFactory.createArrayBacked(SayCommand.class, callbacks -> (st, source, action) -> {
+                for (SayCommand callback : callbacks) {
+                    callback.onSayCommandPlaceholder(st, source, action);
+                }
+            });
+
+        /**
+         * Called when an admin broadcast an in-game message to all players via the {@code /tellraw @a} command.
+         */
+        public static final Event<TellRawCommand> TELLRAW_COMMAND =
+            EventFactory.createArrayBacked(TellRawCommand.class, callbacks -> (st, source, action) -> {
+                for (TellRawCommand callback : callbacks) {
+                    callback.onTellRawCommandPlaceholder(st, source, action);
+                }
+            });
+
         @FunctionalInterface
         public interface ServerStarting
         {
@@ -401,6 +433,61 @@ public final class ChatPlaceholderEvents
              * @param source   damage source
              */
             void onPlayerDeathPlaceholder(StringTemplate template, ServerPlayerEntity player, DamageSource source);
+        }
+
+        @FunctionalInterface
+        public interface EmoteCommand
+        {
+            /**
+             * Called when a player sent an in-game message via the {@code /me}
+             * command.
+             *
+             * @param template mutable string template
+             * @param source   source of the command, e.g. a player
+             * @param action   received message contents
+             * @see net.minecraft.network.message.MessageType#EMOTE_COMMAND
+             * @see net.fabricmc.fabric.api.message.v1.ServerMessageEvents#COMMAND_MESSAGE
+             */
+            void onEmoteCommandPlaceholder(
+                StringTemplate template,
+                ServerCommandSource source,
+                FilteredMessage<SignedMessage> action
+            );
+        }
+
+        @FunctionalInterface
+        public interface SayCommand
+        {
+            /**
+             * Called when an admin broadcast an in-game message via the
+             * {@code /say} command.
+             *
+             * @param template mutable string template
+             * @param source   source of the message, e.g. a player
+             * @param action   received message contents
+             * @see net.minecraft.network.message.MessageType#SAY_COMMAND
+             * @see net.fabricmc.fabric.api.message.v1.ServerMessageEvents#COMMAND_MESSAGE
+             */
+            void onSayCommandPlaceholder(
+                StringTemplate template,
+                ServerCommandSource source,
+                FilteredMessage<SignedMessage> action
+            );
+        }
+
+        @FunctionalInterface
+        public interface TellRawCommand
+        {
+            /**
+             * Called when an admin broadcast an in-game message to *all*
+             * players via the {@code /tellraw @a} command.
+             *
+             * @param template mutable string template
+             * @param source   source of the message, e.g. a player
+             * @param message  received message contents
+             * @see net.minecraft.network.message.MessageType#TELLRAW_COMMAND
+             */
+            void onTellRawCommandPlaceholder(StringTemplate template, ServerCommandSource source, Text message);
         }
     }
 }
