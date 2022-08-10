@@ -64,8 +64,8 @@ public class ChatConfig implements ConfigData
 
             @Comment("""
                 A player teleported to another dimension
-                Usages: ${username}, ${player}, ${origin} and ${destination}""")
-            public String teleport = "**${player}** entered ${destination}. :cyclone:";
+                Usages: ${username}, ${player}, ${world}, ${x}, ${y}, ${z}, ${origin}, ${origin_x}, ${origin_y} and ${origin_z}""")
+            public String teleport = "**${player}** entered ${world}. :cyclone:";
 
             @Comment("""
                 A player joined the game
