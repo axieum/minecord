@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
+import me.axieum.mcmod.minecord.api.chat.event.minecraft.TellRawMessageCallback;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReactionListener;
 import me.axieum.mcmod.minecord.impl.chat.callback.discord.MessageReceivedListener;
@@ -97,6 +98,11 @@ public final class MinecordChat implements MinecordAddon, DedicatedServerModInit
 
         // A named animal/monster (with name tag) died
         EntityDeathEvents.ANIMAL_MONSTER.register(new EntityDeathCallback());
+        // A player sent an in-game message via the '/me' command
+        // An admin broadcast an in-game message via the '/say' command
+        ServerMessageEvents.COMMAND_MESSAGE.register(new ServerMessageCallback());
+        // An admin broadcast an in-game message to all players via the '/tellraw' command
+        TellRawMessageCallback.EVENT.register(new ServerMessageCallback());
     }
 
     /**

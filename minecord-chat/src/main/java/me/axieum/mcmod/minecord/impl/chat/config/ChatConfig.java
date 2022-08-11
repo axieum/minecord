@@ -40,12 +40,30 @@ public class ChatConfig implements ConfigData
         /**
          * Discord events configuration schema.
          */
+        @SuppressWarnings("checkstyle:linelength")
         public static class DiscordSchema
         {
             @Comment("""
                 A player sent an in-game chat message
                 Usages: ${username}, ${player}, ${message} and ${world}""")
             public String chat = "`${world}` **${player}** > ${message}";
+
+            @Comment("""
+                A player sent an in-game message via the '/me' command
+                Note: there is no player or world if sent from a command block or console!
+                Usages: ${username}, ${player}, ${action} and ${world}""")
+            public String emote = "`${world:-∞}` **${player:-Server}** _${action}_";
+
+            @Comment("""
+                An admin broadcast an in-game message via the '/say' command
+                Note: there is no player or world if sent from a command block or console!
+                Usages: ${username}, ${player}, ${message} and ${world}""")
+            public String say = "**[${player:-Server}]** ${message}";
+
+            @Comment("""
+                An admin broadcast an in-game message to all players via the '/tellraw @a' command
+                Usages: ${message}""")
+            public String tellraw = "${message}";
 
             @Comment("""
                 A player had died
@@ -64,8 +82,8 @@ public class ChatConfig implements ConfigData
 
             @Comment("""
                 A player teleported to another dimension
-                Usages: ${username}, ${player}, ${origin} and ${destination}""")
-            public String teleport = "**${player}** entered ${destination}. :cyclone:";
+                Usages: ${username}, ${player}, ${world}, ${x}, ${y}, ${z}, ${origin}, ${origin_x}, ${origin_y} and ${origin_z}""")
+            public String teleport = "**${player}** entered ${world}. :cyclone:";
 
             @Comment("""
                 A player joined the game
