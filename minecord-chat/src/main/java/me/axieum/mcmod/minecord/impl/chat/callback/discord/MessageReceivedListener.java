@@ -3,6 +3,7 @@ package me.axieum.mcmod.minecord.impl.chat.callback.discord;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.Nullable;
 
 import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
@@ -32,6 +33,7 @@ public class MessageReceivedListener extends ListenerAdapter
     public void onText(MessageReceivedEvent event)
     {
         final long channelId = event.getChannel().getIdLong();
+        final @Nullable Message replyMessage = event.getMessage().getReferencedMessage();
 
         /*
          * Prepare a message template.
@@ -53,16 +55,41 @@ public class MessageReceivedListener extends ListenerAdapter
         // The raw message contents
         st.add("raw", event.getMessage().getContentRaw());
 
-        ChatPlaceholderEvents.Discord.MESSAGE_RECEIVED.invoker().onMessageReceivedPlaceholder(st, event);
+        // The message is in reply to another
+        if (replyMessage != null) {
+            // The replied message author's tag (i.e. username#discriminator), e.g. Axieum#1001
+            st.add("reply_tag", replyMessage.getAuthor().getAsTag());
+            // The replied message author's username, e.g. Axieum
+            st.add("reply_username", replyMessage.getAuthor().getName());
+            // The replied message author's username discriminator, e.g. 1001
+            st.add("reply_discriminator", replyMessage.getAuthor().getDiscriminator());
+            // The replied message author's nickname or username
+            st.add("reply_author", replyMessage.getMember() != null ? replyMessage.getMember().getEffectiveName()
+                : replyMessage.getAuthor().getName());
+            // The replied message formatted message contents
+            st.add("reply_message", StringUtils.discordToMinecraft(replyMessage.getContentDisplay()));
+            // The replied message raw message contents
+            st.add("reply_raw", replyMessage.getContentRaw());
+        }
 
         /*
          * Dispatch the message.
          */
 
-        MinecraftDispatcher.json(entry -> st.format(entry.minecraft.chat),
-            entry -> entry.minecraft.chat != null && entry.id == channelId);
+        // The message is a standalone message
+        if (replyMessage == null) {
+            ChatPlaceholderEvents.Discord.MESSAGE_RECEIVED.invoker().onMessageReceivedPlaceholder(st, event);
+            MinecraftDispatcher.json(entry -> st.format(entry.minecraft.chat),
+                entry -> entry.minecraft.chat != null && entry.id == channelId);
+            LOGGER.info(st.format("@${tag} > ${raw}"));
 
-        LOGGER.info(st.format("@${tag} > ${raw}"));
+        // The message is in reply to another
+        } else {
+            ChatPlaceholderEvents.Discord.REPLY_RECEIVED.invoker().onReplyReceivedPlaceholder(st, event);
+            MinecraftDispatcher.json(entry -> st.format(entry.minecraft.reply),
+                entry -> entry.minecraft.reply != null && entry.id == channelId);
+            LOGGER.info(st.format("@${tag} (in reply to @${reply_tag}) > ${raw}"));
+        }
     }
 
     public void onAttachment(MessageReceivedEvent event, Message.Attachment attachment)

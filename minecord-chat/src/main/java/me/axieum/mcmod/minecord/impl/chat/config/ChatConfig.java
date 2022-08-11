@@ -138,6 +138,11 @@ public class ChatConfig implements ConfigData
             public String chat = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${message}\"}]";
 
             @Comment("""
+                A user sent a message in reply to another
+                Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message}, ${reply_author}, ${reply_tag}, ${reply_username}, ${reply_discriminator} and ${reply_message}""")
+            public String reply = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"Sent from Discord\",\"italic\":true}]}},\" \",{\"text\":\"(in reply to ${reply_author})\",\"color\":\"#99dcff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${reply_tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"${reply_message:%.50s}...\"]}},{\"text\":\" > \",\"color\":\"dark_gray\"},\"${message}\"]";
+
+            @Comment("""
                 A user edited their recently sent message
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${diff}, ${original} and ${message}""")
             public String edit = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${diff}\"}]";
