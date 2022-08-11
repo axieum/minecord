@@ -134,7 +134,7 @@ public class ChatConfig implements ConfigData
         {
             @Comment("""
                 A user sent a message
-                Usages: ${author}, ${tag}, ${username}, ${discriminator} and ${message}""")
+                Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message} and ${raw}""")
             public String chat = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${message}\"}]";
 
             @Comment("""
@@ -144,17 +144,17 @@ public class ChatConfig implements ConfigData
 
             @Comment("""
                 A user edited their recently sent message
-                Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${diff}, ${original} and ${message}""")
+                Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${diff}, ${message}, ${raw}, ${original} and ${original_raw}""")
             public String edit = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${diff}\"}]";
 
             @Comment("""
                 A user reacted to a recent message
-                Usages: ${reactor}, ${reactor_tag}, ${reactor_username}, ${reactor_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
+                Usages: ${issuer}, ${issuer_tag}, ${issuer_username}, ${issuer_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
             public String react = "[\"\",{\"text\":\"${issuer}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${issuer_tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" reacted with \"},{\"text\":\"${emote}\",\"color\":\"green\"},{\"text\": \" to \"},{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${author_tag} \"}},{\"text\":\"'s message\"}]";
 
             @Comment("""
                 A user removed their reaction from a recent message
-                Usages: ${reactor}, ${reactor_tag}, ${reactor_username}, ${reactor_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
+                Usages: ${issuer}, ${issuer_tag}, ${issuer_username}, ${issuer_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
             public String unreact = "[\"\",{\"text\":\"${issuer}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${issuer_tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" removed their reaction of \"},{\"text\":\"${emote}\",\"color\":\"red\"},{\"text\": \" from \"},{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${author_tag} \"}},{\"text\":\"'s message\"}]";
 
             @Comment("""

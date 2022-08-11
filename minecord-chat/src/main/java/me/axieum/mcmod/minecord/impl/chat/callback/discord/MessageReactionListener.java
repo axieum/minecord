@@ -36,17 +36,14 @@ public class MessageReactionListener extends ListenerAdapter
 
             final StringTemplate st = new StringTemplate();
 
-            // The issuer's nickname or username
-            st.add("issuer", event.getMember() != null ? event.getMember().getEffectiveName()
-                                                           : event.getUser().getName());
             // The issuer's tag (i.e. username#discriminator), e.g. Axieum#1001
             st.add("issuer_tag", event.getUser().getAsTag());
             // The issuer's username, e.g. Axieum
             st.add("issuer_username", event.getUser().getName());
             // The issuer's username discriminator, e.g. 1001
             st.add("issuer_discriminator", event.getUser().getDiscriminator());
-            // The author's nickname or username
-            st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
+            // The issuer's nickname or username
+            st.add("issuer", event.getMember() != null ? event.getMember().getEffectiveName()
                                                            : event.getUser().getName());
             // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
             st.add("author_tag", event.getUser().getAsTag());
@@ -54,6 +51,9 @@ public class MessageReactionListener extends ListenerAdapter
             st.add("author_username", event.getUser().getName());
             // The author's username discriminator, e.g. 1001
             st.add("author_discriminator", event.getUser().getDiscriminator());
+            // The author's nickname or username
+            st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
+                                                           : event.getUser().getName());
             // The emote used to react
             st.add("emote", emote);
 
