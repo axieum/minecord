@@ -243,8 +243,11 @@ public class StringTemplate
                 try {
                     // If a format was specified, use it against its class type
                     if (format != null && !format.isBlank()) {
+                        // String
+                        if (value instanceof String) {
+                            matcher.appendReplacement(builder, String.format(format, value));
                         // Number
-                        if (value instanceof Number) {
+                        } else if (value instanceof Number) {
                             matcher.appendReplacement(builder, new DecimalFormat(format).format(value));
                         // Date & Time
                         } else if (value instanceof Temporal) {
