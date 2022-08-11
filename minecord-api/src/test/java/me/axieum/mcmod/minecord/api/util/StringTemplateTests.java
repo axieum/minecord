@@ -60,6 +60,15 @@ public class StringTemplateTests
     }
 
     @Test
+    @DisplayName("Format strings")
+    public void formatStrings()
+    {
+        st.add("lorem", "Lorem ipsum dolor sit amet, consectetur.");
+        assertEquals("Lorem ipsum dolor sit amet...", st.format("${lorem:%.26s}..."));
+        assertEquals("Lorem ipsum dolor sit amet, consectetur.", st.format("${lorem:%.255s}"));
+    }
+
+    @Test
     @DisplayName("Format decimals")
     public void formatDecimals()
     {

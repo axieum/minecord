@@ -51,6 +51,16 @@ public final class ChatPlaceholderEvents
             });
 
         /**
+         * Called when a user sent a message in reply to another.
+         */
+        public static final Event<ReplyReceived> REPLY_RECEIVED =
+            EventFactory.createArrayBacked(ReplyReceived.class, callbacks -> (st, event) -> {
+                for (ReplyReceived callback : callbacks) {
+                    callback.onReplyReceivedPlaceholder(st, event);
+                }
+            });
+
+        /**
          * Called when a user edited their recently sent message.
          */
         public static final Event<MessageUpdated> MESSAGE_UPDATED =
@@ -90,6 +100,18 @@ public final class ChatPlaceholderEvents
              * @param event    JDA message received event instance
              */
             void onMessageReceivedPlaceholder(StringTemplate template, MessageReceivedEvent event);
+        }
+
+        @FunctionalInterface
+        public interface ReplyReceived
+        {
+            /**
+             * Called when a user sent a message in reply to another.
+             *
+             * @param template mutable string template
+             * @param event    JDA message received event instance
+             */
+            void onReplyReceivedPlaceholder(StringTemplate template, MessageReceivedEvent event);
         }
 
         @FunctionalInterface
