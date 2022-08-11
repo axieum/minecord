@@ -34,7 +34,7 @@ public abstract class TellRawCommandMixin
      * @param context command context
      * @param cir     mixin callback info
      */
-    @Inject(method = "method_13777", at = @At(value = "TAIL"))
+    @Inject(method = "method_13777", at = @At(value = "TAIL"), remap = false)
     private static void execute(CommandContext<ServerCommandSource> context, CallbackInfoReturnable<Integer> cir)
     {
         // If the message was sent to *all* players, then also include Discord in the discussion
@@ -60,7 +60,8 @@ public abstract class TellRawCommandMixin
             value = "INVOKE",
             target = "Lnet/minecraft/command/argument/EntityArgumentType;getPlayers("
                 + "Lcom/mojang/brigadier/context/CommandContext;Ljava/lang/String;)Ljava/util/Collection;"
-        )
+        ),
+        remap = false
     )
     private static Collection<ServerPlayerEntity> getPlayers(
         CommandContext<ServerCommandSource> context, String name
