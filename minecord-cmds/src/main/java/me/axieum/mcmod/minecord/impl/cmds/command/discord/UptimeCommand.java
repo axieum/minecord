@@ -47,7 +47,7 @@ public class UptimeCommand extends MinecordCommand
         EmbedBuilder embed = new EmbedBuilder().setDescription(TEMPLATE.format(getConfig().builtin.uptime.message));
 
         // Fire an event to allow the embed to be mutated or cancelled
-        embed = MinecordCommandEvents.Uptime.AFTER_EXECUTE.invoker().onAfterExecuteUptime(event, server, embed);
+        embed = MinecordCommandEvents.Uptime.AFTER_EXECUTE.invoker().onAfterExecuteUptime(this, event, server, embed);
 
         // Build and reply with the resulting embed
         event.getHook().sendMessageEmbeds(embed.build()).queue();

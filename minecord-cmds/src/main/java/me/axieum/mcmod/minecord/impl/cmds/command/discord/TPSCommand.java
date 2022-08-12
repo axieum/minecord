@@ -51,7 +51,7 @@ public class TPSCommand extends MinecordCommand
             .setColor(Color.HSBtoRGB(Math.round(meanTPS / 5d) / 4f / 3f, 1f, 1f));
 
         // Fire an event to allow the embed to be mutated or cancelled
-        embed = MinecordCommandEvents.TPS.AFTER_EXECUTE.invoker().onAfterExecuteTPS(event, server, embed);
+        embed = MinecordCommandEvents.TPS.AFTER_EXECUTE.invoker().onAfterExecuteTPS(this, event, server, embed);
 
         // Build and reply with the resulting embed
         event.getHook().sendMessageEmbeds(embed.build()).queue();

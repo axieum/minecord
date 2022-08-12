@@ -63,10 +63,10 @@ public class CustomCommand extends MinecordCommand
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event, @Nullable MinecraftServer server) throws Exception
     {
-        assert server != null;
+        assert server != null; // this.requiresMinecraft = true
 
         // Prepare the Minecraft command
-        final String mcCommand;
+        String mcCommand;
         try {
             mcCommand = prepareCommand(config.command, event.getOptions());
         } catch (ParsingException | IllegalArgumentException e) {
@@ -74,9 +74,10 @@ public class CustomCommand extends MinecordCommand
         }
 
         // Fire an event to allow the command execution to be cancelled
-        if (!MinecordCommandEvents.Custom.BEFORE_EXECUTE.invoker().onBeforeExecuteCustom(mcCommand, event, server)) {
-            return;
-        }
+        mcCommand = MinecordCommandEvents.Custom.BEFORE_EXECUTE.invoker().onBeforeExecuteCustom(
+            this, event, server, mcCommand
+        );
+        if (mcCommand == null || mcCommand.isEmpty()) return;
 
         // Create a temporary command source and hence output, to relay command feedback
         final String username = event.getMember() != null
@@ -157,7 +158,7 @@ public class CustomCommand extends MinecordCommand
 
         // Fire an event to allow the command feedback to be mutated or cancelled
         embed = MinecordCommandEvents.Custom.AFTER_EXECUTE.invoker().onAfterExecuteCustom(
-            event, server, command, result, success, embed
+            this, event, server, command, result, success, embed
         );
 
         // Build and reply with the resulting embed
