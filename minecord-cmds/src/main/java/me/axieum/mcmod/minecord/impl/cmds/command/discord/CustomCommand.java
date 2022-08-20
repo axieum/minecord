@@ -2,6 +2,8 @@ package me.axieum.mcmod.minecord.impl.cmds.command.discord;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -25,6 +27,7 @@ import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.LOGGER;
+import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
 
 /**
  * Custom Minecraft proxy Minecord command.
@@ -66,41 +69,68 @@ public class CustomCommand extends MinecordCommand
         assert server != null; // this.requiresMinecraft = true
 
         // Prepare the Minecraft command
-        String mcCommand;
+        final String origCommand;
         try {
-            mcCommand = prepareCommand(config.command, event.getOptions());
+            origCommand = prepareCommand(config.command, event.getOptions());
         } catch (ParsingException | IllegalArgumentException e) {
             throw new Exception("Unable to prepare Minecraft command!", e);
         }
 
-        // Fire an event to allow the command execution to be cancelled
-        mcCommand = MinecordCommandEvents.Custom.BEFORE_EXECUTE.invoker().onBeforeExecuteCustom(
-            this, event, server, mcCommand
+        // Fire an event to allow the command execution to be mutated or cancelled
+        final String mcCommand = MinecordCommandEvents.Custom.ALLOW_EXECUTE.invoker().onAllowCustomCommand(
+            this, event, server, origCommand
         );
         if (mcCommand == null || mcCommand.isEmpty()) return;
 
         // Create a temporary command source and hence output, to relay command feedback
+        final String tag = event.getUser().getAsTag();
         final String username = event.getMember() != null
             ? event.getMember().getEffectiveName()
             : event.getUser().getName();
-        final ServerCommandSource source = new ServerCommandSource(
-            new DiscordCommandOutput(event, server, mcCommand),
-            Vec3d.ZERO, Vec2f.ZERO, server.getOverworld(),
-            PERMISSION_LEVEL, username, Text.literal(username),
-            server, null
+        final DiscordCommandOutput output = new DiscordCommandOutput(event, server, mcCommand);
+        final ServerCommandSource origSource = new ServerCommandSource(
+            output, // command output
+            Vec3d.ZERO, Vec2f.ZERO, server.getOverworld(), // location & world
+            PERMISSION_LEVEL, tag, Text.literal(username), // permission & display name
+            server, null // server & entity
+        );
+
+        // Fire an event to allow the command source to be mutated
+        final ServerCommandSource source = MinecordCommandEvents.Custom.BEFORE_EXECUTE.invoker().onBeforeCustomCommand(
+            this, event, server, mcCommand, origSource
         );
 
         // Attempt to proxy the Minecraft command
+        AtomicBoolean success = new AtomicBoolean(false);
+        AtomicInteger result = new AtomicInteger(0);
+        @Nullable CommandSyntaxException error = null;
         try {
-            LOGGER.info("@{} is running '/{}'", event.getUser().getAsTag(), mcCommand);
+            LOGGER.info("@{} is running '/{}'", tag, mcCommand);
             server.getCommandManager().getDispatcher().execute(mcCommand, source.withConsumer((c, s, r) -> {
-                // The command was proxied, however the actual feedback was sent to the source's command output
-                LOGGER.info("@{} ran '/{}' with result {}", event.getUser().getAsTag(), c.getInput(), r);
+                success.set(s); // if unsuccessful, it may choose to raise a command syntax exception
+                result.set(r);
             }));
         } catch (CommandSyntaxException e) {
-            // The command was indeed proxied, but the result was not a success
-            // e.g. trying to whitelist a player who is already whitelisted
-            reply(event, server, mcCommand, e.getMessage(), false);
+            error = e;
+        } finally {
+            LOGGER.info(
+                "@{} ran '/{}' with result {} ({})", tag, mcCommand, result.get(), success.get() ? "success" : "fail"
+            );
+        }
+
+        // Fire an event to broadcast the commands successful/failed execution
+        MinecordCommandEvents.Custom.AFTER_EXECUTE.invoker().onCustomCommand(
+            this, event, server, mcCommand, success.get(), result.get(), error
+        );
+
+        // Finally, if there was still no command feedback sent, let them know with a default message
+        // NB: This is to prevent the "The application did not respond" error in Discord, e.g. '/say' or '/tellraw'
+        if (output.prevMessage == null) {
+            if (error == null) {
+                source.sendFeedback(Text.literal(getConfig().messages.feedback), false);
+            } else {
+                source.sendError(Text.literal(error.getMessage()));
+            }
         }
     }
 
@@ -137,35 +167,6 @@ public class CustomCommand extends MinecordCommand
     }
 
     /**
-     * Replies with an embed containing the command execution result.
-     *
-     * @param event   JDA slash command event to reply to
-     * @param server  Minecraft server
-     * @param command Minecraft command that was executed (without leading '/')
-     * @param result  Minecraft command execution feedback
-     * @param success true if the command was a success
-     */
-    public void reply(
-        SlashCommandInteractionEvent event, MinecraftServer server, String command, String result, boolean success
-    )
-    {
-        // Build an initial embed for the command feedback
-        EmbedBuilder embed = new EmbedBuilder()
-            // Set the colour to green for a success, and red for a failure
-            .setColor(success ? 0x00ff00 : 0xff0000)
-            // Set the message
-            .setDescription(result);
-
-        // Fire an event to allow the command feedback to be mutated or cancelled
-        embed = MinecordCommandEvents.Custom.AFTER_EXECUTE.invoker().onAfterExecuteCustom(
-            this, event, server, command, result, success, embed
-        );
-
-        // Build and reply with the resulting embed
-        event.getHook().sendMessageEmbeds(embed.build()).queue();
-    }
-
-    /**
      * A virtual Minecraft command output for use via Discord.
      */
     private final class DiscordCommandOutput implements CommandOutput
@@ -173,6 +174,8 @@ public class CustomCommand extends MinecordCommand
         private final SlashCommandInteractionEvent event;
         private final MinecraftServer server;
         private final String mcCommand;
+        public boolean erroneous = false;
+        public @Nullable String prevMessage = null;
 
         /**
          * Constructs a new virtual command output for relaying feedback to Discord.
@@ -191,7 +194,30 @@ public class CustomCommand extends MinecordCommand
         @Override
         public void sendMessage(Text message)
         {
-            reply(event, server, mcCommand, message.getString(), true);
+            // Build an initial embed for the command feedback
+            final String text = prevMessage != null ? prevMessage + '\n' + message.getString() : message.getString();
+            EmbedBuilder embed = new EmbedBuilder()
+                // Set the colour to green for a success, and red for a failure
+                .setColor(!erroneous ? 0x00ff00 : 0xff0000)
+                // Set the message
+                .setDescription(text);
+
+            // Fire an event to allow the command feedback to be mutated or cancelled
+            embed = MinecordCommandEvents.Custom.FEEDBACK.invoker().onCustomCommandFeedback(
+                CustomCommand.this, event, server, mcCommand, message, !erroneous, embed
+            );
+
+            // Build and reply with the resulting embed
+            if (embed != null) {
+                if (prevMessage == null) {
+                    // This is the first reply, send a new message
+                    event.getHook().sendMessageEmbeds(embed.build()).queue();
+                } else {
+                    // There already exists a reply, edit the original message
+                    event.getHook().editOriginalEmbeds(embed.build()).queue();
+                }
+                prevMessage = text;
+            }
         }
 
         @Override
@@ -203,7 +229,8 @@ public class CustomCommand extends MinecordCommand
         @Override
         public boolean shouldTrackOutput()
         {
-            return false;
+            // This method appears to only be called during 'ServerCommandSource#sendError'
+            return erroneous = true;
         }
 
         @Override

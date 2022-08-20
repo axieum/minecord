@@ -43,6 +43,10 @@ public class CommandConfig implements ConfigData
             The error message used when a user must wait before executing a command
             Usages: ${cooldown} and ${remaining}""")
         public String cooldown = "Please wait another ${remaining} before doing that! :alarm_clock:";
+
+        @Comment("""
+            The default message used when a command does not provide any feedback of its own, e.g. '/say'""")
+        public String feedback = "Consider it done! :thumbsup:";
     }
 
     @Category("Built-in Commands")
