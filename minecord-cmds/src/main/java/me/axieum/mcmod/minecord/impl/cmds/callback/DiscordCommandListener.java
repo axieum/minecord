@@ -6,11 +6,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
+import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.LOGGER;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
@@ -44,7 +46,7 @@ public class DiscordCommandListener extends ListenerAdapter
             // Attempt to run the command
             try {
                 // Check whether Minecraft is required, and hence whether the server has started
-                final MinecraftServer server = Minecord.getInstance().getMinecraft().orElse(null);
+                final @Nullable MinecraftServer server = Minecord.getInstance().getMinecraft().orElse(null);
                 if (command.requiresMinecraft() && (server == null || server.getTickTime() == 0)) {
                     LOGGER.warn("@{} used '{}' but the server is not yet ready!", username, raw);
                     event.getHook().sendMessageEmbeds(
@@ -74,9 +76,18 @@ public class DiscordCommandListener extends ListenerAdapter
                     }
                 }
 
+                // Fire an event to allow the command execution to be cancelled
+                if (!MinecordCommandEvents.BEFORE_EXECUTE.invoker().onBeforeMinecordCommand(command, event, server)) {
+                    LOGGER.debug("@{} used '{}' but its execution was externally cancelled!", username, raw);
+                    return;
+                }
+
                 // Attempt to cascade the event to the matched command
                 LOGGER.info("@{} used '{}'", username, raw);
                 command.execute(event, server);
+
+                // Fire an event for the successful command execution
+                MinecordCommandEvents.AFTER_EXECUTE.invoker().onMinecordCommand(command, event, server);
             } catch (Exception e) {
                 LOGGER.error("@{} failed to use '{}'", username, raw, e);
                 event.getHook().sendMessageEmbeds(
