@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1-beta.3](https://github.com/axieum/minecord/compare/cmds-v1.0.0-beta.3...cmds-v1.0.1-beta.3) (2022-08-22)
+
+
+### Bug Fixes
+
+* **cmds:** commands that don't have an output should receive a default message (fixes [#54](https://github.com/axieum/minecord/issues/54)) ([162f30f](https://github.com/axieum/minecord/commit/162f30f95c79882a6137089bb1f545a9ad80d786))
+* **cmds:** commands with multiple lines of output should edit the original embed ([162f30f](https://github.com/axieum/minecord/commit/162f30f95c79882a6137089bb1f545a9ad80d786))
+
 ## [1.0.0-beta.3](https://github.com/axieum/minecord/compare/cmds-v1.0.0-beta.2...cmds-v1.0.0-beta.3) (2022-07-01)
 
 

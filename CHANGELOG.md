@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.1.0-beta.3](https://github.com/axieum/minecord/compare/v1.0.0-beta.3...v1.1.0-beta.3) (2022-08-22)
+
+
+### Features
+
+* **api:** add 'i18n' config for translations ([#48](https://github.com/axieum/minecord/issues/48)) ([64b95c0](https://github.com/axieum/minecord/commit/64b95c018cf041392e96c2cbde111df5e34ae1e0))
+* **api:** add `String` formatting to string templates ([4baa059](https://github.com/axieum/minecord/commit/4baa05986911815d36129f59e9a538ef9c3fed0f))
+* **chat:** add `/me`, `/say` and `/tellraw` command messages (closes [#51](https://github.com/axieum/minecord/issues/51)) ([#53](https://github.com/axieum/minecord/issues/53)) ([7eea724](https://github.com/axieum/minecord/commit/7eea724576532bdedc601590cb7a1c1609e0a8b1))
+* **chat:** add Discord reply messages (closes [#50](https://github.com/axieum/minecord/issues/50)) ([#57](https://github.com/axieum/minecord/issues/57)) ([4baa059](https://github.com/axieum/minecord/commit/4baa05986911815d36129f59e9a538ef9c3fed0f))
+* **chat:** use new `fabric-message-api` events (closes [#32](https://github.com/axieum/minecord/issues/32)) ([#52](https://github.com/axieum/minecord/issues/52)) ([1859c69](https://github.com/axieum/minecord/commit/1859c695c02640e945fb7786b0a3f774d2de5cb7))
+
+
+### Bug Fixes
+
+* **api:** do not attempt to remap the language mixin ([791775b](https://github.com/axieum/minecord/commit/791775b14dc1565b636e45bf164905aac36de948))
+* **chat:** correct `teleport` message placeholders in config ([7eea724](https://github.com/axieum/minecord/commit/7eea724576532bdedc601590cb7a1c1609e0a8b1))
+* **chat:** correct Discord message placeholders in config ([4baa059](https://github.com/axieum/minecord/commit/4baa05986911815d36129f59e9a538ef9c3fed0f))
+* **cmds:** commands that don't have an output should receive a default message (fixes [#54](https://github.com/axieum/minecord/issues/54)) ([162f30f](https://github.com/axieum/minecord/commit/162f30f95c79882a6137089bb1f545a9ad80d786))
+* **cmds:** commands with multiple lines of output should edit the original embed ([162f30f](https://github.com/axieum/minecord/commit/162f30f95c79882a6137089bb1f545a9ad80d786))
+* modded translation keys should be resolved (fixes [#45](https://github.com/axieum/minecord/issues/45)) ([64b95c0](https://github.com/axieum/minecord/commit/64b95c018cf041392e96c2cbde111df5e34ae1e0))
+
 ## [1.0.0-beta.3](https://github.com/axieum/minecord/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2022-07-01)
 
 
