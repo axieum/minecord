@@ -28,7 +28,8 @@ public class PlayerConnectionCallback implements Join, Disconnect
             final ServerPlayerEntity player = handler.player;
 
             // The player's username
-            st.add("username", player.getName().getString());
+            final String username = player.getName().getString();
+            st.add("username", username);
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The name of the world the player logged into
@@ -46,9 +47,11 @@ public class PlayerConnectionCallback implements Join, Disconnect
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(st.format(entry.discord.join)),
-                entry -> entry.discord.join != null && entry.hasWorld(player.world));
+            DiscordDispatcher.embedWithAvatar(
+                (embed, entry) -> embed.setDescription(st.format(entry.discord.join)),
+                entry -> entry.discord.join != null && entry.hasWorld(player.world),
+                username
+            );
         });
     }
 
@@ -64,7 +67,8 @@ public class PlayerConnectionCallback implements Join, Disconnect
             final ServerPlayerEntity player = handler.player;
 
             // The player's username
-            st.add("username", player.getName().getString());
+            final String username = player.getName().getString();
+            st.add("username", username);
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The name of the world the player logged out
@@ -82,9 +86,11 @@ public class PlayerConnectionCallback implements Join, Disconnect
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(st.format(entry.discord.leave)),
-                entry -> entry.discord.leave != null && entry.hasWorld(player.world));
+            DiscordDispatcher.embedWithAvatar(
+                (embed, entry) -> embed.setDescription(st.format(entry.discord.leave)),
+                entry -> entry.discord.leave != null && entry.hasWorld(player.world),
+                username
+            );
         });
     }
 }

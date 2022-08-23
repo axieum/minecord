@@ -19,6 +19,9 @@ public class MinecordConfig extends PartitioningSerializer.GlobalData
     @Category("i18n")
     public I18nConfig i18n = new I18nConfig();
 
+    @Category("misc")
+    public MiscConfig misc = new MiscConfig();
+
     /**
      * Registers and prepares a new configuration instance.
      *
