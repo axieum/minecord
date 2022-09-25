@@ -209,6 +209,7 @@ public class CustomCommand extends MinecordCommand
             .map(node -> {
                 try {
                     if (node.getType() instanceof EntityArgumentType) {
+                        // Entity
                         return EntityArgumentType.getPlayer(context, node.getName()).getUuidAsString();
                     } else if (node.getType() instanceof GameProfileArgumentType) {
                         // Game Profile
