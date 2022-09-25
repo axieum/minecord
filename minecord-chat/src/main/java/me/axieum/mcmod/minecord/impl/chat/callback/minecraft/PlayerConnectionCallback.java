@@ -28,8 +28,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             final ServerPlayerEntity player = handler.player;
 
             // The player's username
-            final String username = player.getName().getString();
-            st.add("username", username);
+            st.add("username", player.getName().getString());
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The name of the world the player logged into
@@ -67,8 +66,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             final ServerPlayerEntity player = handler.player;
 
             // The player's username
-            final String username = player.getName().getString();
-            st.add("username", username);
+            st.add("username", player.getName().getString());
             // The player's display name
             st.add("player", player.getDisplayName().getString());
             // The name of the world the player logged out
