@@ -50,7 +50,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             DiscordDispatcher.embedWithAvatar(
                 (embed, entry) -> embed.setDescription(st.format(entry.discord.join)),
                 entry -> entry.discord.join != null && entry.hasWorld(player.world),
-                username
+                player.getUuidAsString()
             );
         });
     }
@@ -89,7 +89,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
             DiscordDispatcher.embedWithAvatar(
                 (embed, entry) -> embed.setDescription(st.format(entry.discord.leave)),
                 entry -> entry.discord.leave != null && entry.hasWorld(player.world),
-                username
+                player.getUuidAsString()
             );
         });
     }
