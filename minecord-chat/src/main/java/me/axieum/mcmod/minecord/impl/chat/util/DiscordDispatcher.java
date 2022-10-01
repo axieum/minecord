@@ -39,6 +39,23 @@ public final class DiscordDispatcher
     }
 
     /**
+     * Builds and queues embed messages with Minecraft player avatars for each configured chat entry.
+     *
+     * @param builder   consumer to modify the Discord embed builder for a chat entry before queuing
+     * @param predicate predicate that filters configured chat entries
+     * @param username  Minecraft player username for the avatar embed thumbnail
+     * @see #embedWithAvatar(BiConsumer, Predicate, String)
+     */
+    public static void embedWithAvatar(
+        BiConsumer<EmbedBuilder, ChatEntrySchema> builder,
+        Predicate<ChatEntrySchema> predicate,
+        @Nullable String username
+    )
+    {
+        embedWithAvatar(builder, (action, entry) -> action.queue(), predicate, username);
+    }
+
+    /**
      * Builds and acts on embed messages for each configured chat entry.
      *
      * @param builder   consumer to modify the Discord embed builder for a chat entry
@@ -55,7 +72,33 @@ public final class DiscordDispatcher
         dispatch(
             (message, entry) ->
                 builder.andThen((m, e) -> message.setEmbeds(m.build()))
-                       .accept(new EmbedBuilder(), entry),
+                    .accept(new EmbedBuilder(), entry),
+            action,
+            predicate
+        );
+    }
+
+    /**
+     * Builds and acts on embed messages with Minecraft player avatars for each configured chat entry.
+     *
+     * @param builder   consumer to modify the Discord embed builder for a chat entry before queuing
+     * @param action    consumer to act upon the resulting Discord message action
+     * @param predicate predicate that filters configured chat entries
+     * @param username  Minecraft player username for the avatar embed thumbnail
+     * @see #embed(BiConsumer, BiConsumer, Predicate)
+     */
+    public static void embedWithAvatar(
+        BiConsumer<EmbedBuilder, ChatEntrySchema> builder,
+        BiConsumer<MessageAction, ChatEntrySchema> action,
+        Predicate<ChatEntrySchema> predicate,
+        @Nullable String username
+    )
+    {
+        embed(
+            (message, entry) -> {
+                Minecord.getInstance().getAvatarUrl(username, 16).ifPresent(message::setThumbnail);
+                builder.accept(message, entry);
+            },
             action,
             predicate
         );

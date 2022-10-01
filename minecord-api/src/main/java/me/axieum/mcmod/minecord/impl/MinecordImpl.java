@@ -25,6 +25,7 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
 import me.axieum.mcmod.minecord.api.event.JDAEvents;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
+import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.callback.DiscordLifecycleListener;
 import me.axieum.mcmod.minecord.impl.callback.ServerLifecycleCallback;
 import me.axieum.mcmod.minecord.impl.config.MinecordConfig;
@@ -95,6 +96,18 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
     public Optional<JDA> getJDA()
     {
         return Optional.ofNullable(client);
+    }
+
+    @Override
+    public Optional<String> getAvatarUrl(@Nullable String username, int height)
+    {
+        // Only return an avatar URL if they are enabled and the provided username is valid
+        if (getConfig().misc.enableAvatars && username != null && !username.isBlank()) {
+            return Optional.ofNullable(
+                new StringTemplate().add("username", username).add("size", height).format(getConfig().misc.avatarUrl)
+            );
+        }
+        return Optional.empty();
     }
 
     /**

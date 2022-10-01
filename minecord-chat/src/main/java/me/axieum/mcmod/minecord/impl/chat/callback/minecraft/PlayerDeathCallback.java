@@ -58,9 +58,11 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(st.format(entry.discord.death)),
-                entry -> entry.discord.death != null && entry.hasWorld(player.world));
+            DiscordDispatcher.embedWithAvatar(
+                (embed, entry) -> embed.setDescription(st.format(entry.discord.death)),
+                entry -> entry.discord.death != null && entry.hasWorld(player.world),
+                player.getUuidAsString()
+            );
         });
     }
 }

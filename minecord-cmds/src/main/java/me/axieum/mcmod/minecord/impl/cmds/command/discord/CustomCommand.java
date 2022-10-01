@@ -1,9 +1,12 @@
 package me.axieum.mcmod.minecord.impl.cmds.command.discord;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -12,8 +15,15 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.context.ParsedCommandNode;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.ArgumentCommandNode;
 
+import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
@@ -22,6 +32,7 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 
+import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
 import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
@@ -101,15 +112,29 @@ public class CustomCommand extends MinecordCommand
         );
 
         // Attempt to proxy the Minecraft command
-        AtomicBoolean success = new AtomicBoolean(false);
-        AtomicInteger result = new AtomicInteger(0);
+        final AtomicBoolean success = new AtomicBoolean(false);
+        final AtomicInteger result = new AtomicInteger(0);
         @Nullable CommandSyntaxException error = null;
         try {
             LOGGER.info("@{} is running '/{}'", tag, mcCommand);
-            server.getCommandManager().getDispatcher().execute(mcCommand, source.withConsumer((c, s, r) -> {
-                success.set(s); // if unsuccessful, it may choose to raise a command syntax exception
-                result.set(r);
-            }));
+
+            // Parse the command and build its context
+            final ParseResults<ServerCommandSource> parseResults = server.getCommandManager().getDispatcher().parse(
+                mcCommand,
+                source.withConsumer((c, s, r) -> {
+                    success.set(s); // if unsuccessful, it may choose to raise a command syntax exception
+                    result.set(r);
+                })
+            );
+            final CommandContext<ServerCommandSource> context = parseResults.getContext().build(mcCommand);
+
+            // Analyse the command context for a player's UUID to show their avatar on any command feedback
+            findPlayerUsernames(context.getLastChild()).findFirst()
+                .flatMap(name -> Minecord.getInstance().getAvatarUrl(name, 16))
+                .ifPresent(url -> output.thumbnailUrl = url);
+
+            // Execute the command
+            server.getCommandManager().getDispatcher().execute(parseResults);
         } catch (CommandSyntaxException e) {
             error = e;
         } finally {
@@ -127,6 +152,7 @@ public class CustomCommand extends MinecordCommand
         // NB: This is to prevent the "The application did not respond" error in Discord, e.g. '/say' or '/tellraw'
         if (output.prevMessage == null) {
             if (error == null) {
+                output.thumbnailUrl = null;
                 source.sendFeedback(Text.literal(getConfig().messages.feedback), false);
             } else {
                 source.sendError(Text.literal(error.getMessage()));
@@ -167,6 +193,37 @@ public class CustomCommand extends MinecordCommand
     }
 
     /**
+     * Traverses the nodes of a Minecraft command context for a player-related
+     * argument and returns their UUID or username if present.
+     *
+     * @param context Minecraft command context
+     * @return a stream of Minecraft player usernames or UUIDs if present
+     */
+    private static Stream<String> findPlayerUsernames(CommandContext<ServerCommandSource> context)
+    {
+        return context
+            .getNodes()
+            .stream()
+            .map(ParsedCommandNode::getNode)
+            .filter(node -> node instanceof ArgumentCommandNode)
+            .map(node -> (ArgumentCommandNode<?, ?>) node)
+            .map(node -> {
+                try {
+                    if (node.getType() instanceof EntityArgumentType) {
+                        // Entity
+                        return EntityArgumentType.getPlayer(context, node.getName()).getUuidAsString();
+                    } else if (node.getType() instanceof GameProfileArgumentType) {
+                        // Game Profile
+                        Collection<GameProfile> c = GameProfileArgumentType.getProfileArgument(context, node.getName());
+                        return c.size() == 1 ? c.iterator().next().getId().toString() : null;
+                    }
+                } catch (CommandSyntaxException | IllegalArgumentException ignored) { /* ignored */ }
+                return null;
+            })
+            .filter(Objects::nonNull);
+    }
+
+    /**
      * A virtual Minecraft command output for use via Discord.
      */
     private final class DiscordCommandOutput implements CommandOutput
@@ -176,6 +233,7 @@ public class CustomCommand extends MinecordCommand
         private final String mcCommand;
         public boolean erroneous = false;
         public @Nullable String prevMessage = null;
+        public @Nullable String thumbnailUrl = null;
 
         /**
          * Constructs a new virtual command output for relaying feedback to Discord.
@@ -199,6 +257,8 @@ public class CustomCommand extends MinecordCommand
             EmbedBuilder embed = new EmbedBuilder()
                 // Set the colour to green for a success, and red for a failure
                 .setColor(!erroneous ? 0x00ff00 : 0xff0000)
+                // Set the thumbnail
+                .setThumbnail(thumbnailUrl)
                 // Set the message
                 .setDescription(text);
 
