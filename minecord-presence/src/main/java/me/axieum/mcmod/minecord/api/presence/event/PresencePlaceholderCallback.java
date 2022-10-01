@@ -11,6 +11,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 
+/**
+ * A callback for when providing placeholder values to Discord bot presence messages.
+ */
+@FunctionalInterface
 public interface PresencePlaceholderCallback
 {
     /**

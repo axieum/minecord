@@ -28,9 +28,14 @@ import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerLifecycleCall
 import me.axieum.mcmod.minecord.impl.chat.callback.minecraft.ServerMessageCallback;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
 
+/**
+ * Minecord Chat addon.
+ */
 public final class MinecordChat implements MinecordAddon, DedicatedServerModInitializer
 {
+    /** Minecord Chat logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Chat");
+    /** Minecord Chat configuration. */
     private static final ConfigHolder<ChatConfig> CONFIG = ChatConfig.init();
 
     @Override

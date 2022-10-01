@@ -12,6 +12,9 @@ import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
+/**
+ * A listener for new Discord messages.
+ */
 public class MessageReceivedListener extends ListenerAdapter
 {
     @Override
@@ -30,6 +33,11 @@ public class MessageReceivedListener extends ListenerAdapter
             onAttachment(event, attachment);
     }
 
+    /**
+     * Handles the text component of a given message received event.
+     *
+     * @param event message received event
+     */
     public void onText(MessageReceivedEvent event)
     {
         final long channelId = event.getChannel().getIdLong();
@@ -92,6 +100,12 @@ public class MessageReceivedListener extends ListenerAdapter
         }
     }
 
+    /**
+     * Handles an attachment of a given message received event.
+     *
+     * @param event message received event
+     * @param attachment message attachment
+     */
     public void onAttachment(MessageReceivedEvent event, Message.Attachment attachment)
     {
         final long channelId = event.getChannel().getIdLong();

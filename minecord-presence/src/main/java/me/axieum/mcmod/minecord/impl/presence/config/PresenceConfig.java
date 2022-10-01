@@ -26,9 +26,13 @@ import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl;
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
+/**
+ * Minecord Presence configuration schema.
+ */
 @Config(name = "minecord/presence")
 public class PresenceConfig implements ConfigData
 {
+    /** A collection of presence categories used to group presences together. */
     @Category("Presence Categories")
     @Comment("A collection of presence categories used to group presences together")
     public HashMap<String, CategorySchema> categories = new HashMap<>(3);
@@ -38,8 +42,16 @@ public class PresenceConfig implements ConfigData
      */
     public static class CategorySchema
     {
+        /** Constructs a new empty Discord presence category config. */
         public CategorySchema() {}
 
+        /**
+         * Constructs a new Discord presence category config.
+         *
+         * @param interval number of seconds between presence updates (at least 15s)
+         * @param random true if presences should be chosen randomly, else round-robin
+         * @param presences a list of presence configs shown by the Discord bot while the category is active
+         */
         public CategorySchema(int interval, boolean random, PresenceSchema... presences)
         {
             this.interval = interval;
@@ -47,12 +59,15 @@ public class PresenceConfig implements ConfigData
             if (presences != null) this.presences = presences;
         }
 
+        /** The number of seconds between presence updates (at least 15s). */
         @Comment("The number of seconds between presence updates (at least 15s)")
         public int interval = 60;
 
+        /** True if presences should be chosen randomly, else round-robin. */
         @Comment("True if presences should be chosen randomly, else round-robin")
         public boolean random = false;
 
+        /** A list of presences shown by the Discord bot while the category is active. */
         @Category("Presences")
         @Comment("A list of presences shown by the Discord bot while the category is active")
         public PresenceSchema[] presences = new PresenceSchema[] {};
@@ -62,8 +77,16 @@ public class PresenceConfig implements ConfigData
          */
         public static class PresenceSchema
         {
+            /** Constructs a new empty Discord presence config. */
             public PresenceSchema() {}
 
+            /**
+             * Constructs a new Discord presence config.
+             *
+             * @param idle true if the bot is idle, false for active, or null for default
+             * @param status bot status
+             * @param activity bot activity
+             */
             public PresenceSchema(
                 @Nullable Boolean idle, @Nullable OnlineStatus status, @Nullable ActivitySchema activity
             )
@@ -73,25 +96,39 @@ public class PresenceConfig implements ConfigData
                 this.activity = activity;
             }
 
+            /** If defined, overrides whether the bot is idling. */
             @Comment("If defined, overrides whether the bot is idling")
             public @Nullable Boolean idle = null;
 
+            /**
+             * If defined, overrides the online status.
+             *
+             * <p>Allowed values: {@code null}, {@code ONLINE}, {@code IDLE},
+             * {@code DO_NOT_DISTURB}, {@code INVISIBLE} and {@code OFFLINE}.
+             */
             @Comment("""
                 If defined, overrides the online status
                 Allowed values: null, ONLINE, IDLE, DO_NOT_DISTURB, INVISIBLE and OFFLINE""")
             public @Nullable OnlineStatus status = null;
 
+            /** If defined, overrides the game activity. */
             @Category("Activity")
             @Comment("If defined, overrides the game activity")
             public @Nullable ActivitySchema activity = null;
 
-            /**
-             * Presence activity configuration schema.
-             */
+            /** Presence activity configuration schema. */
             public static class ActivitySchema
             {
+                /** Constructs a new empty Discord presence activity config. */
                 public ActivitySchema() {}
 
+                /**
+                 * Constructs a new Discord presence activity config.
+                 *
+                 * @param type type of activity
+                 * @param name name of the activity
+                 * @param url optional link to the activity, e.g. Twitch stream
+                 */
                 public ActivitySchema(ActivityType type, String name, @Nullable String url)
                 {
                     this.type = type;
@@ -99,17 +136,30 @@ public class PresenceConfig implements ConfigData
                     this.url = url;
                 }
 
+                /**
+                 * The type of activity.
+                 *
+                 * <p>Allowed values: {@code COMPETING}, {@code LISTENING}, {@code PLAYING},
+                 * {@code STREAMING} and {@code WATCHING}.
+                 */
                 @Comment("""
                     The type of activity
                     Allowed values: COMPETING, LISTENING, PLAYING, STREAMING and WATCHING""")
                 public ActivityType type = ActivityType.PLAYING;
 
+                /**
+                 * The name of the activity.
+                 *
+                 * <p>Usages: {@code ${version}}, {@code ${ip}}, {@code ${port}}, {@code ${motd}},
+                 * {@code ${difficulty}}, {@code ${max_players}}, {@code ${player_count}} and {@code ${uptime}}.
+                 */
                 @SuppressWarnings("checkstyle:linelength")
                 @Comment("""
                     The name of the activity
                     Usages: ${version}, ${ip}, ${port}, ${motd}, ${difficulty}, ${max_players}, ${player_count} and ${uptime}""")
                 public String name = "Minecraft";
 
+                /** If defined, provides a link to the activity, e.g. Twitch stream. */
                 @Comment("If defined, provides a link to the activity, e.g. Twitch stream")
                 public @Nullable String url = null;
             }

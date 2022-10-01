@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.JDABuilder;
 public interface MinecordAddon
 {
     /**
-     * Initialises a new Minecord addon.
+     * Constructs a new Minecord addon.
      *
      * <p>NB: This is called before building the JDA client! To use the built
      * client once connected, you can attach an event listener and observe the

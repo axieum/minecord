@@ -6,6 +6,11 @@ import net.minecraft.text.Text;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * A callback for when a server (or player) broadcasts a {@code /tellraw} command
+ * message to *all* players.
+ */
+@FunctionalInterface
 public interface TellRawMessageCallback
 {
     /**

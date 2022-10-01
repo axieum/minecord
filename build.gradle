@@ -46,7 +46,7 @@ allprojects {
     // Produce additional distributions
     java {
         withSourcesJar()
-//        withJavadocJar()
+        withJavadocJar()
     }
 
     // Produce a fat-jar of all shaded dependencies
@@ -187,11 +187,11 @@ curseforge {
         mainArtifact(remapJar) { displayName = "${project.mod_name} v${project.version} for Minecraft ${project.minecraft_version}" }
         // Add any additional artifacts
         addArtifact remapSourcesJar
-//        addArtifact javadocJar
+        addArtifact javadocJar
         subprojects.each {
             addArtifact it.remapJar
             addArtifact it.remapSourcesJar
-//            addArtifact it.javadocJar
+            addArtifact it.javadocJar
         }
         // Add any dependencies
         relations {
@@ -235,11 +235,11 @@ modrinth {
     uploadFile = remapJar
     // Add any additional artifacts
     additionalFiles.add remapSourcesJar
-//    additionalFiles.add javadocJar
+    additionalFiles.add javadocJar
     subprojects.each {
         additionalFiles.add it.remapJar
         additionalFiles.add it.remapSourcesJar
-//        additionalFiles.add it.javadocJar
+        additionalFiles.add it.javadocJar
     }
     // Add any dependencies
     if (project.mr_relations_required) dependencies.addAll project.mr_relations_required.split(', ').collect { new ModDependency(it, 'required') }

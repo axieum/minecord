@@ -10,15 +10,21 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
+/**
+ * Minecord partitioned configuration schema.
+ */
 @Config(name = "minecord")
 public class MinecordConfig extends PartitioningSerializer.GlobalData
 {
+    /** Discord bot configuration. */
     @Category("bot")
     public BotConfig bot = new BotConfig();
 
+    /** Minecord translations configuration. */
     @Category("i18n")
     public I18nConfig i18n = new I18nConfig();
 
+    /** Minecord miscellaneous configuration. */
     @Category("misc")
     public MiscConfig misc = new MiscConfig();
 

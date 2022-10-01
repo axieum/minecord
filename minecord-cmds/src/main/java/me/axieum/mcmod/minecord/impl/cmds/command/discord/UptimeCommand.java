@@ -21,12 +21,12 @@ import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
  */
 public class UptimeCommand extends MinecordCommand
 {
-    // Prepare a reusable string template for all uptime commands
+    /** A reusable string template for all uptime commands. */
     public static final StringTemplate TEMPLATE = new StringTemplate()
         .add("uptime", () -> Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
 
     /**
-     * Initialises a new uptime command.
+     * Constructs a new uptime command.
      *
      * @param config uptime command config
      */

@@ -45,6 +45,7 @@ public final class MinecordCommandEvents
             }
         });
 
+    /** A callback for before executing a Minecord command. */
     @FunctionalInterface
     public interface BeforeExecute
     {
@@ -63,6 +64,7 @@ public final class MinecordCommandEvents
         );
     }
 
+    /** A callback for after executing a Minecord command. */
     @FunctionalInterface
     public interface AfterExecute
     {
@@ -107,6 +109,7 @@ public final class MinecordCommandEvents
                 return embed;
             });
 
+        /** A callback for after executing the ticks-per-second (TPS) command. */
         @FunctionalInterface
         public interface TPSCommand
         {
@@ -127,6 +130,7 @@ public final class MinecordCommandEvents
             );
         }
 
+        /** A callback for after executing the uptime command. */
         @FunctionalInterface
         public interface UptimeCommand
         {
@@ -204,6 +208,7 @@ public final class MinecordCommandEvents
                 }
             });
 
+        /** A callback for before allowing custom Minecraft-proxy command execution. */
         @FunctionalInterface
         public interface AllowExecute
         {
@@ -227,6 +232,7 @@ public final class MinecordCommandEvents
             );
         }
 
+        /** A callback for before executing a custom Minecraft-proxy command. */
         @FunctionalInterface
         public interface BeforeExecute
         {
@@ -249,6 +255,10 @@ public final class MinecordCommandEvents
             );
         }
 
+        /**
+         * A callback for during execution of a custom Minecraft-proxy command when
+         * providing feedback to the executor.
+         */
         @FunctionalInterface
         public interface Feedback
         {
@@ -278,6 +288,7 @@ public final class MinecordCommandEvents
             );
         }
 
+        /** A callback for after executing a custom Minecraft-proxy command. */
         @FunctionalInterface
         public interface AfterExecute
         {

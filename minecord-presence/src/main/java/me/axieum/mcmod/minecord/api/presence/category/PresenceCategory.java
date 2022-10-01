@@ -9,25 +9,25 @@ import java.util.Random;
  */
 public class PresenceCategory
 {
-    // An instance of random to aid in choosing presences
+    /** An instance of random to aid in choosing presences. */
     protected static final Random RANDOM = new Random();
 
-    // The number of seconds between presence updates (at least 15s)
+    /** The number of seconds between presence updates (at least 15s). */
     protected long interval = 60;
-    // True if presences are chosen randomly, else round-robin
+    /** True if presences are chosen randomly, else round-robin. */
     protected boolean random = false;
-    // A list of presence suppliers to choose from
+    /** A list of presence suppliers to choose from. */
     protected final List<PresenceSupplier> presenceSuppliers = new ArrayList<>();
-    // The current index of presence supplier, in the case of round-robin mode
+    /** The current index of presence supplier, in the case of round-robin mode. */
     protected int index = 0;
 
     /**
-     * Initialises a new Minecord presence category.
+     * Constructs a new Minecord presence category.
      */
     public PresenceCategory() {}
 
     /**
-     * Initialises a new Minecord presence category with interval and
+     * Constructs a new Minecord presence category with interval and
      * randomness overrides.
      *
      * @param interval number of seconds between presence updates (at least 15s)

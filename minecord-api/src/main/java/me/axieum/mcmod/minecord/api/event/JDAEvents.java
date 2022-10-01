@@ -21,6 +21,7 @@ public final class JDAEvents
                 callback.onBuildClient(builder);
         });
 
+    /** Called before building the JDA client. */
     @FunctionalInterface
     public interface BuildClient
     {

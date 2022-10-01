@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import static me.axieum.mcmod.minecord.impl.MinecordImpl.LOGGER;
 
+/**
+ * A listener for Discord lifecycle events.
+ */
 public class DiscordLifecycleListener extends ListenerAdapter
 {
     @Override

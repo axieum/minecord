@@ -33,7 +33,7 @@ public class PresenceUpdateTask extends TimerTask
     private final PresenceCategory category;
 
     /**
-     * Initialises a new Minecord bot presence update task.
+     * Constructs a new Minecord bot presence update task.
      *
      * @param jda      JDA client
      * @param category Minecord presence category

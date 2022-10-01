@@ -5,12 +5,21 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import static net.dv8tion.jda.api.EmbedBuilder.URL_PATTERN;
 
+/**
+ * Minecord miscellaneous configuration schema.
+ */
 @Config(name = "misc")
 public class MiscConfig implements ConfigData
 {
+    /** True if player avatars are included with embeds. */
     @Comment("True if player avatars are included with embeds")
     public boolean enableAvatars = true;
 
+    /**
+     * The URL used for retrieving Minecraft player avatars.
+     *
+     * <p>Usages: {@code ${username}} and {@code ${size}} (height in pixels).
+     */
     @Comment("""
         The URL used for retrieving Minecraft player avatars
         Usages: ${username} and ${size} (height in pixels)""")

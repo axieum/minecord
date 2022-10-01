@@ -11,6 +11,9 @@ import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
+/**
+ * A listener for when a Discord user reacts to a message.
+ */
 public class MessageReactionListener extends ListenerAdapter
 {
     @Override

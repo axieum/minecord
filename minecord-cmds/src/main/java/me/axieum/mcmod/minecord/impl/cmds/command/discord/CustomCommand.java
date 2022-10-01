@@ -51,7 +51,7 @@ public class CustomCommand extends MinecordCommand
     private final CommandConfig.CustomCommandSchema config;
 
     /**
-     * Initialises a new custom command.
+     * Constructs a new custom command.
      *
      * @param config custom command config
      */

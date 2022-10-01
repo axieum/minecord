@@ -22,11 +22,14 @@ import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
+/**
+ * A listener for when a Discord user edits their recently sent message.
+ */
 public class MessageUpdateListener extends ListenerAdapter
 {
-    // A circular mapping of message ids, with a fixed size
+    /** A circular mapping of message ids, with a fixed size. */
     private static final CircularLinkedHashMap<String, Message> MESSAGE_CACHE = new CircularLinkedHashMap<>(32);
-    // A text diff generator for message updates
+    /** A text diff generator for message updates. */
     private static final DiffRowGenerator DIFF_GENERATOR = DiffRowGenerator.create()
         .showInlineDiffs(true)
         .mergeOriginalRevised(true)

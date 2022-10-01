@@ -24,15 +24,20 @@ import me.axieum.mcmod.minecord.impl.cmds.command.discord.TPSCommand;
 import me.axieum.mcmod.minecord.impl.cmds.command.discord.UptimeCommand;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
 
+/**
+ * Minecord Commands addon.
+ */
 public final class MinecordCommandsImpl implements MinecordCommands, MinecordAddon
 {
+    /** The Minecord Commands instance. */
     public static final MinecordCommands INSTANCE = new MinecordCommandsImpl();
+    /** Minecord Commands logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Commands");
+    /** Minecord Commands configuration. */
     private static final ConfigHolder<CommandConfig> CONFIG = CommandConfig.init();
-
-    // A mapping of command names to their implementation (initial capacity for all built-in commands)
+    /** A mapping of command names to their implementation (initial capacity for all built-in commands). */
     private static final HashMap<String, MinecordCommand> COMMANDS = new HashMap<>(2);
-    // A mapping of cooldown keys to their end timestamp (millis since epoch)
+    /** A mapping of cooldown keys to their end timestamp (millis since epoch). */
     private static final HashMap<String, Long> COOLDOWNS = new HashMap<>();
 
     @Override

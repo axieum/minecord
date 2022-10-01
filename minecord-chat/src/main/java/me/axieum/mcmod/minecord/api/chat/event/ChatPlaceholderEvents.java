@@ -90,6 +90,7 @@ public final class ChatPlaceholderEvents
                 }
             });
 
+        /** A callback for when a user sent a message. */
         @FunctionalInterface
         public interface MessageReceived
         {
@@ -102,6 +103,7 @@ public final class ChatPlaceholderEvents
             void onMessageReceivedPlaceholder(StringTemplate template, MessageReceivedEvent event);
         }
 
+        /** A callback for when a user sent a message in reply to another. */
         @FunctionalInterface
         public interface ReplyReceived
         {
@@ -114,6 +116,7 @@ public final class ChatPlaceholderEvents
             void onReplyReceivedPlaceholder(StringTemplate template, MessageReceivedEvent event);
         }
 
+        /** A callback for when a user edited their recently sent message. */
         @FunctionalInterface
         public interface MessageUpdated
         {
@@ -130,6 +133,7 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /** A callback for when a user sent a message that contained attachments (for each attachment). */
         @FunctionalInterface
         public interface AttachmentReceived
         {
@@ -146,6 +150,7 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /** A callback for when a user reacted to a recent message. */
         @FunctionalInterface
         public interface ReactionAdded
         {
@@ -304,6 +309,7 @@ public final class ChatPlaceholderEvents
                 }
             });
 
+        /** A callback for when the server began to start. */
         @FunctionalInterface
         public interface ServerStarting
         {
@@ -316,6 +322,7 @@ public final class ChatPlaceholderEvents
             void onServerStartingPlaceholder(StringTemplate template, MinecraftServer server);
         }
 
+        /** A callback for when the server started and is accepting connections. */
         @FunctionalInterface
         public interface ServerStarted
         {
@@ -328,6 +335,7 @@ public final class ChatPlaceholderEvents
             void onServerStartedPlaceholder(StringTemplate template, MinecraftServer server);
         }
 
+        /** A callback for when the server began to stop. */
         @FunctionalInterface
         public interface ServerStopping
         {
@@ -340,6 +348,7 @@ public final class ChatPlaceholderEvents
             void onServerStoppingPlaceholder(StringTemplate template, MinecraftServer server);
         }
 
+        /** A callback for when the server stopped and is offline, be it gracefully or not. */
         @FunctionalInterface
         public interface ServerShutdown
         {
@@ -355,6 +364,7 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /** A callback for when a named animal/monster (with name tag) had died. */
         @FunctionalInterface
         public interface EntityDeath
         {
@@ -368,6 +378,7 @@ public final class ChatPlaceholderEvents
             void onEntityDeathPlaceholder(StringTemplate template, LivingEntity entity, DamageSource source);
         }
 
+        /** A callback for when a player joined the game. */
         @FunctionalInterface
         public interface PlayerConnect
         {
@@ -380,6 +391,7 @@ public final class ChatPlaceholderEvents
             void onPlayerConnectPlaceholder(StringTemplate template, ServerPlayerEntity player);
         }
 
+        /** A callback for when a player left the game. */
         @FunctionalInterface
         public interface PlayerDisconnect
         {
@@ -392,6 +404,7 @@ public final class ChatPlaceholderEvents
             void onPlayerDisconnectPlaceholder(StringTemplate template, ServerPlayerEntity player);
         }
 
+        /** A callback for when a player sent an in-game chat message. */
         @FunctionalInterface
         public interface PlayerChat
         {
@@ -412,6 +425,7 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /** A callback for when a player unlocked an advancement. */
         @FunctionalInterface
         public interface PlayerAdvancement
         {
@@ -428,6 +442,7 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /** A callback for when a player teleported to another dimension. */
         @FunctionalInterface
         public interface PlayerChangeWorld
         {
@@ -444,6 +459,7 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /** A callback for when a player had died. */
         @FunctionalInterface
         public interface PlayerDeath
         {
@@ -457,6 +473,10 @@ public final class ChatPlaceholderEvents
             void onPlayerDeathPlaceholder(StringTemplate template, ServerPlayerEntity player, DamageSource source);
         }
 
+        /**
+         * A callback for when a player sent an in-game message via the {@code /me}
+         * command.
+         */
         @FunctionalInterface
         public interface EmoteCommand
         {
@@ -477,6 +497,10 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /**
+         * A callback for when an admin broadcast an in-game message via the
+         * {@code /say} command.
+         */
         @FunctionalInterface
         public interface SayCommand
         {
@@ -497,6 +521,10 @@ public final class ChatPlaceholderEvents
             );
         }
 
+        /**
+         * A callback for when an admin broadcast an in-game message to *all*
+         * players via the {@code /tellraw @a} command.
+         */
         @FunctionalInterface
         public interface TellRawCommand
         {

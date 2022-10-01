@@ -6,6 +6,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * A callback for when a player is granted an advancement criterion.
+ */
+@FunctionalInterface
 public interface GrantCriterionCallback
 {
     /**
