@@ -152,6 +152,7 @@ public class CustomCommand extends MinecordCommand
         // NB: This is to prevent the "The application did not respond" error in Discord, e.g. '/say' or '/tellraw'
         if (output.prevMessage == null) {
             if (error == null) {
+                output.thumbnailUrl = null;
                 source.sendFeedback(Text.literal(getConfig().messages.feedback), false);
             } else {
                 source.sendError(Text.literal(error.getMessage()));
