@@ -15,15 +15,15 @@ import net.minecraft.server.MinecraftServer;
  */
 public abstract class MinecordCommand extends ListenerAdapter
 {
-    // The underlying JDA slash command data instance
+    /** The underlying JDA slash command data instance. */
     protected @NotNull SlashCommandData data;
-    // True if the command requires Minecraft
+    /** True if the command requires Minecraft. */
     protected boolean requiresMinecraft = true;
-    // True if the command feedback is only visible to the executor
+    /** True if the command feedback is only visible to the executor. */
     protected boolean isEphemeral = false;
-    // The number of seconds a user must wait before using the command again
+    /** The number of seconds a user must wait before using the command again. */
     protected int cooldown = 0;
-    // To whom the cooldown applies
+    /** To whom the cooldown applies. */
     protected CooldownScope cooldownScope = CooldownScope.USER;
 
     /**

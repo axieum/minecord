@@ -20,6 +20,9 @@ import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
+/**
+ * A listener for a when a Minecraft player sends a message.
+ */
 public class ServerMessageCallback implements ChatMessage, CommandMessage, TellRawMessageCallback
 {
     @Override

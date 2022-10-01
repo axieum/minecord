@@ -17,6 +17,9 @@ import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.LOGGER;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
 
+/**
+ * A listener for Discord commands.
+ */
 public class DiscordCommandListener extends ListenerAdapter
 {
     @Override

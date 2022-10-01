@@ -8,6 +8,10 @@ import net.minecraft.util.crash.CrashReport;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * A callback for when the server exits, be it gracefully or not.
+ */
+@FunctionalInterface
 public interface ServerShutdownCallback
 {
     /**

@@ -24,9 +24,9 @@ import static me.axieum.mcmod.minecord.impl.MinecordImpl.getConfig;
  */
 public final class StringUtils
 {
-    // Mapping of Minecraft world identifiers to their human-readable names
+    /** Mapping of Minecraft world identifiers to their human-readable names. */
     public static final HashMap<Identifier, String> WORLD_NAMES = new HashMap<>(3);
-    // String templates for translating between Minecraft and Discord formatted strings
+    /** String templates for translating between Minecraft and Discord formatted strings. */
     public static StringTemplate discordMinecraftST, minecraftDiscordST;
 
     private StringUtils() {}

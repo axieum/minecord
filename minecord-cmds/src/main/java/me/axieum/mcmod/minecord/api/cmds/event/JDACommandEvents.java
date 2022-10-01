@@ -35,6 +35,7 @@ public final class JDACommandEvents
                 callback.onUpdateCommandList(commands);
         });
 
+    /** A callback for before updating the Discord command list. */
     @FunctionalInterface
     public interface BeforeUpdateCommandList
     {
@@ -47,6 +48,7 @@ public final class JDACommandEvents
         @NotNull CommandListUpdateAction onUpdatingCommandList(@NotNull CommandListUpdateAction action);
     }
 
+    /** A callback for after updating the Discord command list. */
     @FunctionalInterface
     public interface AfterUpdateCommandList
     {

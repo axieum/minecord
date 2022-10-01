@@ -20,7 +20,7 @@ import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
 public class TPSCommand extends MinecordCommand
 {
     /**
-     * Initialises a new ticks-per-second (TPS) command.
+     * Constructs a new ticks-per-second (TPS) command.
      *
      * @param config ticks-per-second (TPS) command config
      */

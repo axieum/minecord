@@ -30,13 +30,21 @@ import me.axieum.mcmod.minecord.impl.callback.DiscordLifecycleListener;
 import me.axieum.mcmod.minecord.impl.callback.ServerLifecycleCallback;
 import me.axieum.mcmod.minecord.impl.config.MinecordConfig;
 
+/**
+ * Minecord (API) implementation.
+ */
 public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, DedicatedServerModInitializer
 {
+    /** The Minecord instance. */
     public static final Minecord INSTANCE = new MinecordImpl();
+    /** Minecord logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord");
+    /** Minecord configuration. */
     private static final ConfigHolder<MinecordConfig> CONFIG = MinecordConfig.init();
 
+    // The captured Minecraft server, available once started
     private static @Nullable MinecraftServer minecraft = null;
+    // The JDA client, available once authenticated
     private static @Nullable JDA client = null;
 
     @Override

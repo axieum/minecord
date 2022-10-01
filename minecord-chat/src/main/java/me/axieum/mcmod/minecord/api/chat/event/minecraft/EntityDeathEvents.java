@@ -34,6 +34,7 @@ public final class EntityDeathEvents
             }
         });
 
+    /** A callback for when a player had died. */
     @FunctionalInterface
     public interface Player
     {
@@ -46,6 +47,7 @@ public final class EntityDeathEvents
         void onPlayerDeath(ServerPlayerEntity player, DamageSource source);
     }
 
+    /** A callback for when an animal or monster had died. */
     @FunctionalInterface
     public interface Entity
     {

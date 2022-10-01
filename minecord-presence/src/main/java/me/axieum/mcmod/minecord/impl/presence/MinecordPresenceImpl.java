@@ -24,14 +24,20 @@ import me.axieum.mcmod.minecord.api.presence.MinecordPresence;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.impl.presence.config.PresenceConfig;
 
+/**
+ * Minecord Presence addon.
+ */
 public final class MinecordPresenceImpl implements MinecordPresence, MinecordAddon
 {
+    /** The Minecord Presence instance. */
     public static final MinecordPresence INSTANCE = new MinecordPresenceImpl();
+    /** Minecord Presence logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Presence");
+    /** Minecord Presence configuration. */
     private static final ConfigHolder<PresenceConfig> CONFIG = PresenceConfig.init();
-
-    // A mapping of presence category names to their implementation (initial capacity for all built-in categories)
+    /** A mapping of presence category names to their implementation (initial capacity for all built-in categories). */
     private static final HashMap<String, PresenceCategory> CATEGORIES = new HashMap<>(3);
+
     // The name of the current presence category in use, if any
     private static @Nullable String curCategory = null;
     // The current timer that is responsible for scheduling presence updates
@@ -53,13 +59,13 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
         builder.addEventListeners(new ListenerAdapter()
         {
             @Override
-            public void onReady(ReadyEvent event)
+            public void onReady(@NotNull ReadyEvent event)
             {
                 start();
             }
 
             @Override
-            public void onShutdown(ShutdownEvent event)
+            public void onShutdown(@NotNull ShutdownEvent event)
             {
                 stop();
             }

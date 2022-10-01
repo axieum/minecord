@@ -14,6 +14,9 @@ import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import static me.axieum.mcmod.minecord.impl.MinecordImpl.LOGGER;
 import static me.axieum.mcmod.minecord.impl.MinecordImpl.getConfig;
 
+/**
+ * A listener for when the Minecraft server starts, stops or crashes.
+ */
 public class ServerLifecycleCallback implements ServerStarting, ServerStarted, ServerStopping, ServerShutdownCallback
 {
     @Override

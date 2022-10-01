@@ -85,12 +85,16 @@ import org.jetbrains.annotations.Nullable;
  */
 public class StringTemplate
 {
+    /** String template logger. */
     public static final Logger LOGGER = LogManager.getLogger();
 
     private @NotNull String prefix = "${", suffix = "}";
     private final HashMap<String, @Nullable Object> variables = new HashMap<>();
     private final List<Function<String, String>> transforms = new ArrayList<>();
 
+    /**
+     * Constructs a new String Template.
+     */
     public StringTemplate() {}
 
     /**

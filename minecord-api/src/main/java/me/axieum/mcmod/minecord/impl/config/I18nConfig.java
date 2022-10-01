@@ -10,13 +10,18 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 import net.minecraft.util.Language;
 
+/**
+ * Minecord translations configuration schema.
+ */
 @Config(name = "i18n")
 public class I18nConfig implements ConfigData
 {
+    /** The language code used to load translations from. */
     @Comment("The language code used to load translations from")
     @RequiresRestart
     public String lang = Language.DEFAULT_LANGUAGE;
 
+    /** A mapping of Minecraft dimension IDs to their respective names. */
     @Comment("A mapping of Minecraft dimension IDs to their respective names")
     public Map<String, String> worlds = new HashMap<>(Map.ofEntries(
         Map.entry("minecraft:overworld", "Overworld"),
@@ -24,6 +29,7 @@ public class I18nConfig implements ConfigData
         Map.entry("minecraft:the_end", "The End")
     ));
 
+    /** A mapping of advancement types to their respective names. */
     @Comment("A mapping of advancement types to their respective names")
     public Map<String, String> advancementTypes = new HashMap<>(Map.ofEntries(
         Map.entry("task", "task"),

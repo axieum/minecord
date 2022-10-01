@@ -14,6 +14,9 @@ import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
+/**
+ * A listener for when a Minecraft player joins or leaves.
+ */
 public class PlayerConnectionCallback implements Join, Disconnect
 {
     @Override

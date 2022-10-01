@@ -11,6 +11,9 @@ import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
+/**
+ * A listener for when a Minecraft player is granted an advancement.
+ */
 public class PlayerAdvancementCallback implements GrantCriterionCallback
 {
     @Override

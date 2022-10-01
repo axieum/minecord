@@ -21,6 +21,9 @@ import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 
+/**
+ * A listener for when the Minecraft server starts, stops or crashes.
+ */
 public class ServerLifecycleCallback implements ServerStarting, ServerStarted, ServerStopping, ServerShutdownCallback
 {
     @Override
