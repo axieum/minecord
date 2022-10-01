@@ -249,7 +249,7 @@ public class StringTemplate
                     if (format != null && !format.isBlank()) {
                         // String
                         if (value instanceof String) {
-                            matcher.appendReplacement(builder, String.format(format, value));
+                            matcher.appendReplacement(builder, Matcher.quoteReplacement(String.format(format, value)));
                         // Number
                         } else if (value instanceof Number) {
                             matcher.appendReplacement(builder, new DecimalFormat(format).format(value));
@@ -277,7 +277,7 @@ public class StringTemplate
                             );
                         // Other
                         } else {
-                            matcher.appendReplacement(builder, String.valueOf(value));
+                            matcher.appendReplacement(builder, Matcher.quoteReplacement(String.valueOf(value)));
                         }
                     }
                 } catch (IllegalArgumentException e) {

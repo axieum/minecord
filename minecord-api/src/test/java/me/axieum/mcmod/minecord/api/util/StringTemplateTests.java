@@ -37,6 +37,17 @@ public class StringTemplateTests
     }
 
     @Test
+    @DisplayName("Replace variables with special regex characters")
+    public void variablesWithSpecialCharacters()
+    {
+        st.add("special", "\\$\\\\$$");
+        assertEquals(
+            "_\\$\\\\$$",
+            st.format("_${special}")
+        );
+    }
+
+    @Test
     @DisplayName("Resolve lazy variables")
     public void lazyVariables()
     {
