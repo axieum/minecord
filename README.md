@@ -34,7 +34,9 @@ between Minecraft and Discord.
   * A user edited their recently sent message
   * A user reacted to a recent message
   * A user removed their reaction from a recent message
+  * A user sent a message in reply to another
   * A user sent a message that contained attachments
+  
 * Minecraft events relayed to Discord
   * A player sent an in-game chat message
   * A player had died
@@ -43,12 +45,15 @@ between Minecraft and Discord.
   * A player teleported to another dimension
   * A player joined the game
   * A player left the game
+  * An admin broadcast an in-game message
+  * An admin broadcast an in-game message to all players
   * The server began to start
   * The server started and is accepting connections
   * The server began to stop
   * The server stopped and is offline
   * The server stopped unexpectedly and is inaccessible
     * Optionally attach the crash report when available
+  
 
 ### 🪄 Commands
 
