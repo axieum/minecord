@@ -31,12 +31,17 @@ between Minecraft and Discord.
 * Translate unicode emojis, e.g. 😃 -> `:smiley:`
 * Discord events relayed to Minecraft
   * A user sent a message
+  * A user sent a message in reply to another
   * A user edited their recently sent message
   * A user reacted to a recent message
   * A user removed their reaction from a recent message
   * A user sent a message that contained attachments
 * Minecraft events relayed to Discord
   * A player sent an in-game chat message
+  * A player sent an in-game message via the `/me` command
+  * An admin broadcast an in-game message via the `/say` command
+  * An admin broadcast an in-game message to all players via the `/tellraw @a`
+    command
   * A player had died
   * A named animal/monster (with name tag) had died
   * A player unlocked an advancement
