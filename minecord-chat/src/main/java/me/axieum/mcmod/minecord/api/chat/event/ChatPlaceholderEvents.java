@@ -16,12 +16,10 @@ import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -283,9 +281,9 @@ public final class ChatPlaceholderEvents
          * Called when a player sent an in-game message via the {@code /me} command.
          */
         public static final Event<EmoteCommand> EMOTE_COMMAND =
-            EventFactory.createArrayBacked(EmoteCommand.class, callbacks -> (st, source, action) -> {
+            EventFactory.createArrayBacked(EmoteCommand.class, callbacks -> (st, source, action, params) -> {
                 for (EmoteCommand callback : callbacks) {
-                    callback.onEmoteCommandPlaceholder(st, source, action);
+                    callback.onEmoteCommandPlaceholder(st, source, action, params);
                 }
             });
 
@@ -293,9 +291,9 @@ public final class ChatPlaceholderEvents
          * Called when an admin broadcast an in-game message via the {@code /say} command.
          */
         public static final Event<SayCommand> SAY_COMMAND =
-            EventFactory.createArrayBacked(SayCommand.class, callbacks -> (st, source, action) -> {
+            EventFactory.createArrayBacked(SayCommand.class, callbacks -> (st, source, action, params) -> {
                 for (SayCommand callback : callbacks) {
-                    callback.onSayCommandPlaceholder(st, source, action);
+                    callback.onSayCommandPlaceholder(st, source, action, params);
                 }
             });
 
@@ -414,14 +412,11 @@ public final class ChatPlaceholderEvents
              * @param template mutable string template
              * @param player   author of the message
              * @param message  received message contents
-             * @param typeKey  received message type
+             * @param params   received message parameters
              * @see net.fabricmc.fabric.api.message.v1.ServerMessageEvents#CHAT_MESSAGE
              */
             void onPlayerChatPlaceholder(
-                StringTemplate template,
-                ServerPlayerEntity player,
-                FilteredMessage<SignedMessage> message,
-                RegistryKey<MessageType> typeKey
+                StringTemplate template, ServerPlayerEntity player, SignedMessage message, MessageType.Parameters params
             );
         }
 
@@ -487,13 +482,12 @@ public final class ChatPlaceholderEvents
              * @param template mutable string template
              * @param source   source of the command, e.g. a player
              * @param action   received message contents
+             * @param params   received message parameters
              * @see net.minecraft.network.message.MessageType#EMOTE_COMMAND
              * @see net.fabricmc.fabric.api.message.v1.ServerMessageEvents#COMMAND_MESSAGE
              */
             void onEmoteCommandPlaceholder(
-                StringTemplate template,
-                ServerCommandSource source,
-                FilteredMessage<SignedMessage> action
+                StringTemplate template, ServerCommandSource source, SignedMessage action, MessageType.Parameters params
             );
         }
 
@@ -511,13 +505,12 @@ public final class ChatPlaceholderEvents
              * @param template mutable string template
              * @param source   source of the message, e.g. a player
              * @param action   received message contents
+             * @param params   received message parameters
              * @see net.minecraft.network.message.MessageType#SAY_COMMAND
              * @see net.fabricmc.fabric.api.message.v1.ServerMessageEvents#COMMAND_MESSAGE
              */
             void onSayCommandPlaceholder(
-                StringTemplate template,
-                ServerCommandSource source,
-                FilteredMessage<SignedMessage> action
+                StringTemplate template, ServerCommandSource source, SignedMessage action, MessageType.Parameters params
             );
         }
 
@@ -535,7 +528,6 @@ public final class ChatPlaceholderEvents
              * @param template mutable string template
              * @param source   source of the message, e.g. a player
              * @param message  received message contents
-             * @see net.minecraft.network.message.MessageType#TELLRAW_COMMAND
              */
             void onTellRawCommandPlaceholder(StringTemplate template, ServerCommandSource source, Text message);
         }

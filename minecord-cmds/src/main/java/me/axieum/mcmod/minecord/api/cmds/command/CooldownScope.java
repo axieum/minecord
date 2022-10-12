@@ -16,13 +16,14 @@ public enum CooldownScope
     USER("U:%1$d"),
 
     /**
-     * Applies the cooldown to the {@link net.dv8tion.jda.api.entities.Channel Channel} the command is called in.
+     * Applies the cooldown to the {@link net.dv8tion.jda.api.entities.channel.Channel Channel}
+     * the command is called in.
      */
     CHANNEL("C:%2$d"),
 
     /**
      * Applies the cooldown to the calling {@link net.dv8tion.jda.api.entities.User User} local to the
-     * {@link net.dv8tion.jda.api.entities.Channel Channel} the command is called in.
+     * {@link net.dv8tion.jda.api.entities.channel.Channel Channel} the command is called in.
      */
     USER_CHANNEL("U:%1$d|C:%2$d"),
 

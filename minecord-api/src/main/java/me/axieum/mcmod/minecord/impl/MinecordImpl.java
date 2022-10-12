@@ -2,11 +2,10 @@ package me.axieum.mcmod.minecord.impl;
 
 import java.util.Optional;
 
-import javax.security.auth.login.LoginException;
-
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -55,6 +54,8 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
         try {
             // Prepare the JDA client
             final JDABuilder builder = JDABuilder.createDefault(getConfig().bot.token)
+                                                 // allow the bot to read message contents
+                                                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                                                  // set initial bot status
                                                  .setStatus(getConfig().bot.status.starting)
                                                  // add event listeners
@@ -74,7 +75,7 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
             JDAEvents.BUILD_CLIENT.invoker().onBuildClient(builder);
             LOGGER.info("Logging into Discord...");
             client = builder.build();
-        } catch (LoginException | IllegalArgumentException e) {
+        } catch (InvalidTokenException | IllegalArgumentException e) {
             LOGGER.error("Unable to login to Discord: {}", e.getMessage());
         }
     }

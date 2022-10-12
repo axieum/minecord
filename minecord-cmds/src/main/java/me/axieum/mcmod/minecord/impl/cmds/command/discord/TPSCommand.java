@@ -5,6 +5,7 @@ import java.util.stream.LongStream;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +28,9 @@ public class TPSCommand extends MinecordCommand
     public TPSCommand(CommandConfig.BaseCommandSchema config)
     {
         super(config.name, config.description);
-        data.setDefaultEnabled(config.allowByDefault);
+        data.setDefaultPermissions(
+            config.allowByDefault ? DefaultMemberPermissions.ENABLED : DefaultMemberPermissions.DISABLED
+        );
         setEphemeral(config.ephemeral);
         setCooldown(config.cooldown);
         setCooldownScope(config.cooldownScope);
