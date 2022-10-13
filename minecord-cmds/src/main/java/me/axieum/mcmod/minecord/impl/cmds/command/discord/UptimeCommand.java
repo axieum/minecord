@@ -5,6 +5,7 @@ import java.time.Duration;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +34,9 @@ public class UptimeCommand extends MinecordCommand
     public UptimeCommand(CommandConfig.BaseCommandSchema config)
     {
         super(config.name, config.description);
-        data.setDefaultEnabled(config.allowByDefault);
+        data.setDefaultPermissions(
+            config.allowByDefault ? DefaultMemberPermissions.ENABLED : DefaultMemberPermissions.DISABLED
+        );
         setRequiresMinecraft(false); // we only report the total uptime of the process, not the server itself!
         setEphemeral(config.ephemeral);
         setCooldown(config.cooldown);

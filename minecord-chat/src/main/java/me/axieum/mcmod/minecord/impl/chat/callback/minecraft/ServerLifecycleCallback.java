@@ -6,6 +6,7 @@ import java.lang.management.ManagementFactory;
 import java.time.Duration;
 import java.util.Optional;
 
+import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
@@ -138,7 +139,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
                     (action, entry) -> {
                         // Conditionally attach the crash report if required
                         if (entry.discord.uploadCrashReport)
-                            file.ifPresent(action::addFile);
+                            file.map(FileUpload::fromData).ifPresent(action::addFiles);
                         action.queue();
                     },
                     entry -> entry.discord.crashed != null);

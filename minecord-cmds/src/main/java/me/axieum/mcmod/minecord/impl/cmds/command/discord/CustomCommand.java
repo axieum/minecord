@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ParsingException;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +63,9 @@ public class CustomCommand extends MinecordCommand
         setEphemeral(config.ephemeral);
         setCooldown(config.cooldown);
         setCooldownScope(config.cooldownScope);
-        data.setDefaultEnabled(config.allowByDefault);
+        data.setDefaultPermissions(
+            config.allowByDefault ? DefaultMemberPermissions.ENABLED : DefaultMemberPermissions.DISABLED
+        );
         Arrays.stream(config.options)
             .map(CommandConfig.BaseCommandSchema.OptionSchema::getOptionData)
             .forEach(data::addOptions);

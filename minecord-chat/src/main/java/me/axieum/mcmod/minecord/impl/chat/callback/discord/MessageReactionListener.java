@@ -1,6 +1,5 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.discord;
 
-import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -30,8 +29,7 @@ public class MessageReactionListener extends ListenerAdapter
         event.retrieveMessage().queue(context -> {
             // Compute some useful properties of the event
             final boolean isAdded = event instanceof MessageReactionAddEvent;
-            final MessageReaction.ReactionEmote reaction = event.getReactionEmote();
-            final String emote = reaction.isEmote() ? ":" + reaction.getName() + ":" : reaction.getName();
+            final String emote = ":" + event.getEmoji().getName() + ":";
 
             /*
              * Prepare a message template.

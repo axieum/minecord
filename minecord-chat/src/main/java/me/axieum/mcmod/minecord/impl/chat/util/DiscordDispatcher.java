@@ -5,9 +5,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import me.axieum.mcmod.minecord.api.Minecord;
@@ -65,7 +65,7 @@ public final class DiscordDispatcher
      */
     public static void embed(
         BiConsumer<EmbedBuilder, ChatEntrySchema> builder,
-        BiConsumer<MessageAction, ChatEntrySchema> action,
+        BiConsumer<MessageCreateAction, ChatEntrySchema> action,
         Predicate<ChatEntrySchema> predicate
     )
     {
@@ -89,7 +89,7 @@ public final class DiscordDispatcher
      */
     public static void embedWithAvatar(
         BiConsumer<EmbedBuilder, ChatEntrySchema> builder,
-        BiConsumer<MessageAction, ChatEntrySchema> action,
+        BiConsumer<MessageCreateAction, ChatEntrySchema> action,
         Predicate<ChatEntrySchema> predicate,
         @Nullable String username
     )
@@ -112,7 +112,7 @@ public final class DiscordDispatcher
      * @see #dispatch(BiConsumer, BiConsumer, Predicate)
      */
     public static void dispatch(
-        BiConsumer<MessageBuilder, ChatEntrySchema> builder, Predicate<ChatEntrySchema> predicate
+        BiConsumer<MessageCreateBuilder, ChatEntrySchema> builder, Predicate<ChatEntrySchema> predicate
     )
     {
         dispatch(builder, (action, entry) -> action.queue(), predicate);
@@ -127,8 +127,8 @@ public final class DiscordDispatcher
      * @see ChatConfig#entries
      */
     public static void dispatch(
-        BiConsumer<MessageBuilder, ChatEntrySchema> builder,
-        BiConsumer<MessageAction, ChatEntrySchema> action,
+        BiConsumer<MessageCreateBuilder, ChatEntrySchema> builder,
+        BiConsumer<MessageCreateAction, ChatEntrySchema> action,
         Predicate<ChatEntrySchema> predicate
     )
     {
@@ -154,7 +154,7 @@ public final class DiscordDispatcher
                       // Build and dispatch the message
                       else
                           builder.andThen((m, e) -> action.accept(channel.sendMessage(m.build()), e))
-                                 .accept(new MessageBuilder(), entry);
+                                 .accept(new MessageCreateBuilder(), entry);
                   })
         );
     }

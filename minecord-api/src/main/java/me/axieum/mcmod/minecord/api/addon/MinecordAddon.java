@@ -12,7 +12,7 @@ public interface MinecordAddon
      *
      * <p>NB: This is called before building the JDA client! To use the built
      * client once connected, you can attach an event listener and observe the
-     * {@link net.dv8tion.jda.api.events.ReadyEvent} for the client.
+     * {@link net.dv8tion.jda.api.events.session.ReadyEvent} for the client.
      *
      * @param builder JDA client builder
      */

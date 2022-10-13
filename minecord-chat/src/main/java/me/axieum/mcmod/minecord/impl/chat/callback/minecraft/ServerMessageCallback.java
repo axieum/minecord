@@ -5,10 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.filter.FilteredMessage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents.ChatMessage;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents.CommandMessage;
@@ -27,10 +25,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
 {
     @Override
     public void onChatMessage(
-        FilteredMessage<SignedMessage> message, ServerPlayerEntity player, RegistryKey<MessageType> typeKey
+        SignedMessage message, ServerPlayerEntity player, MessageType.Parameters params
     )
     {
-        if (!MessageType.CHAT.equals(typeKey)) return;
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
              * Prepare a message template.
@@ -45,11 +42,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
             // The name of the world the player logged into
             st.add("world", StringUtils.getWorldName(player.world));
             // The formatted message contents
-            st.add("message", StringUtils.minecraftToDiscord(
-                message.filteredOrElse(message.raw()).getContent().getString()
-            ));
+            st.add("message", StringUtils.minecraftToDiscord(message.getContent().getString()));
 
-            ChatPlaceholderEvents.Minecraft.PLAYER_CHAT.invoker().onPlayerChatPlaceholder(st, player, message, typeKey);
+            ChatPlaceholderEvents.Minecraft.PLAYER_CHAT.invoker().onPlayerChatPlaceholder(st, player, message, params);
 
             /*
              * Dispatch the message.
@@ -63,15 +58,16 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
 
     @Override
     public void onCommandMessage(
-        FilteredMessage<SignedMessage> message, ServerCommandSource source, RegistryKey<MessageType> typeKey
+        SignedMessage message, ServerCommandSource source, MessageType.Parameters params
     )
     {
-        if (MessageType.EMOTE_COMMAND.equals(typeKey)) {
+        final String typeKey = params.type().chat().translationKey();
+        if ("chat.type.emote".equals(typeKey)) {
             // '/me <action>'
-            onEmoteCommandMessage(message, source);
-        } else if (MessageType.SAY_COMMAND.equals(typeKey)) {
+            onEmoteCommandMessage(message, source, params);
+        } else if ("chat.type.announcement".equals(typeKey)) {
             // '/say <message>'
-            onSayCommandMessage(message, source);
+            onSayCommandMessage(message, source, params);
         }
     }
 
@@ -82,8 +78,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
      * @param message broadcast message with message decorators applied if
      *                applicable
      * @param source  command source that sent the message
+     * @param params  message parameters
      */
-    public void onEmoteCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source)
+    public void onEmoteCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params)
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             final @Nullable ServerPlayerEntity player = source.getPlayer();
@@ -101,11 +98,11 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
             // The name of the world the player logged into
             st.add("world", player != null ? StringUtils.getWorldName(source.getWorld()) : null);
             // The formatted message contents
-            st.add("action", StringUtils.minecraftToDiscord(
-                message.filteredOrElse(message.raw()).getContent().getString()
-            ));
+            st.add("action", StringUtils.minecraftToDiscord(message.getContent().getString()));
 
-            ChatPlaceholderEvents.Minecraft.EMOTE_COMMAND.invoker().onEmoteCommandPlaceholder(st, source, message);
+            ChatPlaceholderEvents.Minecraft.EMOTE_COMMAND.invoker().onEmoteCommandPlaceholder(
+                st, source, message, params
+            );
 
             /*
              * Dispatch the message.
@@ -124,8 +121,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
      * @param message broadcast message with message decorators applied if
      *                applicable
      * @param source  command source that sent the message
+     * @param params  message parameters
      */
-    public void onSayCommandMessage(FilteredMessage<SignedMessage> message, ServerCommandSource source)
+    public void onSayCommandMessage(SignedMessage message, ServerCommandSource source, MessageType.Parameters params)
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             final @Nullable ServerPlayerEntity player = source.getPlayer();
@@ -143,11 +141,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
             // The name of the world the player logged into
             st.add("world", player != null ? StringUtils.getWorldName(source.getWorld()) : null);
             // The formatted message contents
-            st.add("message", StringUtils.minecraftToDiscord(
-                message.filteredOrElse(message.raw()).getContent().getString()
-            ));
+            st.add("message", StringUtils.minecraftToDiscord(message.getContent().getString()));
 
-            ChatPlaceholderEvents.Minecraft.SAY_COMMAND.invoker().onSayCommandPlaceholder(st, source, message);
+            ChatPlaceholderEvents.Minecraft.SAY_COMMAND.invoker().onSayCommandPlaceholder(st, source, message, params);
 
             /*
              * Dispatch the message.
