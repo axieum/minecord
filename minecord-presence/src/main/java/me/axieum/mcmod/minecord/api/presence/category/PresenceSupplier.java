@@ -1,11 +1,10 @@
 package me.axieum.mcmod.minecord.api.presence.category;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
 
 /**
  * A Minecord presence supplier.
@@ -35,10 +34,20 @@ public interface PresenceSupplier
     /**
      * Returns the game activity for the bot.
      *
-     * @param template string template with placeholders
      * @return game activity, or empty if not changing
      */
-    default Optional<Activity> getActivity(StringTemplate template)
+    default Optional<Activity> getActivity()
+    {
+        return getActivity(Function.identity());
+    }
+
+    /**
+     * Returns the game activity for the bot after modifying the name.
+     *
+     * @param nameMutator mutator for the activity name
+     * @return game activity, or empty if not changing
+     */
+    default Optional<Activity> getActivity(Function<String, String> nameMutator)
     {
         return Optional.empty();
     }

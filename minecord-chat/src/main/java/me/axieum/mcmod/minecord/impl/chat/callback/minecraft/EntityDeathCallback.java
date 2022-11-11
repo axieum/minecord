@@ -1,16 +1,20 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
 import java.awt.Color;
+import java.util.Map;
+
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
 /**
  * A listener for when a Minecraft entity dies.
@@ -27,35 +31,35 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
             final String entityName = entity.getDisplayName().getString();
 
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The entity's display name
-            st.add("name", entityName);
-            // The reason for the entity's death
-            st.add(
-                "cause", source.getDeathMessage(entity).getString().replaceFirst(entityName, "").trim()
+            final PlaceholderContext ctx = PlaceholderContext.of(entity);
+            final Map<String, PlaceholderHandler> placeholders = Map.of(
+                // The entity's display name
+                "name", string(entityName),
+                // The reason for the entity's death
+                "cause", string(source.getDeathMessage(entity).getString().replaceFirst(entityName, "").trim()),
+                // The name of the world the entity died in
+                "world", string(StringUtils.getWorldName(entity.world)),
+                // The X coordinate of where the entity died
+                "x", string(String.valueOf((int) entity.prevX)),
+                // The Y coordinate of where the entity died
+                "y", string(String.valueOf((int) entity.prevY)),
+                // The Z coordinate of where the entity died
+                "z", string(String.valueOf((int) entity.prevZ))
             );
-            // The name of the world the entity died in
-            st.add("world", StringUtils.getWorldName(entity.world));
-            // The X coordinate of where the entity died
-            st.add("x", String.valueOf((int) entity.prevX));
-            // The Y coordinate of where the entity died
-            st.add("y", String.valueOf((int) entity.prevY));
-            // The Z coordinate of where the entity died
-            st.add("z", String.valueOf((int) entity.prevZ));
-
-            ChatPlaceholderEvents.Minecraft.ENTITY_DEATH.invoker().onEntityDeathPlaceholder(st, entity, source);
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setColor(Color.RED).setDescription(st.format(entry.discord.grief)),
-                entry -> entry.discord.grief != null && entry.hasWorld(entity.world));
+            DiscordDispatcher.embed(
+                (embed, entry) -> embed.setColor(Color.RED).setDescription(
+                    PlaceholdersExt.parseString(entry.discord.grief, ctx, placeholders)
+                ),
+                entry -> entry.discord.grief != null && entry.hasWorld(entity.world)
+            );
         });
     }
 }

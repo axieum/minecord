@@ -2,12 +2,16 @@ package me.axieum.mcmod.minecord.impl.cmds.command.discord;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
+import eu.pb4.placeholders.api.PlaceholderResult;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ParsingException;
@@ -36,7 +40,7 @@ import net.minecraft.world.GameRules;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
 import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.LOGGER;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
@@ -85,7 +89,7 @@ public class CustomCommand extends MinecordCommand
         // Prepare the Minecraft command
         final String origCommand;
         try {
-            origCommand = prepareCommand(config.command, event.getOptions());
+            origCommand = prepareCommand(config.command, event.getOptions(), server);
         } catch (ParsingException | IllegalArgumentException e) {
             throw new Exception("Unable to prepare Minecraft command!", e);
         }
@@ -168,28 +172,27 @@ public class CustomCommand extends MinecordCommand
      *
      * @param command Minecraft command template using {n} for the nth argument, and {} for all
      * @param options Discord command options to substitute into the template
+     * @param server  optional Minecraft server for placeholder context
      * @return a prepared Minecraft command
      * @throws ParsingException if an invalid command option type is encountered
      */
-    private static String prepareCommand(@NotNull String command, List<OptionMapping> options) throws ParsingException
+    private static String prepareCommand(
+        @NotNull String command,
+        List<OptionMapping> options,
+        @Nullable MinecraftServer server
+    ) throws ParsingException
     {
         if (command.length() == 0) return command;
 
-        // Prepare a new string template
-        final StringTemplate st = new StringTemplate();
+        // Prepare new command placeholders
+        final @Nullable PlaceholderContext ctx = server != null ? PlaceholderContext.of(server) : null;
+        final HashMap<String, PlaceholderHandler> placeholders = new HashMap<>(options.size());
+        options.forEach(option ->
+            placeholders.put(option.getName(), (c, a) -> PlaceholderResult.value(option.getAsString()))
+        );
 
-        // Add all options to the template
-        for (OptionMapping option : options) {
-            switch (option.getType()) {
-                case BOOLEAN -> st.add(option.getName(), option.getAsBoolean());
-                case NUMBER -> st.add(option.getName(), option.getAsDouble());
-                case INTEGER -> st.add(option.getName(), option.getAsLong());
-                default -> st.add(option.getName(), option.getAsString());
-            }
-        }
-
-        // Apply the template to the given command
-        String result = st.transform(String::trim).format(command);
+        // Parse the placeholders in the given command
+        String result = PlaceholdersExt.parseString(command, ctx, placeholders).trim();
 
         // Strip any leading '/' if present, and return
         return result.length() > 0 && result.charAt(0) == '/' ? result.substring(1) : result;

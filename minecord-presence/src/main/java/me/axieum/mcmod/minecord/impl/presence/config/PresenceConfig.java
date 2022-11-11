@@ -3,6 +3,7 @@ package me.axieum.mcmod.minecord.impl.presence.config;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -22,7 +23,6 @@ import net.minecraft.util.ActionResult;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl;
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
@@ -186,11 +186,11 @@ public class PresenceConfig implements ConfigData
                     }
 
                     @Override
-                    public Optional<Activity> getActivity(StringTemplate template)
+                    public Optional<Activity> getActivity(Function<String, String> nameMutator)
                     {
-                        return activity != null ? Optional.of(
-                            Activity.of(activity.type, template.format(activity.name), activity.url)
-                        ) : Optional.empty();
+                        return Optional.ofNullable(activity).map(activity ->
+                            Activity.of(activity.type, nameMutator.apply(activity.name), activity.url)
+                        );
                     }
                 };
             }

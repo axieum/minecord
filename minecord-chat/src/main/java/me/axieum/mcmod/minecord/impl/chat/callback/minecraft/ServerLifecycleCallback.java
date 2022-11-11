@@ -4,8 +4,13 @@ import java.awt.Color;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,10 +22,11 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerSt
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.ServerStopping;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.duration;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
 /**
  * A listener for when the Minecraft server starts, stops or crashes.
@@ -32,20 +38,22 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            ChatPlaceholderEvents.Minecraft.SERVER_STARTING.invoker().onServerStartingPlaceholder(st, server);
+            final PlaceholderContext ctx = PlaceholderContext.of(server);
+            final Map<String, PlaceholderHandler> placeholders = Collections.emptyMap();
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(st.format(entry.discord.starting)),
-                entry -> entry.discord.starting != null);
+            DiscordDispatcher.embed(
+                (embed, entry) -> embed.setDescription(
+                    PlaceholdersExt.parseString(entry.discord.starting, ctx, placeholders)
+                ),
+                entry -> entry.discord.starting != null
+            );
         });
     }
 
@@ -54,23 +62,25 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The time taken for the server to start
-            st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
-
-            ChatPlaceholderEvents.Minecraft.SERVER_STARTED.invoker().onServerStartedPlaceholder(st, server);
+            final PlaceholderContext ctx = PlaceholderContext.of(server);
+            final Map<String, PlaceholderHandler> placeholders = Map.of(
+                // The time taken for the server to start
+                "uptime", duration(Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()))
+            );
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setColor(Color.GREEN).setDescription(st.format(entry.discord.started)),
-                entry -> entry.discord.started != null);
+            DiscordDispatcher.embed(
+                (embed, entry) -> embed.setColor(Color.GREEN).setDescription(
+                    PlaceholdersExt.parseString(entry.discord.started, ctx, placeholders)
+                ),
+                entry -> entry.discord.started != null
+            );
         });
     }
 
@@ -79,23 +89,25 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The total time for which the server has been online for
-            st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
-
-            ChatPlaceholderEvents.Minecraft.SERVER_STOPPING.invoker().onServerStoppingPlaceholder(st, server);
+            final PlaceholderContext ctx = PlaceholderContext.of(server);
+            final Map<String, PlaceholderHandler> placeholders = Map.of(
+                // The total time for which the server has been online for
+                "uptime", duration(Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()))
+            );
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(st.format(entry.discord.stopping)),
-                entry -> entry.discord.stopping != null);
+            DiscordDispatcher.embed(
+                (embed, entry) -> embed.setDescription(
+                    PlaceholdersExt.parseString(entry.discord.stopping, ctx, placeholders)
+                ),
+                entry -> entry.discord.stopping != null
+            );
         });
     }
 
@@ -104,19 +116,16 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The total time for which the server has been online for
-            st.add("uptime", Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()));
+            final PlaceholderContext ctx = PlaceholderContext.of(server);
+            final Map<String, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
+                // The total time for which the server has been online for
+                "uptime", duration(Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()))
+            ));
             // The reason for the server stopping, if crashed
-            if (crashReport != null) st.add("reason", crashReport.getMessage());
-
-            ChatPlaceholderEvents.Minecraft.SERVER_SHUTDOWN.invoker().onServerShutdownPlaceholder(
-                st, server, crashReport
-            );
+            if (crashReport != null) placeholders.put("reason", string(crashReport.getMessage()));
 
             /*
              * Dispatch the message.
@@ -124,9 +133,12 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
 
             // The server stopped normally
             if (crashReport == null) {
-                DiscordDispatcher.embed((embed, entry) ->
-                        embed.setColor(Color.RED).setDescription(st.format(entry.discord.stopped)),
-                    entry -> entry.discord.stopped != null);
+                DiscordDispatcher.embed(
+                    (embed, entry) -> embed.setColor(Color.RED).setDescription(
+                        PlaceholdersExt.parseString(entry.discord.stopped, ctx, placeholders)
+                    ),
+                    entry -> entry.discord.stopped != null
+                );
 
             // The server stopped due to an error
             } else {
@@ -134,15 +146,18 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
                 final Optional<File> file = Optional.ofNullable(crashReport.getFile()).filter(File::exists);
 
                 // Dispatch the message
-                DiscordDispatcher.embed((embed, entry) ->
-                        embed.setColor(Color.ORANGE).setDescription(st.format(entry.discord.crashed)),
+                DiscordDispatcher.embed(
+                    (embed, entry) -> embed.setColor(Color.ORANGE).setDescription(
+                        PlaceholdersExt.parseString(entry.discord.crashed, ctx, placeholders)
+                    ),
                     (action, entry) -> {
                         // Conditionally attach the crash report if required
                         if (entry.discord.uploadCrashReport)
                             file.map(FileUpload::fromData).ifPresent(action::addFiles);
                         action.queue();
                     },
-                    entry -> entry.discord.crashed != null);
+                    entry -> entry.discord.crashed != null
+                );
             }
         });
     }

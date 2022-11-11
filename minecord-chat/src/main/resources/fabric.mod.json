@@ -41,6 +41,7 @@
     "fabric-lifecycle-events-v1": "*",
     "fabric-message-api-v1": "*",
     "fabric-networking-api-v1": "*",
-    "minecord-api": "*"
+    "minecord-api": "*",
+    "placeholder-api": "*"
   }
 }

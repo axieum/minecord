@@ -37,6 +37,7 @@
     "java": ">=17",
     "minecraft": "~1.19.1",
     "fabricloader": ">=0.11.3",
-    "fabric-lifecycle-events-v1": "*"
+    "fabric-lifecycle-events-v1": "*",
+    "placeholder-api": "*"
   }
 }

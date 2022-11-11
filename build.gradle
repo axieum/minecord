@@ -30,6 +30,7 @@ allprojects {
         modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
         // Mods
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
         // Code Quality
         compileOnly "org.jetbrains:annotations:${project.jetbrains_annotations_version}"
@@ -95,6 +96,7 @@ allprojects {
         mavenCentral()
         maven { name 'dv8tion'; url 'https://m2.dv8tion.net/releases' }
         maven { name 'Fabric'; url 'https://maven.fabricmc.net/' }
+        maven { name 'Nucleoid'; url 'https://maven.nucleoid.xyz/' }
         maven { name 'Shedaniel'; url 'https://maven.shedaniel.me/' }
     }
 

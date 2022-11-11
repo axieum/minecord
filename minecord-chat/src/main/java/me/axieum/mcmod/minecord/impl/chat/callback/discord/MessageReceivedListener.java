@@ -1,14 +1,19 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.discord;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.Nullable;
 
-import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -44,40 +49,47 @@ public class MessageReceivedListener extends ListenerAdapter
         final @Nullable Message replyMessage = event.getMessage().getReferencedMessage();
 
         /*
-         * Prepare a message template.
+         * Prepare the message placeholders.
          */
 
-        final StringTemplate st = new StringTemplate();
-
-        // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-        st.add("tag", event.getAuthor().getAsTag());
-        // The author's username, e.g. Axieum
-        st.add("username", event.getAuthor().getName());
-        // The author's username discriminator, e.g. 1001
-        st.add("discriminator", event.getAuthor().getDiscriminator());
-        // The author's nickname or username
-        st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
-                                                       : event.getAuthor().getName());
-        // The formatted message contents
-        st.add("message", StringUtils.discordToMinecraft(event.getMessage().getContentDisplay()));
-        // The raw message contents
-        st.add("raw", event.getMessage().getContentRaw());
+        final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
+        final Map<String, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
+            // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
+            "tag", string(event.getAuthor().getAsTag()),
+            // The author's username, e.g. Axieum
+            "username", string(event.getAuthor().getName()),
+            // The author's username discriminator, e.g. 1001
+            "discriminator", string(event.getAuthor().getDiscriminator()),
+            // The author's nickname or username
+            "author", string(
+                event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName()
+            ),
+            // The formatted message contents
+            "message", string(StringUtils.discordToMinecraft(event.getMessage().getContentDisplay())),
+            // The raw message contents
+            "raw", string(event.getMessage().getContentRaw())
+        ));
 
         // The message is in reply to another
         if (replyMessage != null) {
-            // The replied message author's tag (i.e. username#discriminator), e.g. Axieum#1001
-            st.add("reply_tag", replyMessage.getAuthor().getAsTag());
-            // The replied message author's username, e.g. Axieum
-            st.add("reply_username", replyMessage.getAuthor().getName());
-            // The replied message author's username discriminator, e.g. 1001
-            st.add("reply_discriminator", replyMessage.getAuthor().getDiscriminator());
-            // The replied message author's nickname or username
-            st.add("reply_author", replyMessage.getMember() != null ? replyMessage.getMember().getEffectiveName()
-                : replyMessage.getAuthor().getName());
-            // The replied message formatted message contents
-            st.add("reply_message", StringUtils.discordToMinecraft(replyMessage.getContentDisplay()));
-            // The replied message raw message contents
-            st.add("reply_raw", replyMessage.getContentRaw());
+            placeholders.putAll(Map.of(
+                // The replied message author's tag (i.e. username#discriminator), e.g. Axieum#1001
+                "reply_tag", string(replyMessage.getAuthor().getAsTag()),
+                // The replied message author's username, e.g. Axieum
+                "reply_username", string(replyMessage.getAuthor().getName()),
+                // The replied message author's username discriminator, e.g. 1001
+                "reply_discriminator", string(replyMessage.getAuthor().getDiscriminator()),
+                // The replied message author's nickname or username
+                "reply_author", string(
+                    replyMessage.getMember() != null
+                        ? replyMessage.getMember().getEffectiveName()
+                        : replyMessage.getAuthor().getName()
+                ),
+                // The replied message formatted message contents
+                "reply_message", string(StringUtils.discordToMinecraft(replyMessage.getContentDisplay())),
+                // The replied message raw message contents
+                "reply_raw", string(replyMessage.getContentRaw())
+            ));
         }
 
         /*
@@ -86,17 +98,19 @@ public class MessageReceivedListener extends ListenerAdapter
 
         // The message is a standalone message
         if (replyMessage == null) {
-            ChatPlaceholderEvents.Discord.MESSAGE_RECEIVED.invoker().onMessageReceivedPlaceholder(st, event);
-            MinecraftDispatcher.json(entry -> st.format(entry.minecraft.chat),
-                entry -> entry.minecraft.chat != null && entry.id == channelId);
-            LOGGER.info(st.format("@${tag} > ${raw}"));
+            MinecraftDispatcher.dispatch(
+                entry -> PlaceholdersExt.parseText(entry.minecraft.chat, ctx, placeholders),
+                entry -> entry.minecraft.chat != null && entry.id == channelId
+            );
+            LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${raw}", ctx, placeholders));
 
         // The message is in reply to another
         } else {
-            ChatPlaceholderEvents.Discord.REPLY_RECEIVED.invoker().onReplyReceivedPlaceholder(st, event);
-            MinecraftDispatcher.json(entry -> st.format(entry.minecraft.reply),
-                entry -> entry.minecraft.reply != null && entry.id == channelId);
-            LOGGER.info(st.format("@${tag} (in reply to @${reply_tag}) > ${raw}"));
+            MinecraftDispatcher.dispatch(
+                entry -> PlaceholdersExt.parseText(entry.minecraft.reply, ctx, placeholders),
+                entry -> entry.minecraft.reply != null && entry.id == channelId
+            );
+            LOGGER.info(PlaceholdersExt.parseString("@${tag} (in reply to @${reply_tag}) > ${raw}", ctx, placeholders));
         }
     }
 
@@ -111,40 +125,39 @@ public class MessageReceivedListener extends ListenerAdapter
         final long channelId = event.getChannel().getIdLong();
 
         /*
-         * Prepare a message template.
+         * Prepare the message placeholders.
          */
 
-        final StringTemplate st = new StringTemplate();
-
-        // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-        st.add("tag", event.getAuthor().getAsTag());
-        // The author's username, e.g. Axieum
-        st.add("username", event.getAuthor().getName());
-        // The author's username discriminator, e.g. 1001
-        st.add("discriminator", event.getAuthor().getDiscriminator());
-        // The author's nickname or username
-        st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
-                                                       : event.getAuthor().getName());
-        // The link to the file to download
-        st.add("url", attachment.getUrl());
-        // The file name that was uploaded
-        st.add("name", attachment.getFileName());
-        // The file extension/type
-        st.add("ext", attachment.getFileExtension());
-        // The file size for humans
-        st.add("size", StringUtils.bytesToHuman(attachment.getSize()));
-
-        ChatPlaceholderEvents.Discord.ATTACHMENT_RECEIVED.invoker().onAttachmentReceivedPlaceholder(
-            st, event, attachment
+        final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
+        final Map<String, PlaceholderHandler> placeholders = Map.of(
+            // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
+            "tag", string(event.getAuthor().getAsTag()),
+            // The author's username, e.g. Axieum
+            "username", string(event.getAuthor().getName()),
+            // The author's username discriminator, e.g. 1001
+            "discriminator", string(event.getAuthor().getDiscriminator()),
+            // The author's nickname or username
+            "author", string(
+                event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName()
+            ),
+            // The link to the file to download
+            "url", string(attachment.getUrl()),
+            // The file name that was uploaded
+            "name", string(attachment.getFileName()),
+            // The file extension/type
+            "ext", string(attachment.getFileExtension()),
+            // The file size for humans
+            "size", string(StringUtils.bytesToHuman(attachment.getSize()))
         );
 
         /*
          * Dispatch the message.
          */
 
-        MinecraftDispatcher.json(entry -> st.format(entry.minecraft.attachment),
-            entry -> entry.minecraft.attachment != null && entry.id == channelId);
-
-        LOGGER.info(st.format("@${tag} attached ${name} (${size})"));
+        MinecraftDispatcher.dispatch(
+            entry -> PlaceholdersExt.parseText(entry.minecraft.attachment, ctx, placeholders),
+            entry -> entry.minecraft.attachment != null && entry.id == channelId
+        );
+        LOGGER.info(PlaceholdersExt.parseString("@${tag} attached ${name} (${size})", ctx, placeholders));
     }
 }

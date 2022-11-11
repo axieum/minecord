@@ -1,15 +1,20 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
+import java.util.Map;
+
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
+
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
 /**
  * A listener for when a Minecraft player is granted an advancement.
@@ -25,32 +30,31 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
             if (info == null || !info.shouldAnnounceToChat()) return;
 
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The player's username
-            st.add("username", player.getName().getString());
-            // The player's display name
-            st.add("player", player.getDisplayName().getString());
-            // The type of advancement
-            st.add("type", StringUtils.getAdvancementTypeName(info.getFrame()));
-            // The title of the advancement
-            st.add("title", info.getTitle().getString());
-            // A description of the advancement
-            st.add("description", info.getDescription().getString());
-
-            ChatPlaceholderEvents.Minecraft.PLAYER_ADVANCEMENT.invoker().onPlayerAdvancementPlaceholder(
-                st, player, advancement, criterion
+            final PlaceholderContext ctx = PlaceholderContext.of(player);
+            final Map<String, PlaceholderHandler> placeholders = Map.of(
+                // The player's username
+                "username", string(player.getName().getString()),
+                // The player's display name
+                "player", string(player.getDisplayName().getString()),
+                // The type of advancement
+                "type", string(StringUtils.getAdvancementTypeName(info.getFrame())),
+                // The title of the advancement
+                "title", string(info.getTitle().getString()),
+                // A description of the advancement
+                "description", string(info.getDescription().getString())
             );
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed((embed, entry) ->
-                    embed.setDescription(st.format(entry.discord.advancement)),
+            DiscordDispatcher.embed(
+                (embed, entry) -> embed.setDescription(
+                    PlaceholdersExt.parseString(entry.discord.advancement, ctx, placeholders)
+                ),
                 entry -> entry.discord.advancement != null && entry.hasWorld(player.world));
         });
     }
