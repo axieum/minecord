@@ -5,7 +5,7 @@ plugins {
     id 'com.modrinth.minotaur' version '2.7.5'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
-    id 'fabric-loom' version '1.1-SNAPSHOT'
+    id 'fabric-loom' version '1.2-SNAPSHOT'
 }
 
 allprojects {
@@ -30,7 +30,7 @@ allprojects {
         modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
         // Mods
-        // modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+//        modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
         // Code Quality
         compileOnly "org.jetbrains:annotations:${project.jetbrains_annotations_version}"
@@ -164,7 +164,7 @@ allprojects {
 dependencies {
     subprojects.each {
         implementation project(path: ":${it.name}", configuration: 'namedElements')
-        implementation project(path: ":${it.name}", configuration: 'shadow')
+        implementation project(path: ":${it.name}", configuration: 'shade')
         include project("${it.name}:")
     }
 }
