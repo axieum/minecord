@@ -11,10 +11,12 @@ import eu.pb4.placeholders.api.PlaceholderHandler;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.Placeholders.PlaceholderGetter;
-import eu.pb4.placeholders.api.TextParserUtils;
 import eu.pb4.placeholders.api.node.EmptyNode;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ParentNode;
+import eu.pb4.placeholders.api.parsers.MarkdownLiteParserV1;
+import eu.pb4.placeholders.api.parsers.NodeParser;
+import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +33,13 @@ public final class PlaceholdersExt
 {
     /** The placeholder pattern used. */
     public static final Pattern PLACEHOLDER_PATTERN = Placeholders.PREDEFINED_PLACEHOLDER_PATTERN;
+    /** The placeholder node parser. */
+    public static final NodeParser NODE_PARSER = NodeParser.merge(
+        TextParserV1.DEFAULT,
+        PatternPlaceholderParser.of(
+            PLACEHOLDER_PATTERN, PlaceholderContext.KEY, Placeholders.DEFAULT_PLACEHOLDER_GETTER
+        )
+    );
 
     private PlaceholdersExt() {}
 
@@ -101,9 +110,7 @@ public final class PlaceholdersExt
 
     public static @NotNull TextNode parseNode(@Nullable Text text)
     {
-        return text != null ? new ParentNode(
-            TextParserV1.DEFAULT.parseNodes(TextNode.convert(text))
-        ) : EmptyNode.INSTANCE;
+        return text != null ? new ParentNode(NODE_PARSER.parseNodes(TextNode.convert(text))) : EmptyNode.INSTANCE;
     }
 
     /*
@@ -149,6 +156,15 @@ public final class PlaceholdersExt
     }
 
     public static String parseString(
+        @NotNull TextNode node,
+        @Nullable PlaceholderContext context,
+        @NotNull Map<String, PlaceholderHandler> placeholders
+    )
+    {
+        return parseText(node, context, placeholders::get).getString();
+    }
+
+    public static String parseString(
         @NotNull TextNode node, @Nullable PlaceholderContext context, @NotNull PlaceholderGetter placeholderGetter
     )
     {
@@ -157,9 +173,7 @@ public final class PlaceholdersExt
 
     public static @NotNull TextNode parseNode(@Nullable String string)
     {
-        return string != null && !string.isEmpty() ? Placeholders.parseNodes(
-            TextParserUtils.formatNodes(string)
-        ) : EmptyNode.INSTANCE;
+        return string != null && !string.isEmpty() ? NODE_PARSER.parseNode(string) : EmptyNode.INSTANCE;
     }
 
     /*
@@ -175,6 +189,29 @@ public final class PlaceholdersExt
     public static PlaceholderHandler string(final String string)
     {
         return (ctx, arg) -> PlaceholderResult.value(string);
+    }
+
+    /**
+     * Returns a {@link Text} placeholder handler.
+     *
+     * @param text Minecraft text
+     * @return text placeholder handler
+     */
+    public static PlaceholderHandler text(final Text text)
+    {
+        return (ctx, arg) -> PlaceholderResult.value(text);
+    }
+
+    /**
+     * Returns a {@link Text} markdown placeholder handler.
+     *
+     * @param markdown markdown string
+     * @return markdown placeholder handler
+     */
+    public static PlaceholderHandler markdown(final String markdown)
+    {
+        final Text markdownText = MarkdownLiteParserV1.ALL.parseText(markdown, ParserContext.of());
+        return (ctx, arg) -> PlaceholderResult.value(markdownText);
     }
 
     /**

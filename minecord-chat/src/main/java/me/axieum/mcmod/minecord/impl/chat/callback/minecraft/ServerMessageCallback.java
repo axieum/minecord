@@ -40,12 +40,6 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
 
             final PlaceholderContext ctx = PlaceholderContext.of(player);
             final Map<String, PlaceholderHandler> placeholders = Map.of(
-                // The player's username
-                "username", string(player.getName().getString()),
-                // The player's display name
-                "player", string(player.getDisplayName().getString()),
-                // The name of the world the player logged into
-                "world", string(StringUtils.getWorldName(player.world)),
                 // The formatted message contents
                 "message", string(StringUtils.minecraftToDiscord(message.getContent().getString()))
             );
@@ -99,16 +93,6 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
                 // The formatted message contents
                 "action", string(StringUtils.minecraftToDiscord(message.getContent().getString()))
             ));
-            if (player != null) {
-                placeholders.putAll(Map.of(
-                    // The player's username
-                    "username", string(player.getName().getString()),
-                    // The player's display name
-                    "player", string(player.getDisplayName().getString()),
-                    // The name of the world the player logged into
-                    "world", string(StringUtils.getWorldName(source.getWorld()))
-                ));
-            }
 
             /*
              * Dispatch the message.
@@ -144,16 +128,6 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
                 // The formatted message contents
                 "message", string(StringUtils.minecraftToDiscord(message.getContent().getString()))
             ));
-            if (player != null) {
-                placeholders.putAll(Map.of(
-                    // The player's username
-                    "username", string(player.getName().getString()),
-                    // The player's display name
-                    "player", string(player.getDisplayName().getString()),
-                    // The name of the world the player logged into
-                    "world", string(StringUtils.getWorldName(source.getWorld()))
-                ));
-            }
 
             /*
              * Dispatch the message.
@@ -188,7 +162,8 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
                 (embed, entry) -> embed.setContent(
                     PlaceholdersExt.parseString(entry.discord.tellraw, ctx, placeholders)
                 ),
-                entry -> entry.discord.tellraw != null);
+                entry -> entry.discord.tellraw != null
+            );
         });
     }
 }

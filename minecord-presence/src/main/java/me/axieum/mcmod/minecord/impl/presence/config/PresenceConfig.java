@@ -150,13 +150,14 @@ public class PresenceConfig implements ConfigData
                 /**
                  * The name of the activity.
                  *
-                 * <p>Usages: {@code ${version}}, {@code ${ip}}, {@code ${port}}, {@code ${motd}},
-                 * {@code ${difficulty}}, {@code ${max_players}}, {@code ${player_count}} and {@code ${uptime}}.
+                 * <ul>
+                 *   <li>{@code ${uptime [format]}} &mdash; the total process uptime (to the nearest minute)</li>
+                 * </ul>
                  */
                 @SuppressWarnings("checkstyle:linelength")
                 @Comment("""
                     The name of the activity
-                    Usages: ${version}, ${ip}, ${port}, ${motd}, ${difficulty}, ${max_players}, ${player_count} and ${uptime}""")
+                    Usages: ${uptime [format]}""")
                 public String name = "Minecraft";
 
                 /** If defined, provides a link to the activity, e.g. Twitch stream. */
@@ -217,25 +218,19 @@ public class PresenceConfig implements ConfigData
             // Playing Minecraft 1.17
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.PLAYING, "Minecraft ${version}", null
+                    ActivityType.PLAYING, "Minecraft ${server:version}", null
                 )
             ),
             // Watching 2 player(s)
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.WATCHING, "${player_count} player(s)", null
+                    ActivityType.WATCHING, "${server:online} player(s)", null
                 )
             ),
             // Playing for 3 hours 24 minutes 10 seconds
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
                     ActivityType.PLAYING, "for ${uptime}", null
-                )
-            ),
-            // Playing on hard mode
-            new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
-                new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.PLAYING, "on ${difficulty} mode", null
                 )
             )
         ));

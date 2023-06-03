@@ -28,12 +28,4 @@ public class I18nConfig implements ConfigData
         Map.entry("minecraft:the_nether", "Nether"),
         Map.entry("minecraft:the_end", "The End")
     ));
-
-    /** A mapping of advancement types to their respective names. */
-    @Comment("A mapping of advancement types to their respective names")
-    public Map<String, String> advancementTypes = new HashMap<>(Map.ofEntries(
-        Map.entry("task", "task"),
-        Map.entry("challenge", "challenge"),
-        Map.entry("goal", "goal")
-    ));
 }

@@ -8,10 +8,8 @@ import java.util.function.Function;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.entities.IMentionable;
 
-import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
@@ -27,7 +25,7 @@ public final class StringUtils
     /** Mapping of Minecraft world identifiers to their human-readable names. */
     public static final HashMap<Identifier, String> WORLD_NAMES = new HashMap<>(3);
     /** String templates for translating between Minecraft and Discord formatted strings. */
-    public static StringTemplate discordMinecraftST, minecraftDiscordST;
+    public static StringTemplate minecraftDiscordST;
 
     private StringUtils() {}
 
@@ -49,45 +47,15 @@ public final class StringUtils
     }
 
     static {
-        final Pattern bold = Pattern.compile("\\*\\*(.+?)\\*\\*");
-        final Pattern underline = Pattern.compile("__(.+?)__");
-        final Pattern italics = Pattern.compile("_(.+?)_");
-        final Pattern italics2 = Pattern.compile("\\*(.+?)\\*");
-        final Pattern strike = Pattern.compile("~~(.+?)~~");
-        final Pattern spoilers = Pattern.compile("\\|\\|(.+?)\\|\\|");
-        final Pattern code = Pattern.compile("(?s)```(\\w+?)\\n(.*?)```");
-        final Pattern code2 = Pattern.compile("(?s)```(.*?)```");
-        final Pattern code3 = Pattern.compile("(?s)`(.*?)`");
-        discordMinecraftST = new StringTemplate()
-            // Translate bold
-            .transform(s -> bold.matcher(s).replaceAll("\u00A7l$1\u00A7r"))
-            // Translate underline
-            .transform(s -> underline.matcher(s).replaceAll("\u00A7n$1\u00A7r"))
-            // Translate italics
-            .transform(s -> italics.matcher(s).replaceAll("\u00A7o$1\u00A7r"))
-            .transform(s -> italics2.matcher(s).replaceAll("\u00A7o$1\u00A7r"))
-            // Translate strikethrough
-            .transform(s -> strike.matcher(s).replaceAll("\u00A7m$1\u00A7r"))
-            // Obfuscate spoilers
-            .transform(s -> spoilers.matcher(s).replaceAll("\u00A7k$1\u00A7r"))
-            // Darken code blocks
-            .transform(s -> code.matcher(s).replaceAll("($1) \u00A77$2\u00A7r"))
-            .transform(s -> code2.matcher(s).replaceAll("\u00A77$1\u00A7r"))
-            .transform(s -> code3.matcher(s).replaceAll("\u00A77$1\u00A7r"))
-            // Translate emojis from unicode
-            .transform(EmojiParser::parseToAliases);
-    }
-
-    static {
         final Pattern breaks = Pattern.compile("(?s)\\n+");
-        final Pattern bold = Pattern.compile("(?<=[\u00A7]l)(.+?)(?=\\s?[\u00A7]r|$)");
-        final Pattern underline = Pattern.compile("(?<=[\u00A7]n)(.+?)(?=\\s?[\u00A7]r|$)");
-        final Pattern italics = Pattern.compile("(?<=[\u00A7]o)(.+?)(?=\\s?[\u00A7]r|$)");
-        final Pattern strike = Pattern.compile("(?<=[\u00A7]m)(.+?)(?=\\s?[\u00A7]r|$)");
-        final Pattern spoilers = Pattern.compile("(?<=[\u00A7]k)(.+?)(?=\\s?[\u00A7]r|$)");
+        final Pattern bold = Pattern.compile("(?<=§l)(.+?)(?=\\s?§r|$)");
+        final Pattern underline = Pattern.compile("(?<=§n)(.+?)(?=\\s?§r|$)");
+        final Pattern italics = Pattern.compile("(?<=§o)(.+?)(?=\\s?§r|$)");
+        final Pattern strike = Pattern.compile("(?<=§m)(.+?)(?=\\s?§r|$)");
+        final Pattern spoilers = Pattern.compile("(?<=§k)(.+?)(?=\\s?§r|$)");
         final Pattern mention = Pattern.compile("@(\\w+?)#(\\d{4})");
         final Pattern mention2 = Pattern.compile("@((?!everyone|here)\\w+)(?!#\\d{4})\\b");
-        final Pattern channel = Pattern.compile("#([^\\s]+)");
+        final Pattern channel = Pattern.compile("#(\\S+)");
         final Function<MatchResult, String> resolveMention = m ->
             Minecord.getInstance().getJDA()
                 .flatMap(jda -> Optional.ofNullable(jda.getUserByTag(m.group(1), m.group(2))))
@@ -130,19 +98,6 @@ public final class StringUtils
             .transform(s -> s.replace("@here", "@_here_"))
             // Strip any leftover formatting
             .transform(Formatting::strip);
-    }
-
-    /**
-     * Translates a Discord flavoured markdown string to a
-     * Minecraft-formatted string.
-     *
-     * @param contents Discord flavoured markdown string
-     * @return Minecraft-formatted string
-     */
-    public static String discordToMinecraft(final String contents)
-    {
-        // Apply the appropriate string template against the given contents and return
-        return discordMinecraftST.format(contents);
     }
 
     /**
@@ -198,17 +153,5 @@ public final class StringUtils
             // Return the computed world name
             return new String(chars);
         });
-    }
-
-    /**
-     * Attempts to retrieve the advancement type name from the config files
-     * first, otherwise uses it symbol name.
-     *
-     * @param type Minecraft advancement frame/type
-     * @return name of the advancement type
-     */
-    public static String getAdvancementTypeName(final AdvancementFrame type)
-    {
-        return getConfig().i18n.advancementTypes.getOrDefault(type.getId(), type.getId());
     }
 }

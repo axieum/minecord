@@ -42,7 +42,9 @@ public class CommandConfig implements ConfigData
         /**
          * The error message used when any command unexpectedly fails.
          *
-         * <p>Usages: ${reason}.
+         * <ul>
+         *   <li>{@code ${reason}} &mdash; the reason for the command failing</li>
+         * </ul>
          */
         @Comment("""
             The error message used when any command unexpectedly fails
@@ -52,7 +54,10 @@ public class CommandConfig implements ConfigData
         /**
          * The error message used when a user must wait before executing a command.
          *
-         * <p>Usages: ${cooldown} and ${remaining}.
+         * <ul>
+         *   <li>{@code ${cooldown}} &mdash; the total cooldown before the command can be used again</li>
+         *   <li>{@code ${remaining}} &mdash; the remaining time before the command can be used again</li>
+         * </ul>
          */
         @Comment("""
             The error message used when a user must wait before executing a command
@@ -95,11 +100,13 @@ public class CommandConfig implements ConfigData
             /**
              * A message template that is formatted and sent for the server's uptime.
              *
-             * <p>Usages: ${uptime}.
+             * <ul>
+             *   <li>{@code ${uptime [format]}} &mdash; the total process uptime (to the nearest minute)</li>
+             * </ul>
              */
             @Comment("""
                 A message template that is formatted and sent for the server's uptime
-                Usages: ${uptime}""")
+                Usages: ${uptime [format]}""")
             public String message = "The server has been online for ${uptime} :hourglass_flowing_sand:";
         }
 
@@ -144,7 +151,9 @@ public class CommandConfig implements ConfigData
         /**
          * A Minecraft command to execute.
          *
-         * <p>Usages: {@code ${name}} for "name" option value.
+         * <ul>
+         *   <li>{@code ${name}} &mdash; for "name" option value</li>
+         * </ul>
          */
         @Comment("""
             A Minecraft command to execute
@@ -186,12 +195,7 @@ public class CommandConfig implements ConfigData
         @Comment("The number of seconds a user must wait before using the command again")
         public int cooldown = 0;
 
-        /**
-         * To whom the cooldown applies.
-         *
-         * <p>Allowed values: {@code USER}, {@code CHANNEL}, {@code USER_CHANNEL}, {@code GUILD},
-         * {@code USER_GUILD}, {@code SHARD}, {@code USER_SHARD} and {@code GLOBAL}.
-         */
+        /** To whom the cooldown applies. */
         @Comment("""
             To whom the cooldown applies
             Allowed values: USER, CHANNEL, USER_CHANNEL, GUILD, USER_GUILD, SHARD, USER_SHARD and GLOBAL""")
@@ -202,13 +206,7 @@ public class CommandConfig implements ConfigData
          */
         public static class OptionSchema
         {
-            /**
-             * The type of option.
-             *
-             * <p>Allowed values: {@code ATTACHMENT}, {@code BOOLEAN}, {@code CHANNEL},
-             * {@code INTEGER}, {@code MENTIONABLE}, {@code NUMBER}, {@code ROLE},
-             * {@code STRING} and {@code USER}.
-             */
+            /** The type of option. */
             @Comment("""
                 The type of option
                 Allowed values: ATTACHMENT, BOOLEAN, CHANNEL, INTEGER, MENTIONABLE, NUMBER, ROLE, STRING and USER""")

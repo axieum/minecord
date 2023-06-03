@@ -19,6 +19,7 @@ import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
 import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.duration;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
 
 /**
@@ -29,7 +30,7 @@ public class UptimeCommand extends MinecordCommand
     /** Reusable placeholders for all uptime commands. */
     public static final Map<String, PlaceholderHandler> PLACEHOLDERS = Map.of(
         // The total process uptime (to the nearest minute)
-        "uptime", PlaceholdersExt.duration(() ->
+        "uptime", duration(() ->
             Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()).truncatedTo(ChronoUnit.MINUTES)
         )
     );

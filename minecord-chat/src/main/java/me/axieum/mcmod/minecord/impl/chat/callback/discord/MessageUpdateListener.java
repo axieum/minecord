@@ -19,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.util.Formatting;
 
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
-import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.markdown;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
@@ -74,15 +74,15 @@ public class MessageUpdateListener extends ListenerAdapter
                         event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName()
                     ),
                     // The old formatted message contents
-                    "original", string(StringUtils.discordToMinecraft(original)),
+                    "original", markdown(original),
                     // The old raw message contents
                     "original_raw", string(context.getContentRaw()),
                     // The new formatted message contents
-                    "message", string(StringUtils.discordToMinecraft(event.getMessage().getContentDisplay())),
+                    "message", markdown(event.getMessage().getContentDisplay()),
                     // The new raw message contents
                     "raw", string(event.getMessage().getContentRaw()),
                     // The difference between the original and new message
-                    "diff", string(StringUtils.discordToMinecraft(diffs.get(0).getOldLine()))
+                    "diff", markdown(diffs.get(0).getOldLine())
                 );
 
                 /*

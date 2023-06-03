@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.PlaceholderResult;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -18,6 +17,8 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
 import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.duration;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.LOGGER;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
 
@@ -78,9 +79,9 @@ public class DiscordCommandListener extends ListenerAdapter
                                 PlaceholdersExt.parseString(
                                     getConfig().messages.cooldown, pCtx, Map.of(
                                         // The total cooldown before the command can be used again
-                                        "cooldown", PlaceholdersExt.duration(Duration.ofSeconds(command.getCooldown())),
+                                        "cooldown", duration(Duration.ofSeconds(command.getCooldown())),
                                         // The remaining time before the command can be used again
-                                        "remaining", PlaceholdersExt.duration(Duration.ofSeconds(remaining))
+                                        "remaining", duration(Duration.ofSeconds(remaining))
                                     )
                                 )
                             ).build()
@@ -111,7 +112,7 @@ public class DiscordCommandListener extends ListenerAdapter
                         PlaceholdersExt.parseString(
                             getConfig().messages.failed, pCtx, Map.of(
                                 // The reason for the command failing
-                                "reason", (ctx, arg) -> PlaceholderResult.value(e.getMessage())
+                                "reason", string(e.getMessage())
                             )
                         )
                     ).build()

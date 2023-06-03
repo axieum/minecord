@@ -43,11 +43,11 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
                 // The name of the world the entity died in
                 "world", string(StringUtils.getWorldName(entity.world)),
                 // The X coordinate of where the entity died
-                "x", string(String.valueOf((int) entity.prevX)),
+                "pos_x", string(String.valueOf((int) entity.prevX)),
                 // The Y coordinate of where the entity died
-                "y", string(String.valueOf((int) entity.prevY)),
+                "pos_y", string(String.valueOf((int) entity.prevY)),
                 // The Z coordinate of where the entity died
-                "z", string(String.valueOf((int) entity.prevZ))
+                "pos_z", string(String.valueOf((int) entity.prevZ))
             );
 
             /*

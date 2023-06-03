@@ -31,26 +31,22 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
 
             final PlaceholderContext ctx = PlaceholderContext.of(player);
             final Map<String, PlaceholderHandler> placeholders = Map.of(
-                // The player's username
-                "username", string(player.getName().getString()),
-                // The player's display name
-                "player", string(player.getDisplayName().getString()),
                 // The name of the world the player entered
                 "world", string(StringUtils.getWorldName(dest)),
                 // The X coordinate of where the player entered
-                "x", string(String.valueOf(player.getBlockX())),
+                "pos_x", string(String.valueOf(player.getBlockX())),
                 // The Y coordinate of where the player entered
-                "y", string(String.valueOf(player.getBlockY())),
+                "pos_y", string(String.valueOf(player.getBlockY())),
                 // The Z coordinate of where the player entered
-                "z", string(String.valueOf(player.getBlockZ())),
+                "pos_z", string(String.valueOf(player.getBlockZ())),
                 // The name of the world the player left
                 "origin", string(StringUtils.getWorldName(origin)),
                 // The X coordinate of where the player left
-                "origin_x", string(String.valueOf((int) player.prevX)),
+                "origin_pos_x", string(String.valueOf((int) player.prevX)),
                 // The Y coordinate of where the player left
-                "origin_y", string(String.valueOf((int) player.prevY)),
+                "origin_pos_y", string(String.valueOf((int) player.prevY)),
                 // The Z coordinate of where the player left
-                "origin_z", string(String.valueOf((int) player.prevZ))
+                "origin_pos_z", string(String.valueOf((int) player.prevZ))
             );
 
             /*

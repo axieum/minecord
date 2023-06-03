@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.markdown;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
@@ -65,7 +66,7 @@ public class MessageReceivedListener extends ListenerAdapter
                 event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName()
             ),
             // The formatted message contents
-            "message", string(StringUtils.discordToMinecraft(event.getMessage().getContentDisplay())),
+            "message", markdown(event.getMessage().getContentDisplay()),
             // The raw message contents
             "raw", string(event.getMessage().getContentRaw())
         ));
@@ -86,7 +87,7 @@ public class MessageReceivedListener extends ListenerAdapter
                         : replyMessage.getAuthor().getName()
                 ),
                 // The replied message formatted message contents
-                "reply_message", string(StringUtils.discordToMinecraft(replyMessage.getContentDisplay())),
+                "reply_message", markdown(replyMessage.getContentDisplay()),
                 // The replied message raw message contents
                 "reply_raw", string(replyMessage.getContentRaw())
             ));

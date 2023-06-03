@@ -53,14 +53,14 @@ public class MessageReactionListener extends ListenerAdapter
                     event.getMember() != null ? event.getMember().getEffectiveName() : event.getUser().getName()
                 ),
                 // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-                "author_tag", string(event.getUser().getAsTag()),
+                "author_tag", string(context.getAuthor().getAsTag()),
                 // The author's username, e.g. Axieum
-                "author_username", string(event.getUser().getName()),
+                "author_username", string(context.getAuthor().getName()),
                 // The author's username discriminator, e.g. 1001
-                "author_discriminator", string(event.getUser().getDiscriminator()),
+                "author_discriminator", string(context.getAuthor().getDiscriminator()),
                 // The author's nickname or username
                 "author", string(
-                    event.getMember() != null ? event.getMember().getEffectiveName() : event.getUser().getName()
+                    context.getMember() != null ? context.getMember().getEffectiveName() : context.getAuthor().getName()
                 ),
                 // The emote used to react
                 "emote", string(emote)
@@ -77,7 +77,7 @@ public class MessageReactionListener extends ListenerAdapter
                     entry -> entry.minecraft.react != null && entry.id == channelId
                 );
                 LOGGER.info(PlaceholdersExt.parseString(
-                    "@${issuer_tag} reacted with ${emote} to ${author_tag}'s message", ctx, placeholders::get
+                    "@${issuer_tag} reacted with ${emote} to ${author_tag}'s message", ctx, placeholders
                 ));
 
             // A user removed their reaction from a recent message
@@ -89,7 +89,7 @@ public class MessageReactionListener extends ListenerAdapter
                 LOGGER.info(PlaceholdersExt.parseString(
                     "@${issuer_tag} removed their reaction of ${emote} from ${author_tag}'s message",
                     ctx,
-                    placeholders::get
+                    placeholders
                 ));
             }
         });

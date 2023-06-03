@@ -56,43 +56,51 @@ public class ChatConfig implements ConfigData
             /**
              * A player sent an in-game chat message.
              *
-             * <p>Usages: {@code ${username}}, {@code ${player}}, {@code ${message}} and {@code ${world}}.
+             * <ul>
+             *   <li>{@code ${message}} &mdash; the formatted message contents</li>
+             * </ul>
              */
             @Comment("""
                 A player sent an in-game chat message
-                Usages: ${username}, ${player}, ${message} and ${world}""")
-            public String chat = "`${world}` **${player}** > ${message}";
+                Usages: ${message}""")
+            public String chat = "`${world:name}` **${player:name_unformatted}** > ${message}";
 
             /**
              * A player sent an in-game message via the {@code /me} command.
              *
              * <p>Note: there is no player or world if sent from a command block or console!
              *
-             * <p>Usages: {@code ${username}}, {@code ${player}}, {@code ${action}} and {@code ${world}}.
+             * <ul>
+             *   <li>{@code ${action}} &mdash; the formatted action</li>
+             * </ul>
              */
             @Comment("""
                 A player sent an in-game message via the '/me' command
                 Note: there is no player or world if sent from a command block or console!
-                Usages: ${username}, ${player}, ${action} and ${world}""")
-            public String emote = "`${world:-∞}` **${player:-Server}** _${action}_";
+                Usages: ${action}""")
+            public String emote = "`${world:name}` **${player:name_unformatted}** _${action}_";
 
             /**
              * An admin broadcast an in-game message via the {@code /say} command.
              *
              * <p>Note: there is no player or world if sent from a command block or console!
              *
-             * <p>Usages: {@code ${username}}, {@code ${player}}, {@code ${message}} and {@code ${world}}.
+             * <ul>
+             *   <li>{@code ${message}} &mdash; the formatted message contents</li>
+             * </ul>
              */
             @Comment("""
                 An admin broadcast an in-game message via the '/say' command
                 Note: there is no player or world if sent from a command block or console!
-                Usages: ${username}, ${player}, ${message} and ${world}""")
-            public String say = "**[${player:-Server}]** ${message}";
+                Usages: ${message}""")
+            public String say = "**[${player:name_unformatted}]** ${message}";
 
             /**
              * An admin broadcast an in-game message to all players via the {@code /tellraw @a} command.
              *
-             * <p>Usages: {@code ${message}}.
+             * <ul>
+             *   <li>{@code ${message}} &mdash; the formatted message contents</li>
+             * </ul>
              */
             @Comment("""
                 An admin broadcast an in-game message to all players via the '/tellraw @a' command
@@ -102,66 +110,100 @@ public class ChatConfig implements ConfigData
             /**
              * A player had died.
              *
-             * <p>Usages: {@code ${username}}, {@code ${player}}, {@code ${cause}}, {@code ${world}}, {@code ${x}},
-             * {@code ${y}}, {@code ${z}}, {@code ${score}} and {@code ${exp}}.
+             * <ul>
+             *   <li>{@code ${cause}} &mdash; the reason for the player's death</li>
+             *   <li>{@code ${exp}} &mdash; the player's number of experience levels before they died</li>
+             *   <li>{@code ${lifespan [format]}} &mdash; the total time for which the player was alive for</li>
+             *   <li>{@code ${score}} &mdash; the player's total score before they died</li>
+             * </ul>
              */
             @Comment("""
                 A player had died
-                Usages: ${username}, ${player}, ${cause}, ${world}, ${x}, ${y}, ${z}, ${score} and ${exp}""")
-            public String death = "**${player}** ${cause}! :skull:\n_${world} | ${x}, ${y}, ${z}_";
+                Usages: ${cause}, ${exp}, ${lifespan [format]} and ${score}""")
+            public String death = "**${player:name_unformatted}** ${cause}! :skull:\n_${world:name} at ${player:pos_x}, ${player:pos_y}, ${player:pos_z}_";
 
             /**
              * A named animal/monster (with name tag) had died.
              *
-             * <p>Usages: {@code ${name}}, {@code ${cause}}, {@code ${world}}, {@code ${x}}, {@code ${y}} and
-             * {@code ${z}}.
+             * <ul>
+             *   <li>{@code ${cause}} &mdash; the reason for the entity's death</li>
+             *   <li>{@code ${name}} &mdash; the entity's display name</li>
+             *   <li>{@code ${pos_x}} &mdash; the X coordinate of where the entity died</li>
+             *   <li>{@code ${pos_y}} &mdash; the Y coordinate of where the entity died</li>
+             *   <li>{@code ${pos_z}} &mdash; the Z coordinate of where the entity died</li>
+             *   <li>{@code ${world}} &mdash; the name of the world the entity died in</li>
+             * </ul>
              */
             @Comment("""
                 A named animal/monster (with name tag) had died
-                Usages: ${name}, ${cause}, ${world}, ${x}, ${y} and ${z}""")
-            public String grief = "**${name}** ${cause}! :coffin:";
+                Usages: ${cause}, ${name}, ${pos_x}, ${pos_y}, ${pos_z} and ${world}""")
+            public String grief = "**${name}** ${cause}! :coffin:\n_${world} at ${pos_x}, ${pos_y}, ${pos_z}_";
 
             /**
-             * A player unlocked an advancement.
+             * A player unlocked an advancement task.
              *
-             * <p>Usages: {@code ${username}}, {@code ${player}}, {@code ${type}}, {@code ${title}}, and
-             * {@code ${description}}.
+             * <ul>
+             *   <li>{@code ${title}} &mdash; the title of the advancement (task)</li>
+             *   <li>{@code ${description}} &mdash; the description of the advancement (task)</li>
+             * </ul>
              */
             @Comment("""
-                A player unlocked an advancement
-                Usages: ${username}, ${player}, ${type}, ${title}, and ${description}""")
-            public String advancement = "**${player}** completed the ${type} **${title}**! :clap:\n_${description}_";
+                A player unlocked an advancement task
+                Usages: ${title} and ${description}""")
+            public String advancementTask = "**${player:name_unformatted}** has made the advancement **${title}**! :clap:\n_${description}_";
+
+            /**
+             * A player reached an advancement goal.
+             *
+             * <ul>
+             *   <li>{@code ${title}} &mdash; the title of the advancement</li>
+             *   <li>{@code ${description}} &mdash; the description of the advancement</li>
+             * </ul>
+             */
+            @Comment("""
+                A player reached an advancement goal
+                Usages: ${title} and ${description}""")
+            public String advancementGoal = "**${player:name_unformatted}** has reached the goal **${title}**! :clap:\n_${description}_";
+
+            /**
+             * A player completed an advancement challenge.
+             *
+             * <ul>
+             *   <li>{@code ${title}} &mdash; the title of the advancement</li>
+             *   <li>{@code ${description}} &mdash; the description of the advancement</li>
+             * </ul>
+             */
+            @Comment("""
+                A player completed an advancement challenge
+                Usages: ${title} and ${description}""")
+            public String advancementChallenge = "**${player:name_unformatted}** has completed the challenge **${title}**! :trophy:\n_${description}_";
 
             /**
              * A player teleported to another dimension.
              *
-             * <p>Usages: {@code ${username}}, {@code ${player}}, {@code ${world}}, {@code ${x}}, {@code ${y}},
-             * {@code ${z}}, {@code ${origin}}, {@code ${origin_x}}, {@code ${origin_y}} and {@code ${origin_z}}.
+             * <ul>
+             *   <li>{@code ${world}} &mdash; the name of the world the player entered</li>
+             *   <li>{@code ${pos_x}} &mdash; the X coordinate of where the player entered</li>
+             *   <li>{@code ${pos_y}} &mdash; the Y coordinate of where the player entered</li>
+             *   <li>{@code ${pos_z}} &mdash; the Z coordinate of where the player entered</li>
+             *   <li>{@code ${origin}} &mdash; the name of the world the player left</li>
+             *   <li>{@code ${origin_pos_x}} &mdash; the X coordinate of where the player left</li>
+             *   <li>{@code ${origin_pos_y}} &mdash; the Y coordinate of where the player left</li>
+             *   <li>{@code ${origin_pos_z}} &mdash; the Z coordinate of where the player left</li>
+             * </ul>
              */
             @Comment("""
                 A player teleported to another dimension
-                Usages: ${username}, ${player}, ${world}, ${x}, ${y}, ${z}, ${origin}, ${origin_x}, ${origin_y} and ${origin_z}""")
-            public String teleport = "**${player}** entered ${world}. :cyclone:";
+                Usages: ${world}, ${pos_x}, ${pos_y}, ${pos_z}, ${origin}, ${origin_pos_x}, ${origin_pos_y} and ${origin_pos_z}""")
+            public String teleport = "**${player:name_unformatted}** entered ${world:name}. :cyclone:";
 
-            /**
-             * A player joined the game.
-             *
-             * <p>Usages: {@code ${username}}, {@code ${player}} and {@code ${world}}.
-             */
-            @Comment("""
-                A player joined the game
-                Usages: ${username}, ${player} and ${world}""")
-            public String join = "**${player}** joined!";
+            /** A player joined the game. */
+            @Comment("A player joined the game")
+            public String join = "**${player:name_unformatted}** joined!";
 
-            /**
-             * A player left the game.
-             *
-             * <p>Usages: {@code ${username}}, {@code ${player}}, {@code ${world}} and {@code ${playtime}}.
-             */
-            @Comment("""
-                A player left the game
-                Usages: ${username}, ${player}, ${world} and ${playtime}""")
-            public String leave = "**${player}** left!";
+            /** A player left the game. */
+            @Comment("A player left the game")
+            public String leave = "**${player:name_unformatted}** left!";
 
             /** The server began to start. */
             @Comment("The server began to start")
@@ -170,41 +212,50 @@ public class ChatConfig implements ConfigData
             /**
              * The server started and is accepting connections.
              *
-             * <p>Usages: {@code ${uptime}}.
+             * <ul>
+             *   <li>{@code ${uptime [format]}} &mdash; the time taken for the server to start</li>
+             * </ul>
              */
             @Comment("""
                 The server started and is accepting connections
-                Usages: ${uptime}""")
-            public String started = "Server started (took ${uptime:s.SSS}s) :ok_hand:";
+                Usages: ${uptime [format]}""")
+            public String started = "Server started (took ${uptime s.SSS}s) :ok_hand:";
 
             /**
              * The server began to stop.
              *
-             * <p>Usages: {@code ${uptime}}.
+             * <ul>
+             *   <li>{@code ${uptime [format]}} &mdash; the total time for which the server has been online for</li>
+             * </ul>
              */
             @Comment("""
                 The server began to stop
-                Usages: ${uptime}""")
+                Usages: ${uptime [format]}""")
             public String stopping = "Server is stopping... :raised_hand:";
 
             /**
              * The server stopped and is offline.
              *
-             * <p>Usages: {@code ${uptime}}.
+             * <ul>
+             *   <li>{@code ${uptime [format]}} &mdash; the total time for which the server has been online for</li>
+             * </ul>
              */
             @Comment("""
                 The server stopped and is offline
-                Usages: ${uptime}""")
+                Usages: ${uptime [format]}""")
             public String stopped = "Server stopped! :no_entry:";
 
             /**
              * The server stopped unexpectedly and is inaccessible.
              *
-             * <p>Usages: {@code ${reason}} and {@code ${uptime}}.
+             * <ul>
+             *   <li>{@code ${reason}} &mdash; the reason for the server stopping, if crashed</li>
+             *   <li>{@code ${uptime [format]}} &mdash; the total time for which the server has been online for</li>
+             * </ul>
              */
             @Comment("""
                 The server stopped unexpectedly and is inaccessible
-                Usages: ${reason} and ${uptime}""")
+                Usages: ${reason} and ${uptime [format]}""")
             public String crashed = "Server crash detected! :warning:\n_${reason}_";
 
             /** True if a crash report should be attached to any server crash messages. */
@@ -226,72 +277,121 @@ public class ChatConfig implements ConfigData
             /**
              * A user sent a message.
              *
-             * <p>Usages: {@code ${author}}, {@code ${tag}}, {@code ${username}}, {@code ${discriminator}},
-             * {@code ${message}} and {@code ${raw}}.
+             * <ul>
+             *   <li>{@code ${author}} &mdash; the author's nickname or username</li>
+             *   <li>{@code ${tag}} &mdash; the author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${username}} &mdash; the author's username, e.g. Axieum</li>
+             *   <li>{@code ${discriminator}} &mdash; the author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${message}} &mdash; the formatted message contents</li>
+             *   <li>{@code ${raw}} &mdash; the raw message contents</li>
+             * </ul>
              */
             @Comment("""
                 A user sent a message
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message} and ${raw}""")
-            public String chat = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${message}\"}]";
+            public String chat = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> ${message}";
 
             /**
              * A user sent a message in reply to another.
              *
-             * <p>Usages: {@code ${author}}, {@code ${tag}}, {@code ${username}}, {@code ${discriminator}},
-             * {@code ${message}}, {@code ${reply_author}}, {@code ${reply_tag}}, {@code ${reply_username}},
-             * {@code ${reply_discriminator}} and {@code ${reply_message}}.
+             * <ul>
+             *   <li>{@code ${author}} &mdash; the author's nickname or username</li>
+             *   <li>{@code ${tag}} &mdash; the author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${username}} &mdash; the author's username, e.g. Axieum</li>
+             *   <li>{@code ${discriminator}} &mdash; the author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${message}} &mdash; the formatted message contents</li>
+             *   <li>{@code ${raw}} &mdash; the raw message contents</li>
+             *   <li>{@code ${reply_author}} &mdash; the replied message author's nickname or username</li>
+             *   <li>{@code ${reply_tag}} &mdash; the replied message author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${reply_username}} &mdash; the replied message author's username, e.g. Axieum</li>
+             *   <li>{@code ${reply_discriminator}} &mdash; the replied message author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${reply_message}} &mdash; the replied message formatted message contents</li>
+             *   <li>{@code ${reply_raw}} &mdash; the replied message raw message contents</li>
+             * </ul>
              */
             @Comment("""
                 A user sent a message in reply to another
-                Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message}, ${reply_author}, ${reply_tag}, ${reply_username}, ${reply_discriminator} and ${reply_message}""")
-            public String reply = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[{\"text\":\"Sent from Discord\",\"italic\":true}]}},\" \",{\"text\":\"(in reply to ${reply_author})\",\"color\":\"#99dcff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${reply_tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"${reply_message:%.50s}...\"]}},{\"text\":\" > \",\"color\":\"dark_gray\"},\"${message}\"]";
+                Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message}, ${raw}, ${reply_author}, ${reply_tag}, ${reply_username}, ${reply_discriminator}, ${reply_message} and ${reply_raw}""")
+            public String reply = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <cmd:'@${reply_tag} '><hover:show_text:'${reply_message}'><color:#99dcff>${reply_author}</color></hover></cmd> <dark_gray>></dark_gray> ${message}";
 
             /**
              * A user edited their recently sent message.
              *
-             * <p>Usages: {@code ${author}}, {@code ${tag}}, {@code ${username}}, {@code ${discriminator}},
-             * {@code ${diff}}, {@code ${message}}, {@code ${raw}}, {@code ${original}} and {@code ${original_raw}}.
+             * <ul>
+             *   <li>{@code ${author}} &mdash; the author's nickname or username</li>
+             *   <li>{@code ${tag}} &mdash; the author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${username}} &mdash; the author's username, e.g. Axieum</li>
+             *   <li>{@code ${discriminator}} &mdash; the author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${diff}} &mdash; the difference between the original and new message</li>
+             *   <li>{@code ${message}} &mdash; the new formatted message contents</li>
+             *   <li>{@code ${raw}} &mdash; the new raw message contents</li>
+             *   <li>{@code ${original}} &mdash; the old formatted message contents</li>
+             *   <li>{@code ${original_raw}} &mdash; the old raw message contents</li>
+             * </ul>
              */
             @Comment("""
                 A user edited their recently sent message
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${diff}, ${message}, ${raw}, ${original} and ${original_raw}""")
-            public String edit = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${diff}\"}]";
+            public String edit = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> ${diff}";
 
             /**
              * A user reacted to a recent message.
              *
-             * <p>Usages: {@code ${issuer}}, {@code ${issuer_tag}}, {@code ${issuer_username}},
-             * {@code ${issuer_discriminator}}, {@code ${author}}, {@code ${author_tag}}, {@code ${author_username}},
-             * {@code ${author_discriminator}} and {@code ${emote}}.
+             * <ul>
+             *   <li>{@code ${issuer}} &mdash; the issuer's nickname or username</li>
+             *   <li>{@code ${issuer_tag}} &mdash; the issuer's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${issuer_username}} &mdash; the issuer's username, e.g. Axieum</li>
+             *   <li>{@code ${issuer_discriminator}} &mdash; the issuer's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${author}} &mdash; the author's nickname or username</li>
+             *   <li>{@code ${author_tag}} &mdash; the author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${author_username}} &mdash; the author's username, e.g. Axieum</li>
+             *   <li>{@code ${author_discriminator}} &mdash; the author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${emote}} &mdash; the emote used to react</li>
+             * </ul>
              */
             @Comment("""
                 A user reacted to a recent message
                 Usages: ${issuer}, ${issuer_tag}, ${issuer_username}, ${issuer_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
-            public String react = "[\"\",{\"text\":\"${issuer}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${issuer_tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" reacted with \"},{\"text\":\"${emote}\",\"color\":\"green\"},{\"text\": \" to \"},{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${author_tag} \"}},{\"text\":\"'s message\"}]";
+            public String react = "<cmd:'@${issuer_tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${issuer}</color></hover></cmd> reacted with <green>${emote}</green> to <cmd:'@${author_tag} '><color:#00aaff>${author}</color></cmd>'s message";
 
             /**
              * A user removed their reaction from a recent message.
              *
-             * <p>Usages: {@code ${issuer}}, {@code ${issuer_tag}}, {@code ${issuer_username}},
-             * {@code ${issuer_discriminator}}, {@code ${author}}, {@code ${author_tag}},
-             * {@code ${author_username}}, {@code ${author_discriminator}} and {@code ${emote}}.
+             * <ul>
+             *   <li>{@code ${issuer}} &mdash; the issuer's nickname or username</li>
+             *   <li>{@code ${issuer_tag}} &mdash; the issuer's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${issuer_username}} &mdash; the issuer's username, e.g. Axieum</li>
+             *   <li>{@code ${issuer_discriminator}} &mdash; the issuer's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${author}} &mdash; the author's nickname or username</li>
+             *   <li>{@code ${author_tag}} &mdash; the author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${author_username}} &mdash; the author's username, e.g. Axieum</li>
+             *   <li>{@code ${author_discriminator}} &mdash; the author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${emote}} &mdash; the emote used to react</li>
+             * </ul>
              */
             @Comment("""
                 A user removed their reaction from a recent message
                 Usages: ${issuer}, ${issuer_tag}, ${issuer_username}, ${issuer_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
-            public String unreact = "[\"\",{\"text\":\"${issuer}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${issuer_tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" removed their reaction of \"},{\"text\":\"${emote}\",\"color\":\"red\"},{\"text\": \" from \"},{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${author_tag} \"}},{\"text\":\"'s message\"}]";
+            public String unreact = "<cmd:'@${issuer_tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${issuer}</color></hover></cmd> removed their reaction of <red>${emote}</red> from <cmd:'@${author_tag} '><color:#00aaff>${author}</color></cmd>'s message";
 
             /**
              * A user sent a message that contained attachments.
              *
-             * <p>Usages: {@code ${author}}, {@code ${tag}}, {@code ${username}},
-             * {@code ${discriminator}}, {@code ${url}}, {@code ${name}}, {@code ${ext}} and
-             * {@code ${size}}.
+             * <ul>
+             *   <li>{@code ${author}} &mdash; the author's nickname or username</li>
+             *   <li>{@code ${tag}} &mdash; the author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${username}} &mdash; the author's username, e.g. Axieum</li>
+             *   <li>{@code ${discriminator}} &mdash; the author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${url}} &mdash; the link to the file to download</li>
+             *   <li>{@code ${name}} &mdash; the file name that was uploaded</li>
+             *   <li>{@code ${ext}} &mdash; the file extension/type</li>
+             *   <li>{@code ${size}} &mdash; the file size for humans</li>
+             * </ul>
              */
             @Comment("""
                 A user sent a message that contained attachments
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url}, ${name}, ${ext} and ${size}""")
-            public String attachment = "[\"\",{\"text\":\"${author}\",\"color\":\"#00aaff\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"@${tag} \"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":[\"\",{\"text\":\"Sent from Discord\",\"italic\":true}]}},{\"text\":\" > \",\"color\":\"dark_gray\"},{\"text\":\"${name}\",\"color\":\"blue\",\"underlined\":true,\"clickEvent\":{\"action\":\"open_url\",\"value\":\"${url}\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":{\"text\":\"${ext} (${size})\"}}}]";
+            public String attachment = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> <url:'${url}'><hover:show_text:'${ext} (${size})'><underline><blue></blue></underline></hover></url";
         }
 
         /**

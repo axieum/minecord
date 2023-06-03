@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.impl.cmds.command.discord;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +12,6 @@ import java.util.stream.Stream;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
-import eu.pb4.placeholders.api.PlaceholderResult;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ParsingException;
@@ -42,6 +42,7 @@ import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
 import me.axieum.mcmod.minecord.api.cmds.event.MinecordCommandEvents;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.cmds.config.CommandConfig;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.LOGGER;
 import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
 
@@ -160,7 +161,12 @@ public class CustomCommand extends MinecordCommand
         if (output.prevMessage == null) {
             if (error == null) {
                 output.thumbnailUrl = null;
-                source.sendFeedback(Text.literal(getConfig().messages.feedback), false);
+                source.sendFeedback(
+                    PlaceholdersExt.parseText(
+                        getConfig().messages.feedback, PlaceholderContext.of(source), Collections.emptyMap()
+                    ),
+                    false
+                );
             } else {
                 source.sendError(Text.literal(error.getMessage()));
             }
@@ -187,9 +193,7 @@ public class CustomCommand extends MinecordCommand
         // Prepare new command placeholders
         final @Nullable PlaceholderContext ctx = server != null ? PlaceholderContext.of(server) : null;
         final HashMap<String, PlaceholderHandler> placeholders = new HashMap<>(options.size());
-        options.forEach(option ->
-            placeholders.put(option.getName(), (c, a) -> PlaceholderResult.value(option.getAsString()))
-        );
+        options.forEach(option -> placeholders.put(option.getName(), string(option.getAsString())));
 
         // Parse the placeholders in the given command
         String result = PlaceholdersExt.parseString(command, ctx, placeholders).trim();

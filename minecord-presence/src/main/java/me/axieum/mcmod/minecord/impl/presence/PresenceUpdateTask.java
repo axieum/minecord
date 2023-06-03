@@ -21,6 +21,7 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceCategory;
 import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.duration;
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
 /**
@@ -58,7 +59,7 @@ public class PresenceUpdateTask extends TimerTask
             final Optional<PlaceholderContext> ctx = Minecord.getInstance().getMinecraft().map(PlaceholderContext::of);
             final Map<String, PlaceholderHandler> placeholders = Map.of(
                 // The total process uptime (to the nearest minute)
-                "uptime", PlaceholdersExt.duration(() ->
+                "uptime", duration(() ->
                     Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime()).truncatedTo(ChronoUnit.MINUTES)
                 )
             );

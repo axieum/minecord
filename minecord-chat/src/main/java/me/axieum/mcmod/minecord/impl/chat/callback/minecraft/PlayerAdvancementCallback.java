@@ -12,7 +12,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.GrantCriterionCallback;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
-import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
@@ -35,12 +34,6 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
 
             final PlaceholderContext ctx = PlaceholderContext.of(player);
             final Map<String, PlaceholderHandler> placeholders = Map.of(
-                // The player's username
-                "username", string(player.getName().getString()),
-                // The player's display name
-                "player", string(player.getDisplayName().getString()),
-                // The type of advancement
-                "type", string(StringUtils.getAdvancementTypeName(info.getFrame())),
                 // The title of the advancement
                 "title", string(info.getTitle().getString()),
                 // A description of the advancement
@@ -51,11 +44,31 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
              * Dispatch the message.
              */
 
-            DiscordDispatcher.embed(
-                (embed, entry) -> embed.setDescription(
-                    PlaceholdersExt.parseString(entry.discord.advancement, ctx, placeholders)
-                ),
-                entry -> entry.discord.advancement != null && entry.hasWorld(player.world));
+            switch (info.getFrame()) {
+                // A player reached an advancement goal
+                case GOAL -> DiscordDispatcher.embed(
+                    (embed, entry) -> embed.setDescription(
+                        PlaceholdersExt.parseString(entry.discord.advancementGoal, ctx, placeholders)
+                    ),
+                    entry -> entry.discord.advancementGoal != null && entry.hasWorld(player.world)
+                );
+
+                // A player completed an advancement challenge
+                case CHALLENGE -> DiscordDispatcher.embed(
+                    (embed, entry) -> embed.setDescription(
+                        PlaceholdersExt.parseString(entry.discord.advancementChallenge, ctx, placeholders)
+                    ),
+                    entry -> entry.discord.advancementChallenge != null && entry.hasWorld(player.world)
+                );
+
+                // A player unlocked an advancement task
+                default -> DiscordDispatcher.embed(
+                    (embed, entry) -> embed.setDescription(
+                        PlaceholdersExt.parseString(entry.discord.advancementTask, ctx, placeholders)
+                    ),
+                    entry -> entry.discord.advancementTask != null && entry.hasWorld(player.world)
+                );
+            }
         });
     }
 }
