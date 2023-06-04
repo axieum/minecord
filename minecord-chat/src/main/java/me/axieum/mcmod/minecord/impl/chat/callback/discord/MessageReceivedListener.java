@@ -100,7 +100,7 @@ public class MessageReceivedListener extends ListenerAdapter
         // The message is a standalone message
         if (replyMessage == null) {
             MinecraftDispatcher.dispatch(
-                entry -> PlaceholdersExt.parseText(entry.minecraft.chat, ctx, placeholders),
+                entry -> PlaceholdersExt.parseText(entry.minecraft.chatNode, ctx, placeholders),
                 entry -> entry.minecraft.chat != null && entry.id == channelId
             );
             LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${raw}", ctx, placeholders));
@@ -108,7 +108,7 @@ public class MessageReceivedListener extends ListenerAdapter
         // The message is in reply to another
         } else {
             MinecraftDispatcher.dispatch(
-                entry -> PlaceholdersExt.parseText(entry.minecraft.reply, ctx, placeholders),
+                entry -> PlaceholdersExt.parseText(entry.minecraft.replyNode, ctx, placeholders),
                 entry -> entry.minecraft.reply != null && entry.id == channelId
             );
             LOGGER.info(PlaceholdersExt.parseString("@${tag} (in reply to @${reply_tag}) > ${raw}", ctx, placeholders));
@@ -156,7 +156,7 @@ public class MessageReceivedListener extends ListenerAdapter
          */
 
         MinecraftDispatcher.dispatch(
-            entry -> PlaceholdersExt.parseText(entry.minecraft.attachment, ctx, placeholders),
+            entry -> PlaceholdersExt.parseText(entry.minecraft.attachmentNode, ctx, placeholders),
             entry -> entry.minecraft.attachment != null && entry.id == channelId
         );
         LOGGER.info(PlaceholdersExt.parseString("@${tag} attached ${name} (${size})", ctx, placeholders));

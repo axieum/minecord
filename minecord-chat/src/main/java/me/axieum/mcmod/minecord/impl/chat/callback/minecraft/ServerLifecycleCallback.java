@@ -50,7 +50,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
 
             DiscordDispatcher.embed(
                 (embed, entry) -> embed.setDescription(
-                    PlaceholdersExt.parseString(entry.discord.starting, ctx, placeholders)
+                    PlaceholdersExt.parseString(entry.discord.startingNode, ctx, placeholders)
                 ),
                 entry -> entry.discord.starting != null
             );
@@ -77,7 +77,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
 
             DiscordDispatcher.embed(
                 (embed, entry) -> embed.setColor(Color.GREEN).setDescription(
-                    PlaceholdersExt.parseString(entry.discord.started, ctx, placeholders)
+                    PlaceholdersExt.parseString(entry.discord.startedNode, ctx, placeholders)
                 ),
                 entry -> entry.discord.started != null
             );
@@ -104,7 +104,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
 
             DiscordDispatcher.embed(
                 (embed, entry) -> embed.setDescription(
-                    PlaceholdersExt.parseString(entry.discord.stopping, ctx, placeholders)
+                    PlaceholdersExt.parseString(entry.discord.stoppingNode, ctx, placeholders)
                 ),
                 entry -> entry.discord.stopping != null
             );
@@ -135,7 +135,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             if (crashReport == null) {
                 DiscordDispatcher.embed(
                     (embed, entry) -> embed.setColor(Color.RED).setDescription(
-                        PlaceholdersExt.parseString(entry.discord.stopped, ctx, placeholders)
+                        PlaceholdersExt.parseString(entry.discord.stoppedNode, ctx, placeholders)
                     ),
                     entry -> entry.discord.stopped != null
                 );
@@ -148,7 +148,7 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
                 // Dispatch the message
                 DiscordDispatcher.embed(
                     (embed, entry) -> embed.setColor(Color.ORANGE).setDescription(
-                        PlaceholdersExt.parseString(entry.discord.crashed, ctx, placeholders)
+                        PlaceholdersExt.parseString(entry.discord.crashedNode, ctx, placeholders)
                     ),
                     (action, entry) -> {
                         // Conditionally attach the crash report if required

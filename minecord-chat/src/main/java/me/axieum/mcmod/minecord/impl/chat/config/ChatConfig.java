@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.impl.chat.config;
 
 import java.util.Arrays;
 
+import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -14,6 +15,8 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 
 /**
  * Minecord Chat configuration schema.
@@ -63,7 +66,10 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A player sent an in-game chat message
                 Usages: ${message}""")
-            public String chat = "`${world:name}` **${player:name_unformatted}** > ${message}";
+            public String chat = "`${minecord:world}` **${minecord:player}** > ${message}";
+
+            /** Pre-parsed 'chat' text node. */
+            public transient TextNode chatNode;
 
             /**
              * A player sent an in-game message via the {@code /me} command.
@@ -78,7 +84,10 @@ public class ChatConfig implements ConfigData
                 A player sent an in-game message via the '/me' command
                 Note: there is no player or world if sent from a command block or console!
                 Usages: ${action}""")
-            public String emote = "`${world:name}` **${player:name_unformatted}** _${action}_";
+            public String emote = "`${minecord:world}` **${minecord:player}** _${action}_";
+
+            /** Pre-parsed 'emote' text node. */
+            public transient TextNode emoteNode;
 
             /**
              * An admin broadcast an in-game message via the {@code /say} command.
@@ -86,14 +95,18 @@ public class ChatConfig implements ConfigData
              * <p>Note: there is no player or world if sent from a command block or console!
              *
              * <ul>
+             *   <li>{@code ${player}} &mdash; the name of the player or server</li>
              *   <li>{@code ${message}} &mdash; the formatted message contents</li>
              * </ul>
              */
             @Comment("""
                 An admin broadcast an in-game message via the '/say' command
                 Note: there is no player or world if sent from a command block or console!
-                Usages: ${message}""")
-            public String say = "**[${player:name_unformatted}]** ${message}";
+                Usages: ${player} and ${message}""")
+            public String say = "**[${minecord:player}]** ${message}";
+
+            /** Pre-parsed 'say' text node. */
+            public transient TextNode sayNode;
 
             /**
              * An admin broadcast an in-game message to all players via the {@code /tellraw @a} command.
@@ -106,6 +119,9 @@ public class ChatConfig implements ConfigData
                 An admin broadcast an in-game message to all players via the '/tellraw @a' command
                 Usages: ${message}""")
             public String tellraw = "${message}";
+
+            /** Pre-parsed 'tellraw' text node. */
+            public transient TextNode tellrawNode;
 
             /**
              * A player had died.
@@ -120,24 +136,29 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A player had died
                 Usages: ${cause}, ${exp}, ${lifespan [format]} and ${score}""")
-            public String death = "**${player:name_unformatted}** ${cause}! :skull:\n_${world:name} at ${player:pos_x}, ${player:pos_y}, ${player:pos_z}_";
+            public String death = "**${minecord:player}** ${cause}! :skull:\n_${minecord:world} at ${player:pos_x 0}, ${player:pos_y 0}, ${player:pos_z 0}_";
+
+            /** Pre-parsed 'death' text node. */
+            public transient TextNode deathNode;
 
             /**
              * A named animal/monster (with name tag) had died.
              *
              * <ul>
-             *   <li>{@code ${cause}} &mdash; the reason for the entity's death</li>
              *   <li>{@code ${name}} &mdash; the entity's display name</li>
+             *   <li>{@code ${cause}} &mdash; the reason for the entity's death</li>
              *   <li>{@code ${pos_x}} &mdash; the X coordinate of where the entity died</li>
              *   <li>{@code ${pos_y}} &mdash; the Y coordinate of where the entity died</li>
              *   <li>{@code ${pos_z}} &mdash; the Z coordinate of where the entity died</li>
-             *   <li>{@code ${world}} &mdash; the name of the world the entity died in</li>
              * </ul>
              */
             @Comment("""
                 A named animal/monster (with name tag) had died
-                Usages: ${cause}, ${name}, ${pos_x}, ${pos_y}, ${pos_z} and ${world}""")
-            public String grief = "**${name}** ${cause}! :coffin:\n_${world} at ${pos_x}, ${pos_y}, ${pos_z}_";
+                Usages: ${name}, ${cause}, ${pos_x}, ${pos_y}, ${pos_z} and ${world}""")
+            public String grief = "**${name}** ${cause}! :coffin:\n_${minecord:world} at ${pos_x}, ${pos_y}, ${pos_z}_";
+
+            /** Pre-parsed 'grief' text node. */
+            public transient TextNode griefNode;
 
             /**
              * A player unlocked an advancement task.
@@ -150,7 +171,10 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A player unlocked an advancement task
                 Usages: ${title} and ${description}""")
-            public String advancementTask = "**${player:name_unformatted}** has made the advancement **${title}**! :clap:\n_${description}_";
+            public String advancementTask = "**${minecord:player}** has made the advancement **${title}**! :clap:\n_${description}_";
+
+            /** Pre-parsed 'advancementTask' text node. */
+            public transient TextNode advancementTaskNode;
 
             /**
              * A player reached an advancement goal.
@@ -163,7 +187,10 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A player reached an advancement goal
                 Usages: ${title} and ${description}""")
-            public String advancementGoal = "**${player:name_unformatted}** has reached the goal **${title}**! :clap:\n_${description}_";
+            public String advancementGoal = "**${minecord:player}** has reached the goal **${title}**! :clap:\n_${description}_";
+
+            /** Pre-parsed 'advancementGoal' text node. */
+            public transient TextNode advancementGoalNode;
 
             /**
              * A player completed an advancement challenge.
@@ -176,7 +203,10 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A player completed an advancement challenge
                 Usages: ${title} and ${description}""")
-            public String advancementChallenge = "**${player:name_unformatted}** has completed the challenge **${title}**! :trophy:\n_${description}_";
+            public String advancementChallenge = "**${minecord:player}** has completed the challenge **${title}**! :trophy:\n_${description}_";
+
+            /** Pre-parsed 'advancementChallenge' text node. */
+            public transient TextNode advancementChallengeNode;
 
             /**
              * A player teleported to another dimension.
@@ -195,19 +225,31 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A player teleported to another dimension
                 Usages: ${world}, ${pos_x}, ${pos_y}, ${pos_z}, ${origin}, ${origin_pos_x}, ${origin_pos_y} and ${origin_pos_z}""")
-            public String teleport = "**${player:name_unformatted}** entered ${world:name}. :cyclone:";
+            public String teleport = "**${minecord:player}** entered ${world}. :cyclone:";
+
+            /** Pre-parsed 'teleport' text node. */
+            public transient TextNode teleportNode;
 
             /** A player joined the game. */
             @Comment("A player joined the game")
-            public String join = "**${player:name_unformatted}** joined!";
+            public String join = "**${minecord:player}** joined!";
+
+            /** Pre-parsed 'join' text node. */
+            public transient TextNode joinNode;
 
             /** A player left the game. */
             @Comment("A player left the game")
-            public String leave = "**${player:name_unformatted}** left!";
+            public String leave = "**${minecord:player}** left!";
+
+            /** Pre-parsed 'leave' text node. */
+            public transient TextNode leaveNode;
 
             /** The server began to start. */
             @Comment("The server began to start")
             public String starting = "Server is starting... :fingers_crossed:";
+
+            /** Pre-parsed 'starting' text node. */
+            public transient TextNode startingNode;
 
             /**
              * The server started and is accepting connections.
@@ -221,6 +263,9 @@ public class ChatConfig implements ConfigData
                 Usages: ${uptime [format]}""")
             public String started = "Server started (took ${uptime s.SSS}s) :ok_hand:";
 
+            /** Pre-parsed 'started' text node. */
+            public transient TextNode startedNode;
+
             /**
              * The server began to stop.
              *
@@ -232,6 +277,9 @@ public class ChatConfig implements ConfigData
                 The server began to stop
                 Usages: ${uptime [format]}""")
             public String stopping = "Server is stopping... :raised_hand:";
+
+            /** Pre-parsed 'stopping' text node. */
+            public transient TextNode stoppingNode;
 
             /**
              * The server stopped and is offline.
@@ -245,6 +293,9 @@ public class ChatConfig implements ConfigData
                 Usages: ${uptime [format]}""")
             public String stopped = "Server stopped! :no_entry:";
 
+            /** Pre-parsed 'stopped' text node. */
+            public transient TextNode stoppedNode;
+
             /**
              * The server stopped unexpectedly and is inaccessible.
              *
@@ -257,6 +308,9 @@ public class ChatConfig implements ConfigData
                 The server stopped unexpectedly and is inaccessible
                 Usages: ${reason} and ${uptime [format]}""")
             public String crashed = "Server crash detected! :warning:\n_${reason}_";
+
+            /** Pre-parsed 'crashed' text node. */
+            public transient TextNode crashedNode;
 
             /** True if a crash report should be attached to any server crash messages. */
             @Comment("True if a crash report should be attached to any server crash messages")
@@ -291,6 +345,9 @@ public class ChatConfig implements ConfigData
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message} and ${raw}""")
             public String chat = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> ${message}";
 
+            /** Pre-parsed 'chat' text node. */
+            public transient TextNode chatNode;
+
             /**
              * A user sent a message in reply to another.
              *
@@ -314,6 +371,9 @@ public class ChatConfig implements ConfigData
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message}, ${raw}, ${reply_author}, ${reply_tag}, ${reply_username}, ${reply_discriminator}, ${reply_message} and ${reply_raw}""")
             public String reply = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <cmd:'@${reply_tag} '><hover:show_text:'${reply_message}'><color:#99dcff>${reply_author}</color></hover></cmd> <dark_gray>></dark_gray> ${message}";
 
+            /** Pre-parsed 'crashed' text node. */
+            public transient TextNode replyNode;
+
             /**
              * A user edited their recently sent message.
              *
@@ -333,6 +393,9 @@ public class ChatConfig implements ConfigData
                 A user edited their recently sent message
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${diff}, ${message}, ${raw}, ${original} and ${original_raw}""")
             public String edit = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> ${diff}";
+
+            /** Pre-parsed 'edit' text node. */
+            public transient TextNode editNode;
 
             /**
              * A user reacted to a recent message.
@@ -354,6 +417,9 @@ public class ChatConfig implements ConfigData
                 Usages: ${issuer}, ${issuer_tag}, ${issuer_username}, ${issuer_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
             public String react = "<cmd:'@${issuer_tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${issuer}</color></hover></cmd> reacted with <green>${emote}</green> to <cmd:'@${author_tag} '><color:#00aaff>${author}</color></cmd>'s message";
 
+            /** Pre-parsed 'react' text node. */
+            public transient TextNode reactNode;
+
             /**
              * A user removed their reaction from a recent message.
              *
@@ -374,6 +440,9 @@ public class ChatConfig implements ConfigData
                 Usages: ${issuer}, ${issuer_tag}, ${issuer_username}, ${issuer_discriminator}, ${author}, ${author_tag}, ${author_username}, ${author_discriminator} and ${emote}""")
             public String unreact = "<cmd:'@${issuer_tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${issuer}</color></hover></cmd> removed their reaction of <red>${emote}</red> from <cmd:'@${author_tag} '><color:#00aaff>${author}</color></cmd>'s message";
 
+            /** Pre-parsed 'unreact' text node. */
+            public transient TextNode unreactNode;
+
             /**
              * A user sent a message that contained attachments.
              *
@@ -392,6 +461,9 @@ public class ChatConfig implements ConfigData
                 A user sent a message that contained attachments
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url}, ${name}, ${ext} and ${size}""")
             public String attachment = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> <url:'${url}'><hover:show_text:'${ext} (${size})'><underline><blue></blue></underline></hover></url";
+
+            /** Pre-parsed 'attachment' text node. */
+            public transient TextNode attachmentNode;
         }
 
         /**
@@ -418,6 +490,38 @@ public class ChatConfig implements ConfigData
     public boolean hasChannel(final long identifier)
     {
         return Arrays.stream(this.entries).anyMatch(entry -> entry.id == identifier);
+    }
+
+    @Override
+    public void validatePostLoad()
+    {
+        Arrays.stream(entries).forEach(entry -> {
+            // Parse Discord event templates
+            entry.discord.chatNode = parseNode(entry.discord.chat);
+            entry.discord.emoteNode = parseNode(entry.discord.emote);
+            entry.discord.sayNode = parseNode(entry.discord.say);
+            entry.discord.tellrawNode = parseNode(entry.discord.tellraw);
+            entry.discord.deathNode = parseNode(entry.discord.death);
+            entry.discord.griefNode = parseNode(entry.discord.grief);
+            entry.discord.advancementTaskNode = parseNode(entry.discord.advancementTask);
+            entry.discord.advancementGoalNode = parseNode(entry.discord.advancementGoal);
+            entry.discord.advancementChallengeNode = parseNode(entry.discord.advancementChallenge);
+            entry.discord.teleportNode = parseNode(entry.discord.teleport);
+            entry.discord.joinNode = parseNode(entry.discord.join);
+            entry.discord.leaveNode = parseNode(entry.discord.leave);
+            entry.discord.startingNode = parseNode(entry.discord.starting);
+            entry.discord.startedNode = parseNode(entry.discord.started);
+            entry.discord.stoppingNode = parseNode(entry.discord.stopping);
+            entry.discord.stoppedNode = parseNode(entry.discord.stopped);
+            entry.discord.crashedNode = parseNode(entry.discord.crashed);
+            // Parse Minecraft event templates
+            entry.minecraft.chatNode = parseNode(entry.minecraft.chat);
+            entry.minecraft.replyNode = parseNode(entry.minecraft.reply);
+            entry.minecraft.editNode = parseNode(entry.minecraft.edit);
+            entry.minecraft.reactNode = parseNode(entry.minecraft.react);
+            entry.minecraft.unreactNode = parseNode(entry.minecraft.unreact);
+            entry.minecraft.attachmentNode = parseNode(entry.minecraft.attachment);
+        });
     }
 
     /**

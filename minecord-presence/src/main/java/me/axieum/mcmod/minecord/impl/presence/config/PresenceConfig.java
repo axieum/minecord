@@ -1,10 +1,12 @@
 package me.axieum.mcmod.minecord.impl.presence.config;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -24,6 +26,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
 import me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl;
+
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
 /**
@@ -100,12 +104,7 @@ public class PresenceConfig implements ConfigData
             @Comment("If defined, overrides whether the bot is idling")
             public @Nullable Boolean idle = null;
 
-            /**
-             * If defined, overrides the online status.
-             *
-             * <p>Allowed values: {@code null}, {@code ONLINE}, {@code IDLE},
-             * {@code DO_NOT_DISTURB}, {@code INVISIBLE} and {@code OFFLINE}.
-             */
+            /** If defined, overrides the online status. */
             @Comment("""
                 If defined, overrides the online status
                 Allowed values: null, ONLINE, IDLE, DO_NOT_DISTURB, INVISIBLE and OFFLINE""")
@@ -160,6 +159,9 @@ public class PresenceConfig implements ConfigData
                     Usages: ${uptime [format]}""")
                 public String name = "Minecraft";
 
+                /** Pre-parsed 'name' text node. */
+                public transient TextNode nameNode;
+
                 /** If defined, provides a link to the activity, e.g. Twitch stream. */
                 @Comment("If defined, provides a link to the activity, e.g. Twitch stream")
                 public @Nullable String url = null;
@@ -187,10 +189,10 @@ public class PresenceConfig implements ConfigData
                     }
 
                     @Override
-                    public Optional<Activity> getActivity(Function<String, String> nameMutator)
+                    public Optional<Activity> getActivity(Function<TextNode, String> nameMutator)
                     {
                         return Optional.ofNullable(activity).map(activity ->
-                            Activity.of(activity.type, nameMutator.apply(activity.name), activity.url)
+                            Activity.of(activity.type, nameMutator.apply(activity.nameNode), activity.url)
                         );
                     }
                 };
@@ -268,6 +270,11 @@ public class PresenceConfig implements ConfigData
                 );
                 category.interval = 15;
             }
+
+            // Parse presence templates
+            Arrays.stream(category.presences)
+                .filter(presence -> presence.activity != null)
+                .forEach(presence -> presence.activity.nameNode = parseNode(presence.activity.name));
         }
     }
 

@@ -40,8 +40,6 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
                 "name", string(entityName),
                 // The reason for the entity's death
                 "cause", string(source.getDeathMessage(entity).getString().replaceFirst(entityName, "").trim()),
-                // The name of the world the entity died in
-                "world", string(StringUtils.getWorldName(entity.world)),
                 // The X coordinate of where the entity died
                 "pos_x", string(String.valueOf((int) entity.prevX)),
                 // The Y coordinate of where the entity died
@@ -56,7 +54,7 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
 
             DiscordDispatcher.embed(
                 (embed, entry) -> embed.setColor(Color.RED).setDescription(
-                    PlaceholdersExt.parseString(entry.discord.grief, ctx, placeholders)
+                    PlaceholdersExt.parseString(entry.discord.griefNode, ctx, placeholders)
                 ),
                 entry -> entry.discord.grief != null && entry.hasWorld(entity.world)
             );

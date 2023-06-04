@@ -60,7 +60,7 @@ public class UptimeCommand extends MinecordCommand
 
         // Prepare an embed to be sent to the user
         EmbedBuilder embed = new EmbedBuilder().setDescription(
-            PlaceholdersExt.parseString(getConfig().builtin.uptime.message, ctx, PLACEHOLDERS)
+            PlaceholdersExt.parseString(getConfig().builtin.uptime.messageNode, ctx, PLACEHOLDERS)
         );
 
         // Fire an event to allow the embed to be mutated

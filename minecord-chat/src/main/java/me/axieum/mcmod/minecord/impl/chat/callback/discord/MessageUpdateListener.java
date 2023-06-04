@@ -90,7 +90,7 @@ public class MessageUpdateListener extends ListenerAdapter
                  */
 
                 MinecraftDispatcher.dispatch(
-                    entry -> PlaceholdersExt.parseText(entry.minecraft.edit, ctx, placeholders),
+                    entry -> PlaceholdersExt.parseText(entry.minecraft.editNode, ctx, placeholders),
                     entry -> entry.minecraft.edit != null && entry.id == channelId
                 );
                 LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${raw}", ctx, placeholders));

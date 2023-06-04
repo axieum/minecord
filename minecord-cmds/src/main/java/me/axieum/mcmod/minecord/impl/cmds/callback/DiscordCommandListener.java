@@ -62,7 +62,7 @@ public class DiscordCommandListener extends ListenerAdapter
                     LOGGER.warn("@{} used '{}' but the server is not yet ready!", username, raw);
                     event.getHook().sendMessageEmbeds(
                         new EmbedBuilder().setColor(0xff8800).setDescription(
-                            PlaceholdersExt.parseString(getConfig().messages.unavailable, pCtx, Collections.emptyMap())
+                            PlaceholdersExt.parseString(getConfig().messages.unavailableNode, pCtx, Collections.emptyMap())
                         ).build()
                     ).queue();
                     return;
@@ -77,7 +77,7 @@ public class DiscordCommandListener extends ListenerAdapter
                         event.getHook().setEphemeral(true).sendMessageEmbeds(
                             new EmbedBuilder().setColor(0xff8800).setDescription(
                                 PlaceholdersExt.parseString(
-                                    getConfig().messages.cooldown, pCtx, Map.of(
+                                    getConfig().messages.cooldownNode, pCtx, Map.of(
                                         // The total cooldown before the command can be used again
                                         "cooldown", duration(Duration.ofSeconds(command.getCooldown())),
                                         // The remaining time before the command can be used again
@@ -110,7 +110,7 @@ public class DiscordCommandListener extends ListenerAdapter
                 event.getHook().sendMessageEmbeds(
                     new EmbedBuilder().setColor(0xff0000).setDescription(
                         PlaceholdersExt.parseString(
-                            getConfig().messages.failed, pCtx, Map.of(
+                            getConfig().messages.failedNode, pCtx, Map.of(
                                 // The reason for the command failing
                                 "reason", string(e.getMessage())
                             )

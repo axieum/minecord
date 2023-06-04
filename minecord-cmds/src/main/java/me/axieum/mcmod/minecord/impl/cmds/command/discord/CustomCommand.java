@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
+import eu.pb4.placeholders.api.node.EmptyNode;
+import eu.pb4.placeholders.api.node.TextNode;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.exceptions.ParsingException;
@@ -90,7 +92,7 @@ public class CustomCommand extends MinecordCommand
         // Prepare the Minecraft command
         final String origCommand;
         try {
-            origCommand = prepareCommand(config.command, event.getOptions(), server);
+            origCommand = prepareCommand(config.commandNode, event.getOptions(), server);
         } catch (ParsingException | IllegalArgumentException e) {
             throw new Exception("Unable to prepare Minecraft command!", e);
         }
@@ -163,7 +165,7 @@ public class CustomCommand extends MinecordCommand
                 output.thumbnailUrl = null;
                 source.sendFeedback(
                     PlaceholdersExt.parseText(
-                        getConfig().messages.feedback, PlaceholderContext.of(source), Collections.emptyMap()
+                        getConfig().messages.feedbackNode, PlaceholderContext.of(source), Collections.emptyMap()
                     ),
                     false
                 );
@@ -176,19 +178,19 @@ public class CustomCommand extends MinecordCommand
     /**
      * Substitutes a Minecraft command template with options from a Discord command.
      *
-     * @param command Minecraft command template using {n} for the nth argument, and {} for all
+     * @param command Minecraft command template using {@code ${<name>}} for the 'name' argument
      * @param options Discord command options to substitute into the template
      * @param server  optional Minecraft server for placeholder context
      * @return a prepared Minecraft command
      * @throws ParsingException if an invalid command option type is encountered
      */
     private static String prepareCommand(
-        @NotNull String command,
+        @NotNull TextNode command,
         List<OptionMapping> options,
         @Nullable MinecraftServer server
     ) throws ParsingException
     {
-        if (command.length() == 0) return command;
+        if (command == EmptyNode.INSTANCE) return "";
 
         // Prepare new command placeholders
         final @Nullable PlaceholderContext ctx = server != null ? PlaceholderContext.of(server) : null;

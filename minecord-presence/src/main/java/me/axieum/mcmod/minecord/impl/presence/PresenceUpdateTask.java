@@ -74,7 +74,7 @@ public class PresenceUpdateTask extends TimerTask
             final Boolean idle = supplier.isIdle().orElse(current.isIdle());
             final @Nullable OnlineStatus status = supplier.getStatus().orElse(current.getStatus());
             final @Nullable Activity activity = supplier.getActivity(
-                name -> PlaceholdersExt.parseString(name, ctx.orElse(null), placeholders)
+                nameNode -> PlaceholdersExt.parseString(nameNode, ctx.orElse(null), placeholders)
             ).orElse(currentActivity);
 
             /*

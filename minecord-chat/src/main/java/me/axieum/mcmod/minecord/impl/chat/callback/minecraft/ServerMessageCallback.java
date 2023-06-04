@@ -49,7 +49,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
              */
 
             DiscordDispatcher.dispatch(
-                (embed, entry) -> embed.setContent(PlaceholdersExt.parseString(entry.discord.chat, ctx, placeholders)),
+                (embed, entry) -> embed.setContent(PlaceholdersExt.parseString(entry.discord.chatNode, ctx, placeholders)),
                 entry -> entry.discord.chat != null && entry.hasWorld(player.world)
             );
         });
@@ -99,7 +99,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
              */
 
             DiscordDispatcher.dispatch(
-                (embed, entry) -> embed.setContent(PlaceholdersExt.parseString(entry.discord.emote, ctx, placeholders)),
+                (embed, entry) -> embed.setContent(PlaceholdersExt.parseString(entry.discord.emoteNode, ctx, placeholders)),
                 entry -> entry.discord.emote != null && (player == null || entry.hasWorld(source.getWorld()))
             );
         });
@@ -123,7 +123,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
              * Prepare the message placeholders.
              */
 
-            final @Nullable PlaceholderContext ctx = player != null ? PlaceholderContext.of(player) : null;
+            final PlaceholderContext ctx = PlaceholderContext.of(source);
             final Map<String, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
                 // The formatted message contents
                 "message", string(StringUtils.minecraftToDiscord(message.getContent().getString()))
@@ -134,7 +134,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
              */
 
             DiscordDispatcher.dispatch(
-                (embed, entry) -> embed.setContent(PlaceholdersExt.parseString(entry.discord.say, ctx, placeholders)),
+                (embed, entry) -> embed.setContent(
+                    PlaceholdersExt.parseString(entry.discord.sayNode, ctx, placeholders)
+                ),
                 entry -> entry.discord.say != null && (player == null || entry.hasWorld(source.getWorld()))
             );
         });
@@ -160,7 +162,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
 
             DiscordDispatcher.dispatch(
                 (embed, entry) -> embed.setContent(
-                    PlaceholdersExt.parseString(entry.discord.tellraw, ctx, placeholders)
+                    PlaceholdersExt.parseString(entry.discord.tellrawNode, ctx, placeholders)
                 ),
                 entry -> entry.discord.tellraw != null
             );

@@ -1,5 +1,6 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
+import java.awt.Color;
 import java.time.Duration;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import net.minecraft.stat.Stats;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
+import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.duration;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
@@ -44,7 +46,9 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
                 // The player's total score before they died
                 "score", string(String.valueOf(player.getScore())),
                 // The player's number of experience levels before they died
-                "exp", string(String.valueOf(player.experienceLevel))
+                "exp", string(String.valueOf(player.experienceLevel)),
+                // The name of the world the player died in
+                "world", string(StringUtils.getWorldName(player.world))
             );
 
             /*
@@ -52,8 +56,8 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
              */
 
             DiscordDispatcher.embedWithAvatar(
-                (embed, entry) -> embed.setDescription(
-                    PlaceholdersExt.parseString(entry.discord.death, ctx, placeholders)
+                (embed, entry) -> embed.setColor(Color.RED).setDescription(
+                    PlaceholdersExt.parseString(entry.discord.deathNode, ctx, placeholders)
                 ),
                 entry -> entry.discord.death != null && entry.hasWorld(player.world),
                 player.getUuidAsString()

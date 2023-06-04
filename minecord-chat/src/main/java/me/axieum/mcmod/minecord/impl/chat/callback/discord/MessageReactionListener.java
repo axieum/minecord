@@ -73,7 +73,7 @@ public class MessageReactionListener extends ListenerAdapter
             // A user reacted to a recent message
             if (isAdded) {
                 MinecraftDispatcher.dispatch(
-                    entry -> PlaceholdersExt.parseText(entry.minecraft.react, ctx, placeholders),
+                    entry -> PlaceholdersExt.parseText(entry.minecraft.reactNode, ctx, placeholders),
                     entry -> entry.minecraft.react != null && entry.id == channelId
                 );
                 LOGGER.info(PlaceholdersExt.parseString(
@@ -83,7 +83,7 @@ public class MessageReactionListener extends ListenerAdapter
             // A user removed their reaction from a recent message
             } else {
                 MinecraftDispatcher.dispatch(
-                    entry -> PlaceholdersExt.parseText(entry.minecraft.unreact, ctx, placeholders),
+                    entry -> PlaceholdersExt.parseText(entry.minecraft.unreactNode, ctx, placeholders),
                     entry -> entry.minecraft.unreact != null && entry.id == channelId
                 );
                 LOGGER.info(PlaceholdersExt.parseString(

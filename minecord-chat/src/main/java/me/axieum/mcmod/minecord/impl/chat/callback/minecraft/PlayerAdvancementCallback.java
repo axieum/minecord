@@ -48,7 +48,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
                 // A player reached an advancement goal
                 case GOAL -> DiscordDispatcher.embed(
                     (embed, entry) -> embed.setDescription(
-                        PlaceholdersExt.parseString(entry.discord.advancementGoal, ctx, placeholders)
+                        PlaceholdersExt.parseString(entry.discord.advancementGoalNode, ctx, placeholders)
                     ),
                     entry -> entry.discord.advancementGoal != null && entry.hasWorld(player.world)
                 );
@@ -56,7 +56,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
                 // A player completed an advancement challenge
                 case CHALLENGE -> DiscordDispatcher.embed(
                     (embed, entry) -> embed.setDescription(
-                        PlaceholdersExt.parseString(entry.discord.advancementChallenge, ctx, placeholders)
+                        PlaceholdersExt.parseString(entry.discord.advancementChallengeNode, ctx, placeholders)
                     ),
                     entry -> entry.discord.advancementChallenge != null && entry.hasWorld(player.world)
                 );
@@ -64,7 +64,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
                 // A player unlocked an advancement task
                 default -> DiscordDispatcher.embed(
                     (embed, entry) -> embed.setDescription(
-                        PlaceholdersExt.parseString(entry.discord.advancementTask, ctx, placeholders)
+                        PlaceholdersExt.parseString(entry.discord.advancementTaskNode, ctx, placeholders)
                     ),
                     entry -> entry.discord.advancementTask != null && entry.hasWorld(player.world)
                 );

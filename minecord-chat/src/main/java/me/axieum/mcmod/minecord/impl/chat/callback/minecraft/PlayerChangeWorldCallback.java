@@ -55,7 +55,7 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
 
             DiscordDispatcher.embedWithAvatar(
                 (embed, entry) -> embed.setDescription(
-                    PlaceholdersExt.parseString(entry.discord.teleport, ctx, placeholders)
+                    PlaceholdersExt.parseString(entry.discord.teleportNode, ctx, placeholders)
                 ),
                 entry -> entry.discord.teleport != null && entry.hasWorld(dest),
                 player.getUuidAsString()

@@ -1,5 +1,8 @@
 package me.axieum.mcmod.minecord.impl.cmds.config;
 
+import java.util.Arrays;
+
+import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -18,6 +21,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
 import me.axieum.mcmod.minecord.api.cmds.command.CooldownScope;
 import me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl;
+
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 
 /**
  * Minecord Commands configuration schema.
@@ -39,6 +44,9 @@ public class CommandConfig implements ConfigData
         @Comment("The error message used when the Minecraft server is unavailable")
         public String unavailable = "The server is not yet ready - please wait :warning:";
 
+        /** Pre-parsed 'unavailable' text node. */
+        public transient TextNode unavailableNode;
+
         /**
          * The error message used when any command unexpectedly fails.
          *
@@ -50,6 +58,9 @@ public class CommandConfig implements ConfigData
             The error message used when any command unexpectedly fails
             Usages: ${reason}""")
         public String failed = "**Oh no** - something went wrong! :warning:\n_${reason}_";
+
+        /** Pre-parsed 'failed' text node. */
+        public transient TextNode failedNode;
 
         /**
          * The error message used when a user must wait before executing a command.
@@ -64,10 +75,16 @@ public class CommandConfig implements ConfigData
             Usages: ${cooldown} and ${remaining}""")
         public String cooldown = "Please wait another ${remaining} before doing that! :alarm_clock:";
 
+        /** Pre-parsed 'cooldown' text node. */
+        public transient TextNode cooldownNode;
+
         /** The default message used when a command does not provide any feedback of its own, e.g. {@code /say} */
         @Comment("""
             The default message used when a command does not provide any feedback of its own, e.g. '/say'""")
         public String feedback = "Consider it done! :thumbsup:";
+
+        /** Pre-parsed 'feedback' text node. */
+        public transient TextNode feedbackNode;
     }
 
     /** Built-in Discord commands. */
@@ -108,6 +125,9 @@ public class CommandConfig implements ConfigData
                 A message template that is formatted and sent for the server's uptime
                 Usages: ${uptime [format]}""")
             public String message = "The server has been online for ${uptime} :hourglass_flowing_sand:";
+
+            /** Pre-parsed 'message' text node. */
+            public transient TextNode messageNode;
         }
 
         /** Built-in TPS command. */
@@ -159,6 +179,9 @@ public class CommandConfig implements ConfigData
             A Minecraft command to execute
             Usages: ${<name>} for "<name>" option value""")
         public String command = "/whitelist ${args:-}";
+
+        /** Pre-parsed 'command' text node. */
+        public transient TextNode commandNode;
 
         /** A list of command options. */
         @Category("Options")
@@ -268,6 +291,20 @@ public class CommandConfig implements ConfigData
                 return option;
             }
         }
+    }
+
+    @Override
+    public void validatePostLoad()
+    {
+        // Parse message templates
+        messages.unavailableNode = parseNode(messages.unavailable);
+        messages.failedNode = parseNode(messages.failed);
+        messages.cooldownNode = parseNode(messages.cooldown);
+        messages.feedbackNode = parseNode(messages.feedback);
+        builtin.uptime.messageNode = parseNode(builtin.uptime.message);
+
+        // Parse command templates
+        Arrays.stream(custom).forEach(cmd -> cmd.commandNode = parseNode(cmd.command));
     }
 
     /**
