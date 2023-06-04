@@ -22,6 +22,7 @@ import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.markdown;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
+import static me.axieum.mcmod.minecord.api.util.StringUtils.discordToMinecraft;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -47,8 +48,8 @@ public class MessageUpdateListener extends ListenerAdapter
         // Only listen to message updates if we have the original cached
         MESSAGE_CACHE.computeIfPresent(event.getMessageId(), (id, context) -> {
             // Compute the textual difference
-            final String original = context.getContentDisplay(),
-                message = event.getMessage().getContentDisplay();
+            final String original = discordToMinecraft(context.getContentDisplay()),
+                message = discordToMinecraft(event.getMessage().getContentDisplay());
             final List<DiffRow> diffs = DIFF_GENERATOR.generateDiffRows(
                 Collections.singletonList(original), Collections.singletonList(message)
             );
@@ -78,7 +79,7 @@ public class MessageUpdateListener extends ListenerAdapter
                     // The old raw message contents
                     "original_raw", string(context.getContentRaw()),
                     // The new formatted message contents
-                    "message", markdown(event.getMessage().getContentDisplay()),
+                    "message", markdown(message),
                     // The new raw message contents
                     "raw", string(event.getMessage().getContentRaw()),
                     // The difference between the original and new message
@@ -93,7 +94,7 @@ public class MessageUpdateListener extends ListenerAdapter
                     entry -> PlaceholdersExt.parseText(entry.minecraft.editNode, ctx, placeholders),
                     entry -> entry.minecraft.edit != null && entry.id == channelId
                 );
-                LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${raw}", ctx, placeholders));
+                LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${message}", ctx, placeholders));
             }
 
             // Update the message cache

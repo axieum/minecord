@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.impl.chat.callback.discord;
 
 import java.util.Map;
 
+import com.vdurmont.emoji.EmojiParser;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
@@ -34,7 +35,7 @@ public class MessageReactionListener extends ListenerAdapter
         event.retrieveMessage().queue(context -> {
             // Compute some useful properties of the event
             final boolean isAdded = event instanceof MessageReactionAddEvent;
-            final String emote = ":" + event.getEmoji().getName() + ":";
+            final String emote = EmojiParser.parseToAliases(event.getEmoji().getName());
 
             /*
              * Prepare the message placeholders.

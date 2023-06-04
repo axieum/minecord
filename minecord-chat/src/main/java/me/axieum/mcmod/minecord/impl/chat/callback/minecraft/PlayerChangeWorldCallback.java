@@ -7,6 +7,7 @@ import eu.pb4.placeholders.api.PlaceholderHandler;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 
@@ -14,6 +15,7 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
+import me.axieum.mcmod.minecord.mixin.chat.LivingEntityAccessor;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
 /**
@@ -25,6 +27,8 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
     public void afterChangeWorld(ServerPlayerEntity player, ServerWorld origin, ServerWorld dest)
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
+            final BlockPos lastBlockPos = ((LivingEntityAccessor) player).getLastBlockPos();
+
             /*
              * Prepare the message placeholders.
              */
@@ -42,11 +46,11 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
                 // The name of the world the player left
                 "origin", string(StringUtils.getWorldName(origin)),
                 // The X coordinate of where the player left
-                "origin_pos_x", string(String.valueOf((int) player.prevX)),
+                "origin_pos_x", string(String.valueOf(lastBlockPos.getX())),
                 // The Y coordinate of where the player left
-                "origin_pos_y", string(String.valueOf((int) player.prevY)),
+                "origin_pos_y", string(String.valueOf(lastBlockPos.getY())),
                 // The Z coordinate of where the player left
-                "origin_pos_z", string(String.valueOf((int) player.prevZ))
+                "origin_pos_z", string(String.valueOf(lastBlockPos.getZ()))
             );
 
             /*

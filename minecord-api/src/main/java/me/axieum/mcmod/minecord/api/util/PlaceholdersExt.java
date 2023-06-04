@@ -100,7 +100,9 @@ public final class PlaceholdersExt
     }
 
     public static Text parseText(
-        @NotNull TextNode node, @Nullable PlaceholderContext context, @NotNull Map<String, PlaceholderHandler> placeholders
+        @NotNull TextNode node,
+        @Nullable PlaceholderContext context,
+        @NotNull Map<String, PlaceholderHandler> placeholders
     )
     {
         return parseText(node, context, placeholders::get);

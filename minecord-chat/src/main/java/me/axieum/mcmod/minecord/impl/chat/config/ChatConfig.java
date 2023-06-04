@@ -82,7 +82,6 @@ public class ChatConfig implements ConfigData
              */
             @Comment("""
                 A player sent an in-game message via the '/me' command
-                Note: there is no player or world if sent from a command block or console!
                 Usages: ${action}""")
             public String emote = "`${minecord:world}` **${minecord:player}** _${action}_";
 
@@ -95,14 +94,12 @@ public class ChatConfig implements ConfigData
              * <p>Note: there is no player or world if sent from a command block or console!
              *
              * <ul>
-             *   <li>{@code ${player}} &mdash; the name of the player or server</li>
              *   <li>{@code ${message}} &mdash; the formatted message contents</li>
              * </ul>
              */
             @Comment("""
                 An admin broadcast an in-game message via the '/say' command
-                Note: there is no player or world if sent from a command block or console!
-                Usages: ${player} and ${message}""")
+                Usages: ${message}""")
             public String say = "**[${minecord:player}]** ${message}";
 
             /** Pre-parsed 'say' text node. */
@@ -154,7 +151,7 @@ public class ChatConfig implements ConfigData
              */
             @Comment("""
                 A named animal/monster (with name tag) had died
-                Usages: ${name}, ${cause}, ${pos_x}, ${pos_y}, ${pos_z} and ${world}""")
+                Usages: ${name}, ${cause}, ${pos_x}, ${pos_y} and ${pos_z}""")
             public String grief = "**${name}** ${cause}! :coffin:\n_${minecord:world} at ${pos_x}, ${pos_y}, ${pos_z}_";
 
             /** Pre-parsed 'grief' text node. */
@@ -460,7 +457,7 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A user sent a message that contained attachments
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url}, ${name}, ${ext} and ${size}""")
-            public String attachment = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> <url:'${url}'><hover:show_text:'${ext} (${size})'><underline><blue></blue></underline></hover></url";
+            public String attachment = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> <url:'${url}'><hover:show_text:'${ext} (${size})'><underline><blue>${name}</blue></underline></hover></url>";
 
             /** Pre-parsed 'attachment' text node. */
             public transient TextNode attachmentNode;

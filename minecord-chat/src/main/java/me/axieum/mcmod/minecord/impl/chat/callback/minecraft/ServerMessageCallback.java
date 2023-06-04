@@ -49,7 +49,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
              */
 
             DiscordDispatcher.dispatch(
-                (embed, entry) -> embed.setContent(PlaceholdersExt.parseString(entry.discord.chatNode, ctx, placeholders)),
+                (embed, entry) -> embed.setContent(
+                    PlaceholdersExt.parseString(entry.discord.chatNode, ctx, placeholders)
+                ),
                 entry -> entry.discord.chat != null && entry.hasWorld(player.world)
             );
         });
@@ -99,7 +101,9 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
              */
 
             DiscordDispatcher.dispatch(
-                (embed, entry) -> embed.setContent(PlaceholdersExt.parseString(entry.discord.emoteNode, ctx, placeholders)),
+                (embed, entry) -> embed.setContent(
+                    PlaceholdersExt.parseString(entry.discord.emoteNode, ctx, placeholders)
+                ),
                 entry -> entry.discord.emote != null && (player == null || entry.hasWorld(source.getWorld()))
             );
         });

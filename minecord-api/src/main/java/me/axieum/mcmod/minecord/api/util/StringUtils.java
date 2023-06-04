@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import com.vdurmont.emoji.EmojiParser;
 import net.dv8tion.jda.api.entities.IMentionable;
 
 import net.minecraft.util.Formatting;
@@ -25,7 +26,7 @@ public final class StringUtils
     /** Mapping of Minecraft world identifiers to their human-readable names. */
     public static final HashMap<Identifier, String> WORLD_NAMES = new HashMap<>(3);
     /** String templates for translating between Minecraft and Discord formatted strings. */
-    public static StringTemplate minecraftDiscordST;
+    public static StringTemplate discordMinecraftST, minecraftDiscordST;
 
     private StringUtils() {}
 
@@ -44,6 +45,14 @@ public final class StringUtils
             ci.next();
         }
         return String.format("%.1f %cB", bytes / 1000.0, ci.current());
+    }
+
+    static {
+        discordMinecraftST = new StringTemplate()
+            // Translate emojis from unicode
+            .transform(EmojiParser::parseToAliases)
+            // Strip any leftover formatting
+            .transform(Formatting::strip);
     }
 
     static {
@@ -98,6 +107,19 @@ public final class StringUtils
             .transform(s -> s.replace("@here", "@_here_"))
             // Strip any leftover formatting
             .transform(Formatting::strip);
+    }
+
+    /**
+     * Translates a Discord flavoured markdown string to a
+     * Minecraft-formatted string.
+     *
+     * @param contents Discord flavoured markdown string
+     * @return Minecraft-formatted string
+     */
+    public static String discordToMinecraft(final String contents)
+    {
+        // Apply the appropriate string template against the given contents and return
+        return discordMinecraftST.format(contents);
     }
 
     /**

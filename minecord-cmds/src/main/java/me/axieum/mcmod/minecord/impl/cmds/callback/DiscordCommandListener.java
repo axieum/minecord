@@ -62,7 +62,9 @@ public class DiscordCommandListener extends ListenerAdapter
                     LOGGER.warn("@{} used '{}' but the server is not yet ready!", username, raw);
                     event.getHook().sendMessageEmbeds(
                         new EmbedBuilder().setColor(0xff8800).setDescription(
-                            PlaceholdersExt.parseString(getConfig().messages.unavailableNode, pCtx, Collections.emptyMap())
+                            PlaceholdersExt.parseString(
+                                getConfig().messages.unavailableNode, pCtx, Collections.emptyMap()
+                            )
                         ).build()
                     ).queue();
                     return;

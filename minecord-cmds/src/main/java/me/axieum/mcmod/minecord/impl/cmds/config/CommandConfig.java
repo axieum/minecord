@@ -21,7 +21,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
 import me.axieum.mcmod.minecord.api.cmds.command.CooldownScope;
 import me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl;
-
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 
 /**

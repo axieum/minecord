@@ -15,6 +15,7 @@ import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.markdown;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
+import static me.axieum.mcmod.minecord.api.util.StringUtils.discordToMinecraft;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -66,7 +67,7 @@ public class MessageReceivedListener extends ListenerAdapter
                 event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName()
             ),
             // The formatted message contents
-            "message", markdown(event.getMessage().getContentDisplay()),
+            "message", markdown(discordToMinecraft(event.getMessage().getContentDisplay())),
             // The raw message contents
             "raw", string(event.getMessage().getContentRaw())
         ));
@@ -87,7 +88,7 @@ public class MessageReceivedListener extends ListenerAdapter
                         : replyMessage.getAuthor().getName()
                 ),
                 // The replied message formatted message contents
-                "reply_message", markdown(replyMessage.getContentDisplay()),
+                "reply_message", markdown(discordToMinecraft(replyMessage.getContentDisplay())),
                 // The replied message raw message contents
                 "reply_raw", string(replyMessage.getContentRaw())
             ));
@@ -103,7 +104,7 @@ public class MessageReceivedListener extends ListenerAdapter
                 entry -> PlaceholdersExt.parseText(entry.minecraft.chatNode, ctx, placeholders),
                 entry -> entry.minecraft.chat != null && entry.id == channelId
             );
-            LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${raw}", ctx, placeholders));
+            LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${message}", ctx, placeholders));
 
         // The message is in reply to another
         } else {
@@ -111,7 +112,9 @@ public class MessageReceivedListener extends ListenerAdapter
                 entry -> PlaceholdersExt.parseText(entry.minecraft.replyNode, ctx, placeholders),
                 entry -> entry.minecraft.reply != null && entry.id == channelId
             );
-            LOGGER.info(PlaceholdersExt.parseString("@${tag} (in reply to @${reply_tag}) > ${raw}", ctx, placeholders));
+            LOGGER.info(PlaceholdersExt.parseString(
+                "@${tag} (in reply to @${reply_tag}) > ${message}", ctx, placeholders
+            ));
         }
     }
 

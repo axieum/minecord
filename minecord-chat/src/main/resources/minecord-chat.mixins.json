@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [],
   "server": [
+    "LivingEntityAccessor",
     "LivingEntityMixin",
     "PlayerAdvancementTrackerMixin",
     "ServerPlayerEntityMixin",

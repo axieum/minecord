@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
 import me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl;
-
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 

@@ -12,7 +12,6 @@ import net.minecraft.entity.damage.DamageSource;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.EntityDeathEvents;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
-import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 

@@ -40,8 +40,8 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
                 // The reason for the player's death
                 "cause", string(source.getDeathMessage(player).getString().replaceFirst(playerName, "").trim()),
                 // The total time for which the player was alive for
-                "lifespan", duration(Duration.ofMinutes(
-                    player.getStatHandler().getStat(Stats.CUSTOM.getOrCreateStat(Stats.TIME_SINCE_DEATH))
+                "lifespan", duration(Duration.ofSeconds(
+                    player.getStatHandler().getStat(Stats.CUSTOM.getOrCreateStat(Stats.TIME_SINCE_DEATH)) / 20
                 )),
                 // The player's total score before they died
                 "score", string(String.valueOf(player.getScore())),

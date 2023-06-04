@@ -34,6 +34,31 @@ public class StringUtilsTests
     }
 
     @Nested
+    @DisplayName("Translate Discord flavoured markdown to Minecraft-formatted text")
+    public class DiscordToMinecraft
+    {
+        @Test
+        @DisplayName("Translate emojis from unicode formatted text")
+        public void emojis()
+        {
+            assertEquals(
+                "This is a smiley :slightly_smiling: face!",
+                StringUtils.discordToMinecraft("This is a smiley \uD83D\uDE42 face!")
+            );
+        }
+
+        @Test
+        @DisplayName("Strip any left over formatting")
+        public void stripFormatting()
+        {
+            assertEquals(
+                "This is green text!",
+                StringUtils.discordToMinecraft("This is §agreen§r text!")
+            );
+        }
+    }
+
+    @Nested
     @DisplayName("Translate Minecraft-formatted text to Discord flavoured markdown")
     public class MinecraftToDiscord
     {

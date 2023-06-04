@@ -6,7 +6,6 @@ import eu.pb4.placeholders.api.Placeholders;
 import net.minecraft.util.Identifier;
 
 import me.axieum.mcmod.minecord.api.util.StringUtils;
-
 import static me.axieum.mcmod.minecord.impl.MinecordImpl.getConfig;
 
 /**
@@ -14,6 +13,8 @@ import static me.axieum.mcmod.minecord.impl.MinecordImpl.getConfig;
  */
 public final class MinecordPlaceholders
 {
+    private MinecordPlaceholders() {}
+
     /**
      * Registers Minecord API global placeholders with {@link eu.pb4.placeholders.api.Placeholders Placeholder API}.
      */
