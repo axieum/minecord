@@ -61,44 +61,14 @@ public final class PlaceholdersExt
      * Text-output placeholder parsers.
      */
 
-    public static Text parseText(@NotNull String str, @NotNull Map<String, PlaceholderHandler> placeholders)
-    {
-        return parseText(str, null, placeholders);
-    }
-
-    public static Text parseText(
-        @NotNull String str, @Nullable PlaceholderContext context, @NotNull Map<String, PlaceholderHandler> placeholders
-    )
-    {
-        return parseText(str, context, placeholders::get);
-    }
-
-    public static Text parseText(
-        @NotNull String str, @Nullable PlaceholderContext context, @NotNull PlaceholderGetter placeholderGetter
-    )
-    {
-        return parseText(parseNode(str), context, placeholderGetter);
-    }
-
-    public static Text parseText(@NotNull Text text, @NotNull Map<String, PlaceholderHandler> placeholders)
-    {
-        return parseText(text, null, placeholders);
-    }
-
-    public static Text parseText(
-        @NotNull Text text, @Nullable PlaceholderContext context, @NotNull Map<String, PlaceholderHandler> placeholders
-    )
-    {
-        return parseText(text, context, placeholders::get);
-    }
-
-    public static Text parseText(
-        @NotNull Text text, @Nullable PlaceholderContext context, @NotNull PlaceholderGetter placeholderGetter
-    )
-    {
-        return parseText(parseNode(text), context, placeholderGetter);
-    }
-
+    /**
+     * Formats a placeholder template into a Minecraft text component.
+     *
+     * @param node pre-parsed placeholder text node
+     * @param context placeholder context
+     * @param placeholders mapping of placeholder key-value pairs
+     * @return formatted Minecraft text
+     */
     public static Text parseText(
         @NotNull TextNode node,
         @Nullable PlaceholderContext context,
@@ -108,8 +78,18 @@ public final class PlaceholdersExt
         return parseText(node, context, placeholders::get);
     }
 
+    /**
+     * Formats a placeholder template into a Minecraft text component.
+     *
+     * @param node pre-parsed placeholder text node
+     * @param context placeholder context
+     * @param placeholderGetter function that takes placeholder key and returns value
+     * @return formatted Minecraft text
+     */
     public static Text parseText(
-        @NotNull TextNode node, @Nullable PlaceholderContext context, @NotNull PlaceholderGetter placeholderGetter
+        @NotNull TextNode node,
+        @Nullable PlaceholderContext context,
+        @NotNull PlaceholderGetter placeholderGetter
     )
     {
         return context != null
@@ -117,6 +97,12 @@ public final class PlaceholdersExt
             : Placeholders.parseNodes(node, PLACEHOLDER_PATTERN, placeholderGetter).toText(ParserContext.of(), true);
     }
 
+    /**
+     * Parses text into a placeholder text node.
+     *
+     * @param text placeholder template text
+     * @return parsed placeholder text node
+     */
     public static @NotNull TextNode parseNode(@Nullable Text text)
     {
         return text != null ? new ParentNode(NODE_PARSER.parseNodes(TextNode.convert(text))) : EmptyNode.INSTANCE;
@@ -126,44 +112,48 @@ public final class PlaceholdersExt
      * String-output placeholder parsers.
      */
 
-    public static String parseString(@NotNull Text text, @NotNull Map<String, PlaceholderHandler> placeholders)
-    {
-        return parseString(text, null, placeholders);
-    }
-
+    /**
+     * Formats a placeholder template into a string.
+     *
+     * @param string placeholder template string
+     * @param context placeholder context
+     * @param placeholders mapping of placeholder key-value pairs
+     * @return formatted Minecraft text
+     */
     public static String parseString(
-        @NotNull Text text, @Nullable PlaceholderContext context, @NotNull Map<String, PlaceholderHandler> placeholders
+        @NotNull String string,
+        @Nullable PlaceholderContext context,
+        @NotNull Map<String, PlaceholderHandler> placeholders
     )
     {
-        return parseString(text, context, placeholders::get);
+        return parseString(string, context, placeholders::get);
     }
 
+    /**
+     * Formats a placeholder template into a string.
+     *
+     * @param string placeholder template string
+     * @param context placeholder context
+     * @param placeholderGetter function that takes placeholder key and returns value
+     * @return formatted Minecraft text
+     */
     public static String parseString(
-        @NotNull Text text, @Nullable PlaceholderContext context, @NotNull PlaceholderGetter placeholderGetter
+        @NotNull String string,
+        @Nullable PlaceholderContext context,
+        @NotNull PlaceholderGetter placeholderGetter
     )
     {
-        return parseString(parseNode(text), context, placeholderGetter);
+        return parseString(parseNode(string), context, placeholderGetter);
     }
 
-    public static String parseString(@NotNull String str, @NotNull Map<String, PlaceholderHandler> placeholders)
-    {
-        return parseString(str, null, placeholders);
-    }
-
-    public static String parseString(
-        @NotNull String str, @Nullable PlaceholderContext context, @NotNull Map<String, PlaceholderHandler> placeholders
-    )
-    {
-        return parseString(str, context, placeholders::get);
-    }
-
-    public static String parseString(
-        @NotNull String str, @Nullable PlaceholderContext context, @NotNull PlaceholderGetter placeholderGetter
-    )
-    {
-        return parseString(parseNode(str), context, placeholderGetter);
-    }
-
+    /**
+     * Formats a placeholder template into a string.
+     *
+     * @param node pre-parsed placeholder text node
+     * @param context placeholder context
+     * @param placeholders mapping of placeholder key-value pairs
+     * @return formatted Minecraft text
+     */
     public static String parseString(
         @NotNull TextNode node,
         @Nullable PlaceholderContext context,
@@ -173,13 +163,29 @@ public final class PlaceholdersExt
         return parseString(node, context, placeholders::get);
     }
 
+    /**
+     * Formats a placeholder template into a string.
+     *
+     * @param node pre-parsed placeholder text node
+     * @param context placeholder context
+     * @param placeholderGetter function that takes placeholder key and returns value
+     * @return formatted Minecraft text
+     */
     public static String parseString(
-        @NotNull TextNode node, @Nullable PlaceholderContext context, @NotNull PlaceholderGetter placeholderGetter
+        @NotNull TextNode node,
+        @Nullable PlaceholderContext context,
+        @NotNull PlaceholderGetter placeholderGetter
     )
     {
         return parseText(node, context, placeholderGetter).getString();
     }
 
+    /**
+     * Parses a string into a placeholder text node.
+     *
+     * @param string placeholder template string
+     * @return parsed placeholder text node
+     */
     public static @NotNull TextNode parseNode(@Nullable String string)
     {
         return string != null && !string.isEmpty() ? NODE_PARSER.parseNode(string) : EmptyNode.INSTANCE;
