@@ -1,12 +1,18 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.discord;
 
+import java.util.Map;
+
+import com.vdurmont.emoji.EmojiParser;
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
 import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.Nullable;
 
-import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -29,46 +35,64 @@ public class MessageReactionListener extends ListenerAdapter
         event.retrieveMessage().queue(context -> {
             // Compute some useful properties of the event
             final boolean isAdded = event instanceof MessageReactionAddEvent;
-            final String emote = ":" + event.getEmoji().getName() + ":";
+            final String emote = EmojiParser.parseToAliases(event.getEmoji().getName());
 
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The issuer's tag (i.e. username#discriminator), e.g. Axieum#1001
-            st.add("issuer_tag", event.getUser().getAsTag());
-            // The issuer's username, e.g. Axieum
-            st.add("issuer_username", event.getUser().getName());
-            // The issuer's username discriminator, e.g. 1001
-            st.add("issuer_discriminator", event.getUser().getDiscriminator());
-            // The issuer's nickname or username
-            st.add("issuer", event.getMember() != null ? event.getMember().getEffectiveName()
-                                                           : event.getUser().getName());
-            // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-            st.add("author_tag", event.getUser().getAsTag());
-            // The author's username, e.g. Axieum
-            st.add("author_username", event.getUser().getName());
-            // The author's username discriminator, e.g. 1001
-            st.add("author_discriminator", event.getUser().getDiscriminator());
-            // The author's nickname or username
-            st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
-                                                           : event.getUser().getName());
-            // The emote used to react
-            st.add("emote", emote);
-
-            ChatPlaceholderEvents.Discord.REACTION.invoker().onReactionPlaceholder(st, event);
+            final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
+            final Map<String, PlaceholderHandler> placeholders = Map.of(
+                // The issuer's tag (i.e. username#discriminator), e.g. Axieum#1001
+                "issuer_tag", string(event.getUser().getAsTag()),
+                // The issuer's username, e.g. Axieum
+                "issuer_username", string(event.getUser().getName()),
+                // The issuer's username discriminator, e.g. 1001
+                "issuer_discriminator", string(event.getUser().getDiscriminator()),
+                // The issuer's nickname or username
+                "issuer", string(
+                    event.getMember() != null ? event.getMember().getEffectiveName() : event.getUser().getName()
+                ),
+                // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
+                "author_tag", string(context.getAuthor().getAsTag()),
+                // The author's username, e.g. Axieum
+                "author_username", string(context.getAuthor().getName()),
+                // The author's username discriminator, e.g. 1001
+                "author_discriminator", string(context.getAuthor().getDiscriminator()),
+                // The author's nickname or username
+                "author", string(
+                    context.getMember() != null ? context.getMember().getEffectiveName() : context.getAuthor().getName()
+                ),
+                // The emote used to react
+                "emote", string(emote)
+            );
 
             /*
              * Dispatch the message.
              */
 
-            MinecraftDispatcher.json(entry -> st.format(isAdded ? entry.minecraft.react : entry.minecraft.unreact),
-                entry -> (isAdded ? entry.minecraft.react : entry.minecraft.unreact) != null && entry.id == channelId);
+            // A user reacted to a recent message
+            if (isAdded) {
+                MinecraftDispatcher.dispatch(
+                    entry -> PlaceholdersExt.parseText(entry.minecraft.reactNode, ctx, placeholders),
+                    entry -> entry.minecraft.react != null && entry.id == channelId
+                );
+                LOGGER.info(PlaceholdersExt.parseString(
+                    "@${issuer_tag} reacted with ${emote} to ${author_tag}'s message", ctx, placeholders
+                ));
 
-            LOGGER.info(st.format(isAdded ? "@${issuer_tag} reacted with ${emote} to ${author_tag}'s message"
-                : "@${issuer_tag} removed their reaction of ${emote} from ${author_tag}'s message"));
+            // A user removed their reaction from a recent message
+            } else {
+                MinecraftDispatcher.dispatch(
+                    entry -> PlaceholdersExt.parseText(entry.minecraft.unreactNode, ctx, placeholders),
+                    entry -> entry.minecraft.unreact != null && entry.id == channelId
+                );
+                LOGGER.info(PlaceholdersExt.parseString(
+                    "@${issuer_tag} removed their reaction of ${emote} from ${author_tag}'s message",
+                    ctx,
+                    placeholders
+                ));
+            }
         });
     }
 }

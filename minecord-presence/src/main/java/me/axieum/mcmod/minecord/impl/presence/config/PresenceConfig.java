@@ -1,9 +1,12 @@
 package me.axieum.mcmod.minecord.impl.presence.config;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
+import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -22,8 +25,8 @@ import net.minecraft.util.ActionResult;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import me.axieum.mcmod.minecord.api.presence.category.PresenceSupplier;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 import static me.axieum.mcmod.minecord.impl.presence.MinecordPresenceImpl.LOGGER;
 
 /**
@@ -100,12 +103,7 @@ public class PresenceConfig implements ConfigData
             @Comment("If defined, overrides whether the bot is idling")
             public @Nullable Boolean idle = null;
 
-            /**
-             * If defined, overrides the online status.
-             *
-             * <p>Allowed values: {@code null}, {@code ONLINE}, {@code IDLE},
-             * {@code DO_NOT_DISTURB}, {@code INVISIBLE} and {@code OFFLINE}.
-             */
+            /** If defined, overrides the online status. */
             @Comment("""
                 If defined, overrides the online status
                 Allowed values: null, ONLINE, IDLE, DO_NOT_DISTURB, INVISIBLE and OFFLINE""")
@@ -150,14 +148,18 @@ public class PresenceConfig implements ConfigData
                 /**
                  * The name of the activity.
                  *
-                 * <p>Usages: {@code ${version}}, {@code ${ip}}, {@code ${port}}, {@code ${motd}},
-                 * {@code ${difficulty}}, {@code ${max_players}}, {@code ${player_count}} and {@code ${uptime}}.
+                 * <ul>
+                 *   <li>{@code ${uptime [format]}} &mdash; the total process uptime (to the nearest minute)</li>
+                 * </ul>
                  */
                 @SuppressWarnings("checkstyle:linelength")
                 @Comment("""
                     The name of the activity
-                    Usages: ${version}, ${ip}, ${port}, ${motd}, ${difficulty}, ${max_players}, ${player_count} and ${uptime}""")
+                    Usages: ${uptime [format]}""")
                 public String name = "Minecraft";
+
+                /** Pre-parsed 'name' text node. */
+                public transient TextNode nameNode;
 
                 /** If defined, provides a link to the activity, e.g. Twitch stream. */
                 @Comment("If defined, provides a link to the activity, e.g. Twitch stream")
@@ -186,11 +188,11 @@ public class PresenceConfig implements ConfigData
                     }
 
                     @Override
-                    public Optional<Activity> getActivity(StringTemplate template)
+                    public Optional<Activity> getActivity(Function<TextNode, String> nameMutator)
                     {
-                        return activity != null ? Optional.of(
-                            Activity.of(activity.type, template.format(activity.name), activity.url)
-                        ) : Optional.empty();
+                        return Optional.ofNullable(activity).map(activity ->
+                            Activity.of(activity.type, nameMutator.apply(activity.nameNode), activity.url)
+                        );
                     }
                 };
             }
@@ -217,25 +219,19 @@ public class PresenceConfig implements ConfigData
             // Playing Minecraft 1.17
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.PLAYING, "Minecraft ${version}", null
+                    ActivityType.PLAYING, "Minecraft ${server:version}", null
                 )
             ),
             // Watching 2 player(s)
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.WATCHING, "${player_count} player(s)", null
+                    ActivityType.WATCHING, "${server:online} player(s)", null
                 )
             ),
             // Playing for 3 hours 24 minutes 10 seconds
             new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
                 new CategorySchema.PresenceSchema.ActivitySchema(
                     ActivityType.PLAYING, "for ${uptime}", null
-                )
-            ),
-            // Playing on hard mode
-            new CategorySchema.PresenceSchema(false, OnlineStatus.ONLINE,
-                new CategorySchema.PresenceSchema.ActivitySchema(
-                    ActivityType.PLAYING, "on ${difficulty} mode", null
                 )
             )
         ));
@@ -273,6 +269,11 @@ public class PresenceConfig implements ConfigData
                 );
                 category.interval = 15;
             }
+
+            // Parse presence templates
+            Arrays.stream(category.presences)
+                .filter(presence -> presence.activity != null)
+                .forEach(presence -> presence.activity.nameNode = parseNode(presence.activity.name));
         }
     }
 

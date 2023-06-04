@@ -1,5 +1,10 @@
 package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.message.MessageType;
@@ -12,11 +17,11 @@ import net.fabricmc.fabric.api.message.v1.ServerMessageEvents.ChatMessage;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents.CommandMessage;
 
 import me.axieum.mcmod.minecord.api.Minecord;
-import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.TellRawMessageCallback;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
 /**
  * A listener for a when a Minecraft player sends a message.
@@ -30,29 +35,25 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The player's username
-            st.add("username", player.getName().getString());
-            // The player's display name
-            st.add("player", player.getDisplayName().getString());
-            // The name of the world the player logged into
-            st.add("world", StringUtils.getWorldName(player.world));
-            // The formatted message contents
-            st.add("message", StringUtils.minecraftToDiscord(message.getContent().getString()));
-
-            ChatPlaceholderEvents.Minecraft.PLAYER_CHAT.invoker().onPlayerChatPlaceholder(st, player, message, params);
+            final PlaceholderContext ctx = PlaceholderContext.of(player);
+            final Map<String, PlaceholderHandler> placeholders = Map.of(
+                // The formatted message contents
+                "message", string(StringUtils.minecraftToDiscord(message.getContent().getString()))
+            );
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.dispatch((embed, entry) ->
-                    embed.setContent(st.format(entry.discord.chat)),
-                entry -> entry.discord.chat != null && entry.hasWorld(player.world));
+            DiscordDispatcher.dispatch(
+                (embed, entry) -> embed.setContent(
+                    PlaceholdersExt.parseString(entry.discord.chatNode, ctx, placeholders)
+                ),
+                entry -> entry.discord.chat != null && entry.hasWorld(player.world)
+            );
         });
     }
 
@@ -86,31 +87,25 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
             final @Nullable ServerPlayerEntity player = source.getPlayer();
 
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The player's username
-            st.add("username", player != null ? player.getName().getString() : null);
-            // The player's display name
-            st.add("player", player != null ? player.getDisplayName().getString() : null);
-            // The name of the world the player logged into
-            st.add("world", player != null ? StringUtils.getWorldName(source.getWorld()) : null);
-            // The formatted message contents
-            st.add("action", StringUtils.minecraftToDiscord(message.getContent().getString()));
-
-            ChatPlaceholderEvents.Minecraft.EMOTE_COMMAND.invoker().onEmoteCommandPlaceholder(
-                st, source, message, params
-            );
+            final PlaceholderContext ctx = PlaceholderContext.of(source);
+            final Map<String, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
+                // The formatted message contents
+                "action", string(StringUtils.minecraftToDiscord(message.getContent().getString()))
+            ));
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.dispatch((embed, entry) ->
-                    embed.setContent(st.format(entry.discord.emote)),
-                entry -> entry.discord.emote != null && (player == null || entry.hasWorld(source.getWorld())));
+            DiscordDispatcher.dispatch(
+                (embed, entry) -> embed.setContent(
+                    PlaceholdersExt.parseString(entry.discord.emoteNode, ctx, placeholders)
+                ),
+                entry -> entry.discord.emote != null && (player == null || entry.hasWorld(source.getWorld()))
+            );
         });
     }
 
@@ -129,29 +124,25 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
             final @Nullable ServerPlayerEntity player = source.getPlayer();
 
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The player's username
-            st.add("username", player != null ? player.getName().getString() : null);
-            // The player's display name
-            st.add("player", player != null ? player.getDisplayName().getString() : null);
-            // The name of the world the player logged into
-            st.add("world", player != null ? StringUtils.getWorldName(source.getWorld()) : null);
-            // The formatted message contents
-            st.add("message", StringUtils.minecraftToDiscord(message.getContent().getString()));
-
-            ChatPlaceholderEvents.Minecraft.SAY_COMMAND.invoker().onSayCommandPlaceholder(st, source, message, params);
+            final PlaceholderContext ctx = PlaceholderContext.of(source);
+            final Map<String, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
+                // The formatted message contents
+                "message", string(StringUtils.minecraftToDiscord(message.getContent().getString()))
+            ));
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.dispatch((embed, entry) ->
-                    embed.setContent(st.format(entry.discord.say)),
-                entry -> entry.discord.say != null && (player == null || entry.hasWorld(source.getWorld())));
+            DiscordDispatcher.dispatch(
+                (embed, entry) -> embed.setContent(
+                    PlaceholdersExt.parseString(entry.discord.sayNode, ctx, placeholders)
+                ),
+                entry -> entry.discord.say != null && (player == null || entry.hasWorld(source.getWorld()))
+            );
         });
     }
 
@@ -160,23 +151,25 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             /*
-             * Prepare a message template.
+             * Prepare the message placeholders.
              */
 
-            final StringTemplate st = new StringTemplate();
-
-            // The formatted message contents
-            st.add("message", StringUtils.minecraftToDiscord(message.getString()));
-
-            ChatPlaceholderEvents.Minecraft.TELLRAW_COMMAND.invoker().onTellRawCommandPlaceholder(st, source, message);
+            final PlaceholderContext ctx = PlaceholderContext.of(source);
+            final Map<String, PlaceholderHandler> placeholders = Map.of(
+                // The formatted message contents
+                "message", string(StringUtils.minecraftToDiscord(message.getString()))
+            );
 
             /*
              * Dispatch the message.
              */
 
-            DiscordDispatcher.dispatch((embed, entry) ->
-                    embed.setContent(st.format(entry.discord.tellraw)),
-                entry -> entry.discord.tellraw != null);
+            DiscordDispatcher.dispatch(
+                (embed, entry) -> embed.setContent(
+                    PlaceholdersExt.parseString(entry.discord.tellrawNode, ctx, placeholders)
+                ),
+                entry -> entry.discord.tellraw != null
+            );
         });
     }
 }

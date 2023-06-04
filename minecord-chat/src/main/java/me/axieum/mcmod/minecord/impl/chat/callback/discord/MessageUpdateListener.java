@@ -7,18 +7,22 @@ import java.util.Map;
 
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.PlaceholderHandler;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Formatting;
 
-import me.axieum.mcmod.minecord.api.chat.event.ChatPlaceholderEvents;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
-import me.axieum.mcmod.minecord.api.util.StringUtils;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.chat.util.MinecraftDispatcher;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.markdown;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
+import static me.axieum.mcmod.minecord.api.util.StringUtils.discordToMinecraft;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
@@ -44,8 +48,8 @@ public class MessageUpdateListener extends ListenerAdapter
         // Only listen to message updates if we have the original cached
         MESSAGE_CACHE.computeIfPresent(event.getMessageId(), (id, context) -> {
             // Compute the textual difference
-            final String original = context.getContentDisplay(),
-                message = event.getMessage().getContentDisplay();
+            final String original = discordToMinecraft(context.getContentDisplay()),
+                message = discordToMinecraft(event.getMessage().getContentDisplay());
             final List<DiffRow> diffs = DIFF_GENERATOR.generateDiffRows(
                 Collections.singletonList(original), Collections.singletonList(message)
             );
@@ -55,43 +59,42 @@ public class MessageUpdateListener extends ListenerAdapter
                 final long channelId = event.getChannel().getIdLong();
 
                 /*
-                 * Prepare a message template.
+                 * Prepare the message placeholders.
                  */
 
-                final StringTemplate st = new StringTemplate();
-
-                // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-                st.add("tag", event.getAuthor().getAsTag());
-                // The author's username, e.g. Axieum
-                st.add("username", event.getAuthor().getName());
-                // The author's username discriminator, e.g. 1001
-                st.add("discriminator", event.getAuthor().getDiscriminator());
-                // The author's nickname or username
-                st.add("author", event.getMember() != null ? event.getMember().getEffectiveName()
-                                                               : event.getAuthor().getName());
-                // The old formatted message contents
-                st.add("original", StringUtils.discordToMinecraft(original));
-                // The old raw message contents
-                st.add("original_raw", context.getContentRaw());
-                // The new formatted message contents
-                st.add("message", StringUtils.discordToMinecraft(event.getMessage().getContentDisplay()));
-                // The new raw message contents
-                st.add("raw", event.getMessage().getContentRaw());
-                // The difference between the original and new message
-                st.add("diff", StringUtils.discordToMinecraft(diffs.get(0).getOldLine()));
-
-                ChatPlaceholderEvents.Discord.MESSAGE_UPDATED.invoker().onMessageUpdatedPlaceholder(
-                    st, event, context, diffs
+                final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
+                final Map<String, PlaceholderHandler> placeholders = Map.of(
+                    // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
+                    "tag", string(event.getAuthor().getAsTag()),
+                    // The author's username, e.g. Axieum
+                    "username", string(event.getAuthor().getName()),
+                    // The author's username discriminator, e.g. 1001
+                    "discriminator", string(event.getAuthor().getDiscriminator()),
+                    // The author's nickname or username
+                    "author", string(
+                        event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName()
+                    ),
+                    // The old formatted message contents
+                    "original", markdown(original),
+                    // The old raw message contents
+                    "original_raw", string(context.getContentRaw()),
+                    // The new formatted message contents
+                    "message", markdown(message),
+                    // The new raw message contents
+                    "raw", string(event.getMessage().getContentRaw()),
+                    // The difference between the original and new message
+                    "diff", markdown(diffs.get(0).getOldLine())
                 );
 
                 /*
                  * Dispatch the message.
                  */
 
-                MinecraftDispatcher.json(entry -> st.format(entry.minecraft.edit),
-                    entry -> entry.minecraft.edit != null && entry.id == channelId);
-
-                LOGGER.info(st.format("@${tag} > ${raw}"));
+                MinecraftDispatcher.dispatch(
+                    entry -> PlaceholdersExt.parseText(entry.minecraft.editNode, ctx, placeholders),
+                    entry -> entry.minecraft.edit != null && entry.id == channelId
+                );
+                LOGGER.info(PlaceholdersExt.parseString("@${tag} > ${message}", ctx, placeholders));
             }
 
             // Update the message cache

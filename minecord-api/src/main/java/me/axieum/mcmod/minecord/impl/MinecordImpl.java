@@ -28,6 +28,7 @@ import me.axieum.mcmod.minecord.api.util.StringTemplate;
 import me.axieum.mcmod.minecord.impl.callback.DiscordLifecycleListener;
 import me.axieum.mcmod.minecord.impl.callback.ServerLifecycleCallback;
 import me.axieum.mcmod.minecord.impl.config.MinecordConfig;
+import me.axieum.mcmod.minecord.impl.placeholder.MinecordPlaceholders;
 
 /**
  * Minecord (API) implementation.
@@ -51,6 +52,10 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
     {
         LOGGER.info("Minecord is getting ready...");
 
+        // Register global placeholders
+        MinecordPlaceholders.register();
+
+        // Login to Discord
         try {
             // Prepare the JDA client
             final JDABuilder builder = JDABuilder.createDefault(getConfig().bot.token)

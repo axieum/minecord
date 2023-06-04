@@ -1,5 +1,8 @@
 package me.axieum.mcmod.minecord.impl.cmds.config;
 
+import java.util.Arrays;
+
+import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -18,6 +21,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
 import me.axieum.mcmod.minecord.api.cmds.command.CooldownScope;
 import me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 
 /**
  * Minecord Commands configuration schema.
@@ -39,30 +43,47 @@ public class CommandConfig implements ConfigData
         @Comment("The error message used when the Minecraft server is unavailable")
         public String unavailable = "The server is not yet ready - please wait :warning:";
 
+        /** Pre-parsed 'unavailable' text node. */
+        public transient TextNode unavailableNode;
+
         /**
          * The error message used when any command unexpectedly fails.
          *
-         * <p>Usages: ${reason}.
+         * <ul>
+         *   <li>{@code ${reason}} &mdash; the reason for the command failing</li>
+         * </ul>
          */
         @Comment("""
             The error message used when any command unexpectedly fails
             Usages: ${reason}""")
         public String failed = "**Oh no** - something went wrong! :warning:\n_${reason}_";
 
+        /** Pre-parsed 'failed' text node. */
+        public transient TextNode failedNode;
+
         /**
          * The error message used when a user must wait before executing a command.
          *
-         * <p>Usages: ${cooldown} and ${remaining}.
+         * <ul>
+         *   <li>{@code ${cooldown}} &mdash; the total cooldown before the command can be used again</li>
+         *   <li>{@code ${remaining}} &mdash; the remaining time before the command can be used again</li>
+         * </ul>
          */
         @Comment("""
             The error message used when a user must wait before executing a command
             Usages: ${cooldown} and ${remaining}""")
         public String cooldown = "Please wait another ${remaining} before doing that! :alarm_clock:";
 
+        /** Pre-parsed 'cooldown' text node. */
+        public transient TextNode cooldownNode;
+
         /** The default message used when a command does not provide any feedback of its own, e.g. {@code /say} */
         @Comment("""
             The default message used when a command does not provide any feedback of its own, e.g. '/say'""")
         public String feedback = "Consider it done! :thumbsup:";
+
+        /** Pre-parsed 'feedback' text node. */
+        public transient TextNode feedbackNode;
     }
 
     /** Built-in Discord commands. */
@@ -95,12 +116,17 @@ public class CommandConfig implements ConfigData
             /**
              * A message template that is formatted and sent for the server's uptime.
              *
-             * <p>Usages: ${uptime}.
+             * <ul>
+             *   <li>{@code ${uptime [format]}} &mdash; the total process uptime (to the nearest minute)</li>
+             * </ul>
              */
             @Comment("""
                 A message template that is formatted and sent for the server's uptime
-                Usages: ${uptime}""")
+                Usages: ${uptime [format]}""")
             public String message = "The server has been online for ${uptime} :hourglass_flowing_sand:";
+
+            /** Pre-parsed 'message' text node. */
+            public transient TextNode messageNode;
         }
 
         /** Built-in TPS command. */
@@ -144,12 +170,17 @@ public class CommandConfig implements ConfigData
         /**
          * A Minecraft command to execute.
          *
-         * <p>Usages: {@code ${name}} for "name" option value.
+         * <ul>
+         *   <li>{@code ${name}} &mdash; for "name" option value</li>
+         * </ul>
          */
         @Comment("""
             A Minecraft command to execute
             Usages: ${<name>} for "<name>" option value""")
         public String command = "/whitelist ${args:-}";
+
+        /** Pre-parsed 'command' text node. */
+        public transient TextNode commandNode;
 
         /** A list of command options. */
         @Category("Options")
@@ -186,12 +217,7 @@ public class CommandConfig implements ConfigData
         @Comment("The number of seconds a user must wait before using the command again")
         public int cooldown = 0;
 
-        /**
-         * To whom the cooldown applies.
-         *
-         * <p>Allowed values: {@code USER}, {@code CHANNEL}, {@code USER_CHANNEL}, {@code GUILD},
-         * {@code USER_GUILD}, {@code SHARD}, {@code USER_SHARD} and {@code GLOBAL}.
-         */
+        /** To whom the cooldown applies. */
         @Comment("""
             To whom the cooldown applies
             Allowed values: USER, CHANNEL, USER_CHANNEL, GUILD, USER_GUILD, SHARD, USER_SHARD and GLOBAL""")
@@ -202,13 +228,7 @@ public class CommandConfig implements ConfigData
          */
         public static class OptionSchema
         {
-            /**
-             * The type of option.
-             *
-             * <p>Allowed values: {@code ATTACHMENT}, {@code BOOLEAN}, {@code CHANNEL},
-             * {@code INTEGER}, {@code MENTIONABLE}, {@code NUMBER}, {@code ROLE},
-             * {@code STRING} and {@code USER}.
-             */
+            /** The type of option. */
             @Comment("""
                 The type of option
                 Allowed values: ATTACHMENT, BOOLEAN, CHANNEL, INTEGER, MENTIONABLE, NUMBER, ROLE, STRING and USER""")
@@ -270,6 +290,20 @@ public class CommandConfig implements ConfigData
                 return option;
             }
         }
+    }
+
+    @Override
+    public void validatePostLoad()
+    {
+        // Parse message templates
+        messages.unavailableNode = parseNode(messages.unavailable);
+        messages.failedNode = parseNode(messages.failed);
+        messages.cooldownNode = parseNode(messages.cooldown);
+        messages.feedbackNode = parseNode(messages.feedback);
+        builtin.uptime.messageNode = parseNode(builtin.uptime.message);
+
+        // Parse command templates
+        Arrays.stream(custom).forEach(cmd -> cmd.commandNode = parseNode(cmd.command));
     }
 
     /**

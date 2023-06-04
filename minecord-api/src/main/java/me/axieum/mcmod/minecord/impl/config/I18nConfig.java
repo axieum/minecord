@@ -21,19 +21,15 @@ public class I18nConfig implements ConfigData
     @RequiresRestart
     public String lang = Language.DEFAULT_LANGUAGE;
 
+    /** The name of the Minecraft server in system messages. */
+    @Comment("The name of the Minecraft server in system messages")
+    public String serverName = "Server";
+
     /** A mapping of Minecraft dimension IDs to their respective names. */
     @Comment("A mapping of Minecraft dimension IDs to their respective names")
-    public Map<String, String> worlds = new HashMap<>(Map.ofEntries(
-        Map.entry("minecraft:overworld", "Overworld"),
-        Map.entry("minecraft:the_nether", "Nether"),
-        Map.entry("minecraft:the_end", "The End")
-    ));
-
-    /** A mapping of advancement types to their respective names. */
-    @Comment("A mapping of advancement types to their respective names")
-    public Map<String, String> advancementTypes = new HashMap<>(Map.ofEntries(
-        Map.entry("task", "task"),
-        Map.entry("challenge", "challenge"),
-        Map.entry("goal", "goal")
+    public Map<String, String> worlds = new HashMap<>(Map.of(
+        "minecraft:overworld", "Overworld",
+        "minecraft:the_nether", "The Nether",
+        "minecraft:the_end", "The End"
     ));
 }

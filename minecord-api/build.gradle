@@ -1,10 +1,11 @@
 // Declare dependencies
 dependencies {
-    api include(fabricApi.module("fabric-api-base", project.fabric_version))
+    modApi include(fabricApi.module("fabric-api-base", project.fabric_version))
     modApi include(fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version))
     modApi include("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
         exclude module: 'modmenu'
     }
+    modApi include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
     implementation shade("com.vdurmont:emoji-java:${project.emoji_java_version}")
     implementation shade("net.dv8tion:JDA:${project.jda_version}") {
         exclude module: 'opus-java' // exclude audio

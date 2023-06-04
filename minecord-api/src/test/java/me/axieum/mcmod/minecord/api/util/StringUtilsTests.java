@@ -38,83 +38,6 @@ public class StringUtilsTests
     public class DiscordToMinecraft
     {
         @Test
-        @DisplayName("Translate bold text")
-        public void bold()
-        {
-            assertEquals(
-                "This is \u00A7lbold text\u00A7r!",
-                StringUtils.discordToMinecraft("This is **bold text**!")
-            );
-        }
-
-        @Test
-        @DisplayName("Translate underlined text")
-        public void underline()
-        {
-            assertEquals(
-                "This is \u00A7nunderlined text\u00A7r!",
-                StringUtils.discordToMinecraft("This is __underlined text__!")
-            );
-        }
-
-        @Test
-        @DisplayName("Translate italicised text")
-        public void italics()
-        {
-            assertEquals(
-                "This is \u00A7oitalicised text\u00A7r!",
-                StringUtils.discordToMinecraft("This is _italicised text_!")
-            );
-            assertEquals(
-                "This is \u00A7oitalicised text\u00A7r!",
-                StringUtils.discordToMinecraft("This is *italicised text*!")
-            );
-        }
-
-        @Test
-        @DisplayName("Translate strikethrough text")
-        public void strikethrough()
-        {
-            assertEquals(
-                "This is \u00A7mstrikethrough text\u00A7r!",
-                StringUtils.discordToMinecraft("This is ~~strikethrough text~~!")
-            );
-        }
-
-        @Test
-        @DisplayName("Obfuscate spoilers")
-        public void spoilers()
-        {
-            assertEquals(
-                "This is \u00A7ksecret text\u00A7r!",
-                StringUtils.discordToMinecraft("This is ||secret text||!")
-            );
-        }
-
-        @Test
-        @DisplayName("Darken code blocks")
-        public void code()
-        {
-            final String json = """
-                {
-                  "enabled": true,
-                  "command": "whitelist"
-                }""";
-            assertEquals(
-                "This is (json) \u00A77" + json + "\u00A7r text!",
-                StringUtils.discordToMinecraft("This is ```json\n" + json + "``` text!")
-            );
-            assertEquals(
-                "This is \u00A77" + json + "\u00A7r text!",
-                StringUtils.discordToMinecraft("This is ```" + json + "``` text!")
-            );
-            assertEquals(
-                "This is \u00A77inline code\u00A7r!",
-                StringUtils.discordToMinecraft("This is `inline code`!")
-            );
-        }
-
-        @Test
         @DisplayName("Translate emojis from unicode formatted text")
         public void emojis()
         {
@@ -123,72 +46,22 @@ public class StringUtilsTests
                 StringUtils.discordToMinecraft("This is a smiley \uD83D\uDE42 face!")
             );
         }
+
+        @Test
+        @DisplayName("Strip any left over formatting")
+        public void stripFormatting()
+        {
+            assertEquals(
+                "This is green text!",
+                StringUtils.discordToMinecraft("This is §agreen§r text!")
+            );
+        }
     }
 
     @Nested
     @DisplayName("Translate Minecraft-formatted text to Discord flavoured markdown")
     public class MinecraftToDiscord
     {
-        @Test
-        @DisplayName("Collapse line breaks")
-        public void collapseLineBreaks()
-        {
-            assertEquals(
-                "There are no line breaks in this text!",
-                StringUtils.minecraftToDiscord("There are no line\nbreaks in\n\nthis text!")
-            );
-        }
-
-        @Test
-        @DisplayName("Translate bold text")
-        public void bold()
-        {
-            assertEquals(
-                "This is **bold text**!",
-                StringUtils.minecraftToDiscord("This is \u00A7lbold text\u00A7r!")
-            );
-        }
-
-        @Test
-        @DisplayName("Translate underline text")
-        public void underline()
-        {
-            assertEquals(
-                "This is __underlined text__!",
-                StringUtils.minecraftToDiscord("This is \u00A7nunderlined text\u00A7r!")
-            );
-        }
-
-        @Test
-        @DisplayName("Translate italics text")
-        public void italics()
-        {
-            assertEquals(
-                "This is _italicised text_!",
-                StringUtils.minecraftToDiscord("This is \u00A7oitalicised text\u00A7r!")
-            );
-        }
-
-        @Test
-        @DisplayName("Translate strikethrough text")
-        public void strikethrough()
-        {
-            assertEquals(
-                "This is ~~strikethrough text~~!",
-                StringUtils.minecraftToDiscord("This is \u00A7mstrikethrough text\u00A7r!")
-            );
-        }
-
-        @Test
-        @DisplayName("Obfuscate spoilers")
-        public void spoilers()
-        {
-            assertEquals(
-                "This is ||secret text||!",
-                StringUtils.minecraftToDiscord("This is \u00A7ksecret text\u00A7r!")
-            );
-        }
-
         @Test
         @DisplayName("Suppress @everyone and @here mentions")
         public void suppressGlobalMentions()
@@ -209,7 +82,7 @@ public class StringUtilsTests
         {
             assertEquals(
                 "This is green text!",
-                StringUtils.minecraftToDiscord("This is \u00A7agreen\u00A7r text!")
+                StringUtils.minecraftToDiscord("This is §agreen§r text!")
             );
         }
     }
