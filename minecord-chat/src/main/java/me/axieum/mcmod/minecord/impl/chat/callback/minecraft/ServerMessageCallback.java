@@ -52,7 +52,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
                 (embed, entry) -> embed.setContent(
                     PlaceholdersExt.parseString(entry.discord.chatNode, ctx, placeholders)
                 ),
-                entry -> entry.discord.chat != null && entry.hasWorld(player.world)
+                entry -> entry.discord.chat != null && entry.hasWorld(player.getWorld())
             );
         });
     }

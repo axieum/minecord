@@ -45,7 +45,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
                 (embed, entry) -> embed.setDescription(
                     PlaceholdersExt.parseString(entry.discord.joinNode, ctx, placeholders)
                 ),
-                entry -> entry.discord.join != null && entry.hasWorld(player.world),
+                entry -> entry.discord.join != null && entry.hasWorld(player.getWorld()),
                 player.getUuidAsString()
             );
         });
@@ -72,7 +72,7 @@ public class PlayerConnectionCallback implements Join, Disconnect
                 (embed, entry) -> embed.setDescription(
                     PlaceholdersExt.parseString(entry.discord.leaveNode, ctx, placeholders)
                 ),
-                entry -> entry.discord.leave != null && entry.hasWorld(player.world),
+                entry -> entry.discord.leave != null && entry.hasWorld(player.getWorld()),
                 player.getUuidAsString()
             );
         });

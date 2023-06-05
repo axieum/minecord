@@ -116,7 +116,8 @@ public final class MinecraftDispatcher
                           if (entry.dimensions != null && entry.dimensions.length > 0) {
                               final List<String> dims = Arrays.asList(entry.dimensions);
                               players = players.filter(player ->
-                                  dims.contains(player.world.getRegistryKey().getValue().toString()));
+                                  dims.contains(player.getWorld().getRegistryKey().getValue().toString())
+                              );
                           }
 
                           // Send the message to all relevant players

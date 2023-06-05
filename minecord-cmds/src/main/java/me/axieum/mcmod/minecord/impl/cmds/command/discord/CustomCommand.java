@@ -164,7 +164,7 @@ public class CustomCommand extends MinecordCommand
             if (error == null) {
                 output.thumbnailUrl = null;
                 source.sendFeedback(
-                    PlaceholdersExt.parseText(
+                    () -> PlaceholdersExt.parseText(
                         getConfig().messages.feedbackNode, PlaceholderContext.of(source), Collections.emptyMap()
                     ),
                     false

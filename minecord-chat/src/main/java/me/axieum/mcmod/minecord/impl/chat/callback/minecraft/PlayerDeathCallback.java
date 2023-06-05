@@ -48,7 +48,7 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
                 // The player's number of experience levels before they died
                 "exp", string(String.valueOf(player.experienceLevel)),
                 // The name of the world the player died in
-                "world", string(StringUtils.getWorldName(player.world))
+                "world", string(StringUtils.getWorldName(player.getWorld()))
             );
 
             /*
@@ -59,7 +59,7 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
                 (embed, entry) -> embed.setColor(Color.RED).setDescription(
                     PlaceholdersExt.parseString(entry.discord.deathNode, ctx, placeholders)
                 ),
-                entry -> entry.discord.death != null && entry.hasWorld(player.world),
+                entry -> entry.discord.death != null && entry.hasWorld(player.getWorld()),
                 player.getUuidAsString()
             );
         });
