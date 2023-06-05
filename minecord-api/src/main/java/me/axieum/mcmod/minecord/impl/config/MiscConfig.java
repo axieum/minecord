@@ -1,9 +1,12 @@
 package me.axieum.mcmod.minecord.impl.config;
 
+import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import static net.dv8tion.jda.api.EmbedBuilder.URL_PATTERN;
+
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 
 /**
  * Minecord miscellaneous configuration schema.
@@ -18,12 +21,18 @@ public class MiscConfig implements ConfigData
     /**
      * The URL used for retrieving Minecraft player avatars.
      *
-     * <p>Usages: {@code ${username}} and {@code ${size}} (height in pixels).
+     * <ul>
+     *   <li>{@code ${uuid}} &mdash; the UUID of the Minecraft player</li>
+     *   <li>{@code ${size}} &mdash; the desired avatar height in pixels</li>
+     * </ul>
      */
     @Comment("""
         The URL used for retrieving Minecraft player avatars
-        Usages: ${username} and ${size} (height in pixels)""")
-    public String avatarUrl = "https://minotar.net/helm/${username}/${size}";
+        Usages: ${uuid} and ${size} (height in pixels)""")
+    public String avatarUrl = "https://api.tydiumcraft.net/v1/players/skin?uuid=${uuid}&type=avatar&size=${size}";
+
+    /** Pre-parsed 'avatarUrl' text node. */
+    public transient TextNode avatarUrlNode;
 
     @Override
     public void validatePostLoad() throws ValidationException
@@ -36,5 +45,6 @@ public class MiscConfig implements ConfigData
         } else if (!URL_PATTERN.matcher(avatarUrl).matches()) {
             throw new ValidationException("The avatar URL must be a valid http(s) or attachment url!");
         }
+        avatarUrlNode = parseNode(avatarUrl);
     }
 }

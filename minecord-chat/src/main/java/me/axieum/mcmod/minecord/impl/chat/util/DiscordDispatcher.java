@@ -84,19 +84,19 @@ public final class DiscordDispatcher
      * @param builder   consumer to modify the Discord embed builder for a chat entry before queuing
      * @param action    consumer to act upon the resulting Discord message action
      * @param predicate predicate that filters configured chat entries
-     * @param username  Minecraft player username for the avatar embed thumbnail
+     * @param uuid      the UUID of the Minecraft player in the avatar embed thumbnail
      * @see #embed(BiConsumer, BiConsumer, Predicate)
      */
     public static void embedWithAvatar(
         BiConsumer<EmbedBuilder, ChatEntrySchema> builder,
         BiConsumer<MessageCreateAction, ChatEntrySchema> action,
         Predicate<ChatEntrySchema> predicate,
-        @Nullable String username
+        @Nullable String uuid
     )
     {
         embed(
             (message, entry) -> {
-                Minecord.getInstance().getAvatarUrl(username, 16).ifPresent(message::setThumbnail);
+                Minecord.getInstance().getAvatarUrl(uuid, 16).ifPresent(message::setThumbnail);
                 builder.accept(message, entry);
             },
             action,

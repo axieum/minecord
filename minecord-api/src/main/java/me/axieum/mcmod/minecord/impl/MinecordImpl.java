@@ -1,7 +1,9 @@
 package me.axieum.mcmod.minecord.impl;
 
+import java.util.Map;
 import java.util.Optional;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -24,11 +26,12 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
 import me.axieum.mcmod.minecord.api.event.JDAEvents;
 import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
-import me.axieum.mcmod.minecord.api.util.StringTemplate;
+import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.impl.callback.DiscordLifecycleListener;
 import me.axieum.mcmod.minecord.impl.callback.ServerLifecycleCallback;
 import me.axieum.mcmod.minecord.impl.config.MinecordConfig;
 import me.axieum.mcmod.minecord.impl.placeholder.MinecordPlaceholders;
+import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
 /**
  * Minecord (API) implementation.
@@ -113,13 +116,15 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
     }
 
     @Override
-    public Optional<String> getAvatarUrl(@Nullable String username, int height)
+    public Optional<String> getAvatarUrl(@Nullable String uuid, int height)
     {
-        // Only return an avatar URL if they are enabled and the provided username is valid
-        if (getConfig().misc.enableAvatars && username != null && !username.isBlank()) {
-            return Optional.ofNullable(
-                new StringTemplate().add("username", username).add("size", height).format(getConfig().misc.avatarUrl)
-            );
+        // Only return an avatar URL if they are enabled and the provided UUID is valid
+        if (getConfig().misc.enableAvatars && uuid != null && !uuid.isBlank()) {
+            return getMinecraft().map(server -> PlaceholdersExt.parseString(
+                getConfig().misc.avatarUrlNode,
+                PlaceholderContext.of(server),
+                Map.of("uuid", string(uuid), "size", string(String.valueOf(height)))
+            ));
         }
         return Optional.empty();
     }

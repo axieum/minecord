@@ -41,11 +41,11 @@ public interface Minecord
     /**
      * Builds and returns a URL for retrieving a Minecraft player's avatar.
      *
-     * @param username the Minecraft player username or UUID
-     * @param height   the desired height of the avatar in pixels
+     * @param uuid   the UUID of the Minecraft player
+     * @param height the desired height of the avatar in pixels
      * @return the URL for the Minecraft player's avatar if enabled
      * @see me.axieum.mcmod.minecord.impl.config.MiscConfig#enableAvatars
      * @see me.axieum.mcmod.minecord.impl.config.MiscConfig#avatarUrl
      */
-    Optional<String> getAvatarUrl(@Nullable String username, int height);
+    Optional<String> getAvatarUrl(@Nullable String uuid, int height);
 }

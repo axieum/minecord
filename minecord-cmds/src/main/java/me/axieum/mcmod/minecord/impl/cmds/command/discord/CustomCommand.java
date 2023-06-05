@@ -139,8 +139,8 @@ public class CustomCommand extends MinecordCommand
             final CommandContext<ServerCommandSource> context = parseResults.getContext().build(mcCommand);
 
             // Analyse the command context for a player's UUID to show their avatar on any command feedback
-            findPlayerUsernames(context.getLastChild()).findFirst()
-                .flatMap(name -> Minecord.getInstance().getAvatarUrl(name, 16))
+            findPlayerUuids(context.getLastChild()).findFirst()
+                .flatMap(uuid -> Minecord.getInstance().getAvatarUrl(uuid, 16))
                 .ifPresent(url -> output.thumbnailUrl = url);
 
             // Execute the command
@@ -206,12 +206,12 @@ public class CustomCommand extends MinecordCommand
 
     /**
      * Traverses the nodes of a Minecraft command context for a player-related
-     * argument and returns their UUID or username if present.
+     * argument and returns their UUID if present.
      *
      * @param context Minecraft command context
-     * @return a stream of Minecraft player usernames or UUIDs if present
+     * @return a stream of Minecraft player UUIDs if present
      */
-    private static Stream<String> findPlayerUsernames(CommandContext<ServerCommandSource> context)
+    private static Stream<String> findPlayerUuids(CommandContext<ServerCommandSource> context)
     {
         return context
             .getNodes()
