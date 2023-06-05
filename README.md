@@ -6,9 +6,10 @@
 
 Bring your Minecraft world into your Discord guild
 
+[![Build](https://img.shields.io/github/actions/workflow/status/axieum/minecord/release.yml?branch=main&style=for-the-badge)][ci:release]
 [![Release](https://img.shields.io/github/v/release/axieum/minecord?style=for-the-badge&include_prereleases&sort=semver)][releases]
-[![Available For](https://img.shields.io/badge/dynamic/json?label=Available%20For&style=for-the-badge&color=34aa2f&query=gameVersionLatestFiles%5B0%5D.gameVersion&url=https%3A%2F%2Faddons-ecs.forgesvc.net%2Fapi%2Fv2%2Faddon%2F502254)][curseforge]
-[![Downloads](https://img.shields.io/badge/dynamic/json?label=Downloads&style=for-the-badge&color=f16436&query=downloadCount&url=https%3A%2F%2Faddons-ecs.forgesvc.net%2Fapi%2Fv2%2Faddon%2F502254)][curseforge:files]
+[![Available For](https://cf.way2muchnoise.eu/versions/Available%20For_502254_latest.svg?badge_style=for_the_badge)][curseforge]
+[![Downloads](https://cf.way2muchnoise.eu/full_502254_downloads.svg?badge_style=for_the_badge)][curseforge:files]
 
 </div>
 
@@ -18,6 +19,12 @@ Discord guild.
 It is a **server-side** only mod, uses [JDA][jda] to interface with Discord, is 
 built on the [Fabric][fabric] mod loader, and is available for modern versions
 of [Minecraft][minecraft] Java Edition.
+
+#### Integrations
+
+  * [TextPlaceholderAPI][text-placeholder-api] by Patbox &mdash; for text
+    placeholders
+  * [TydiumCraft Skin API][tydiumcraft-api] by Tydium &mdash; for embed avatars
 
 ## Features
 
@@ -29,6 +36,7 @@ between Minecraft and Discord.
 * Multi-channel support
 * Filter events to Minecraft dimensions
 * Translate unicode emojis, e.g. 😃 -> `:smiley:`
+* Show player avatars in embeds where appropriate
 * Discord events relayed to Minecraft
   * A user sent a message
   * A user sent a message in reply to another
@@ -44,7 +52,9 @@ between Minecraft and Discord.
     command
   * A player had died
   * A named animal/monster (with name tag) had died
-  * A player unlocked an advancement
+  * A player unlocked an advancement task
+  * A player reached an advancement goal
+  * A player completed an advancement challenge
   * A player teleported to another dimension
   * A player joined the game
   * A player left the game
@@ -53,7 +63,7 @@ between Minecraft and Discord.
   * The server began to stop
   * The server stopped and is offline
   * The server stopped unexpectedly and is inaccessible
-    * Optionally attach the crash report when available
+    * Optionally attach the crash report if available
 
 ### 🪄 Commands
 
@@ -67,6 +77,7 @@ commands to interact with your Minecraft server from Discord.
   * For example, you could manage your server's whitelist via `/whitelist`
 * Ability to apply cooldowns to commands
   * This can be configured on a per user, channel or guild basis
+* Detects players in commands and places their avatar in the response
 * Mod developers can register their own slash commands
 
 ### 😇 Presence
@@ -88,6 +99,13 @@ presence in Discord to show more detailed statuses.
 [API](minecord-api/README.md) is a gateway into the Minecord mod. It equips
 developers with the tools necessary to integrate their mods with Discord.
 
+## Sponsors
+
+We would like to extend our thanks to the following sponsors for supporting
+Minecord development.
+
+[<img alt="BisectHosting" src="https://www.bisecthosting.com/partners/custom-banners/b9fe4fbe-8cc4-42cc-a545-dfd1b46d20e6.webp" height="80">][bisecthosting]
+
 ## Contributing
 
 Thank you for considering contributing to Minecord! Please see the
@@ -102,6 +120,8 @@ vulnerabilities.
 
 Minecord is open-sourced software licenced under the [MIT licence][licence].
 
+[bisecthosting]: https://bisecthosting.com/axieum
+[ci:release]: https://github.com/axieum/minecord/actions/workflows/release.yml
 [contributing]: .github/CONTRIBUTING.md
 [curseforge]: https://curseforge.com/minecraft/mc-mods/minecord-for-discord
 [curseforge:files]: https://curseforge.com/minecraft/mc-mods/minecord-for-discord/files
@@ -111,3 +131,5 @@ Minecord is open-sourced software licenced under the [MIT licence][licence].
 [minecraft]: https://minecraft.net/
 [releases]: https://github.com/axieum/minecord/releases
 [security]: .github/SECURITY.md
+[text-placeholder-api]: https://github.com/Patbox/TextPlaceholderAPI
+[tydiumcraft-api]: https://www.tydiumcraft.net/docs/skinapi
