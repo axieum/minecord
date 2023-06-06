@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.impl;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -14,11 +15,14 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.samo_lego.fabrictailor.casts.TailoredPlayer;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 import net.fabricmc.loader.impl.entrypoint.EntrypointUtils;
 
@@ -120,11 +124,24 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
     {
         // Only return an avatar URL if they are enabled and the provided UUID is valid
         if (getConfig().misc.enableAvatars && uuid != null && !uuid.isBlank()) {
-            return getMinecraft().map(server -> PlaceholdersExt.parseString(
-                getConfig().misc.avatarUrlNode,
-                PlaceholderContext.of(server),
-                Map.of("uuid", string(uuid), "size", string(String.valueOf(height)))
-            ));
+            return getMinecraft().map(server -> {
+                // Handle Fabric Tailor (https://github.com/samolego/FabricTailor) skins
+                String skinId = null;
+                if (FabricLoader.getInstance().isModLoaded("fabrictailor")) {
+                    PlayerEntity player = server.getPlayerManager().getPlayer(UUID.fromString(uuid));
+                    if (player != null) skinId = ((TailoredPlayer) player).getSkinId();
+                }
+                // Format the avatar URL template and return
+                return PlaceholdersExt.parseString(
+                    getConfig().misc.avatarUrlNode,
+                    PlaceholderContext.of(server),
+                    Map.of(
+                        "uuid", string(uuid),
+                        "skin_id", string(skinId != null ? skinId : uuid),
+                        "size", string(String.valueOf(height))
+                    )
+                );
+            });
         }
         return Optional.empty();
     }

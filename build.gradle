@@ -96,6 +96,7 @@ allprojects {
         mavenCentral()
         maven { name 'dv8tion'; url 'https://m2.dv8tion.net/releases' }
         maven { name 'Fabric'; url 'https://maven.fabricmc.net/' }
+        maven { name 'Modrinth'; url 'https://api.modrinth.com/maven' }
         maven { name 'Nucleoid'; url 'https://maven.nucleoid.xyz/' }
         maven { name 'Shedaniel'; url 'https://maven.shedaniel.me/' }
     }
