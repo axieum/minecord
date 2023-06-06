@@ -6,6 +6,7 @@ import java.util.Map;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.Nullable;
@@ -35,9 +36,11 @@ public class MessageReceivedListener extends ListenerAdapter
         if (!event.getMessage().getContentRaw().isEmpty())
             onText(event);
 
+        // Link any stickers
+        event.getMessage().getStickers().forEach(sticker -> onSticker(event, sticker));
+
         // Link any attachments
-        for (Message.Attachment attachment : event.getMessage().getAttachments())
-            onAttachment(event, attachment);
+        event.getMessage().getAttachments().forEach(attachment -> onAttachment(event, attachment));
     }
 
     /**
@@ -116,6 +119,49 @@ public class MessageReceivedListener extends ListenerAdapter
                 "@${tag} (in reply to @${reply_tag}) > ${message}", ctx, placeholders
             ));
         }
+    }
+
+    /**
+     * Handles a sticker of a given message received event.
+     *
+     * @param event message received event
+     * @param sticker message sticker
+     */
+    public void onSticker(MessageReceivedEvent event, StickerItem sticker)
+    {
+        final long channelId = event.getChannel().getIdLong();
+
+        /*
+         * Prepare the message placeholders.
+         */
+
+        final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
+        final Map<String, PlaceholderHandler> placeholders = Map.of(
+            // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
+            "tag", string(event.getAuthor().getAsTag()),
+            // The author's username, e.g. Axieum
+            "username", string(event.getAuthor().getName()),
+            // The author's username discriminator, e.g. 1001
+            "discriminator", string(event.getAuthor().getDiscriminator()),
+            // The author's nickname or username
+            "author", string(
+                event.getMember() != null ? event.getMember().getEffectiveName() : event.getAuthor().getName()
+            ),
+            // The link to the sticker image
+            "url", string(sticker.getIconUrl()),
+            // The name of the sticker
+            "name", string(sticker.getName())
+        );
+
+        /*
+         * Dispatch the message.
+         */
+
+        MinecraftDispatcher.dispatch(
+            entry -> PlaceholdersExt.parseText(entry.minecraft.stickerNode, ctx, placeholders),
+            entry -> entry.minecraft.sticker != null && entry.id == channelId
+        );
+        LOGGER.info(PlaceholdersExt.parseString("@${tag} sent sticker ${name}", ctx, placeholders));
     }
 
     /**
