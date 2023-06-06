@@ -60,8 +60,7 @@ public abstract class TellRawCommandMixin
             value = "INVOKE",
             target = "Lnet/minecraft/command/argument/EntityArgumentType;getPlayers("
                 + "Lcom/mojang/brigadier/context/CommandContext;Ljava/lang/String;)Ljava/util/Collection;"
-        ),
-        remap = false
+        )
     )
     private static Collection<ServerPlayerEntity> getPlayers(
         CommandContext<ServerCommandSource> context, String name

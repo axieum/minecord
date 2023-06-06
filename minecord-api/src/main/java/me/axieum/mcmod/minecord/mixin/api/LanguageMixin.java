@@ -43,8 +43,7 @@ public abstract class LanguageMixin
             value = "INVOKE",
             target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"
         ),
-        locals = LocalCapture.CAPTURE_FAILSOFT,
-        remap = false
+        locals = LocalCapture.CAPTURE_FAILSOFT
     )
     private static void create(
         CallbackInfoReturnable<Language> cir,
