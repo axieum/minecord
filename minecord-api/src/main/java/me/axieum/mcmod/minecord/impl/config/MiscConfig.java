@@ -23,13 +23,14 @@ public class MiscConfig implements ConfigData
      *
      * <ul>
      *   <li>{@code ${uuid}} &mdash; the UUID of the Minecraft player</li>
+     *   <li>{@code ${skin_id}} &mdash; the skin id (from Fabric Tailor mod) or UUID of the Minecraft player</li>
      *   <li>{@code ${size}} &mdash; the desired avatar height in pixels</li>
      * </ul>
      */
     @Comment("""
         The URL used for retrieving Minecraft player avatars
-        Usages: ${uuid} and ${size} (height in pixels)""")
-    public String avatarUrl = "https://api.tydiumcraft.net/v1/players/skin?uuid=${uuid}&type=avatar&size=${size}";
+        Usages: ${uuid}, ${skin_id} and ${size} (height in pixels)""")
+    public String avatarUrl = "https://api.tydiumcraft.net/v1/players/skin?uuid=${skin_id}&type=avatar&size=${size}";
 
     /** Pre-parsed 'avatarUrl' text node. */
     public transient TextNode avatarUrlNode;

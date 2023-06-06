@@ -6,6 +6,7 @@ dependencies {
         exclude module: 'modmenu'
     }
     modApi include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
+    modImplementation "maven.modrinth:fabrictailor:${project.fabric_tailor_version}"
     implementation shade("com.vdurmont:emoji-java:${project.emoji_java_version}")
     implementation shade("net.dv8tion:JDA:${project.jda_version}") {
         exclude module: 'opus-java' // exclude audio
