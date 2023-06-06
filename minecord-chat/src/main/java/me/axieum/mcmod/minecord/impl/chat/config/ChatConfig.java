@@ -441,6 +441,26 @@ public class ChatConfig implements ConfigData
             public transient TextNode unreactNode;
 
             /**
+             * A user sent a message that contained stickers.
+             *
+             * <ul>
+             *   <li>{@code ${author}} &mdash; the author's nickname or username</li>
+             *   <li>{@code ${tag}} &mdash; the author's tag (i.e. username#discriminator), e.g. Axieum#1001</li>
+             *   <li>{@code ${username}} &mdash; the author's username, e.g. Axieum</li>
+             *   <li>{@code ${discriminator}} &mdash; the author's username discriminator, e.g. 1001</li>
+             *   <li>{@code ${url}} &mdash; the link to the sticker image</li>
+             *   <li>{@code ${name}} &mdash; the name of the sticker</li>
+             * </ul>
+             */
+            @Comment("""
+                A user sent a message that contained stickers
+                Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url} and ${name}""")
+            public String sticker = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> <url:'${url}'><hover:show_text:'Sticker'><underline><blue>${name}</blue></underline></hover></url>";
+
+            /** Pre-parsed 'sticker' text node. */
+            public transient TextNode stickerNode;
+
+            /**
              * A user sent a message that contained attachments.
              *
              * <ul>
@@ -517,6 +537,7 @@ public class ChatConfig implements ConfigData
             entry.minecraft.editNode = parseNode(entry.minecraft.edit);
             entry.minecraft.reactNode = parseNode(entry.minecraft.react);
             entry.minecraft.unreactNode = parseNode(entry.minecraft.unreact);
+            entry.minecraft.stickerNode = parseNode(entry.minecraft.sticker);
             entry.minecraft.attachmentNode = parseNode(entry.minecraft.attachment);
         });
     }
