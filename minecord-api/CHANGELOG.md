@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0+1.20](https://github.com/axieum/minecord/compare/api-v2.0.0+1.19.4...api-v2.0.0+1.20) (2023-06-08)
+
+
+### deps
+
+* upgrade to Minecraft 1.20 ([#73](https://github.com/axieum/minecord/issues/73)) ([3b392eb](https://github.com/axieum/minecord/commit/3b392eb8d7776ab3cc0384b62c1aeb50c90308a9))
+
 ## [2.0.0+1.19.4](https://github.com/axieum/minecord/compare/api-v1.1.0-beta.3...api-v2.0.0+1.19.4) (2023-06-08)
 
 
