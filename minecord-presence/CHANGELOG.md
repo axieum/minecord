@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.0+1.19.4](https://github.com/axieum/minecord/compare/presence-v1.0.0-beta.3...presence-v2.0.0+1.19.4) (2023-06-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* use `Patbox/TextPlaceholderAPI` for templating ([#70](https://github.com/axieum/minecord/issues/70))
+
+### Features
+
+* **chat:** separate advancement config into task, goal and challenge ([a570d0a](https://github.com/axieum/minecord/commit/a570d0a2fde10a012224c8cab16b7448b2967a1d))
+* upgrade Minecraft (1.19 -&gt; 1.19.2) ([#69](https://github.com/axieum/minecord/issues/69)) ([c351b26](https://github.com/axieum/minecord/commit/c351b2682cf67e6c02901643e052960f0a5856bd))
+* use `Patbox/TextPlaceholderAPI` for templating ([#70](https://github.com/axieum/minecord/issues/70)) ([a570d0a](https://github.com/axieum/minecord/commit/a570d0a2fde10a012224c8cab16b7448b2967a1d))
+
+
+### Miscellaneous Chores
+
+* release as v2.0.0+1.19.4 ([d3d9bfc](https://github.com/axieum/minecord/commit/d3d9bfc1c030ee7da967adc23b02bc5da980c690))
+
 ## [1.0.0-beta.3](https://github.com/axieum/minecord/compare/presence-v1.0.0-beta.2...presence-v1.0.0-beta.3) (2022-07-01)
 
 
