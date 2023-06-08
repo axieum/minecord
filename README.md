@@ -43,6 +43,7 @@ between Minecraft and Discord.
   * A user edited their recently sent message
   * A user reacted to a recent message
   * A user removed their reaction from a recent message
+  * A user sent a message that contained stickers 
   * A user sent a message that contained attachments
 * Minecraft events relayed to Discord
   * A player sent an in-game chat message
