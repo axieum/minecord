@@ -17,7 +17,7 @@ allprojects {
 
     group = project.maven_group
     version = project.mod_version
-    archivesBaseName = "${project.mod_id}-mc${project.minecraft_version}"
+    archivesBaseName = project.mod_id
 
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
 
