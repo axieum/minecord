@@ -55,7 +55,7 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
                 (embed, entry) -> embed.setColor(Color.RED).setDescription(
                     PlaceholdersExt.parseString(entry.discord.griefNode, ctx, placeholders)
                 ),
-                entry -> entry.discord.grief != null && entry.hasWorld(entity.world)
+                entry -> entry.discord.grief != null && entry.hasWorld(entity.getWorld())
             );
         });
     }

@@ -50,7 +50,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
                     (embed, entry) -> embed.setDescription(
                         PlaceholdersExt.parseString(entry.discord.advancementGoalNode, ctx, placeholders)
                     ),
-                    entry -> entry.discord.advancementGoal != null && entry.hasWorld(player.world)
+                    entry -> entry.discord.advancementGoal != null && entry.hasWorld(player.getWorld())
                 );
 
                 // A player completed an advancement challenge
@@ -58,7 +58,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
                     (embed, entry) -> embed.setDescription(
                         PlaceholdersExt.parseString(entry.discord.advancementChallengeNode, ctx, placeholders)
                     ),
-                    entry -> entry.discord.advancementChallenge != null && entry.hasWorld(player.world)
+                    entry -> entry.discord.advancementChallenge != null && entry.hasWorld(player.getWorld())
                 );
 
                 // A player unlocked an advancement task
@@ -66,7 +66,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
                     (embed, entry) -> embed.setDescription(
                         PlaceholdersExt.parseString(entry.discord.advancementTaskNode, ctx, placeholders)
                     ),
-                    entry -> entry.discord.advancementTask != null && entry.hasWorld(player.world)
+                    entry -> entry.discord.advancementTask != null && entry.hasWorld(player.getWorld())
                 );
             }
         });
