@@ -340,7 +340,7 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A user sent a message
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message} and ${raw}""")
-            public String chat = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> ${message}";
+            public String chat = "<<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd>> ${message}";
 
             /** Pre-parsed 'chat' text node. */
             public transient TextNode chatNode;
@@ -366,7 +366,7 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A user sent a message in reply to another
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${message}, ${raw}, ${reply_author}, ${reply_tag}, ${reply_username}, ${reply_discriminator}, ${reply_message} and ${reply_raw}""")
-            public String reply = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <cmd:'@${reply_tag} '><hover:show_text:'${reply_message}'><color:#99dcff>${reply_author}</color></hover></cmd> <dark_gray>></dark_gray> ${message}";
+            public String reply = "<<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd>> (in reply to <cmd:'@${reply_tag} '><hover:show_text:'${reply_message}'><color:#00aaff>${reply_author}</color></hover></cmd>) ${message}";
 
             /** Pre-parsed 'crashed' text node. */
             public transient TextNode replyNode;
@@ -389,7 +389,7 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A user edited their recently sent message
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${diff}, ${message}, ${raw}, ${original} and ${original_raw}""")
-            public String edit = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> ${diff}";
+            public String edit = "<<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd>> ${diff}";
 
             /** Pre-parsed 'edit' text node. */
             public transient TextNode editNode;
@@ -455,7 +455,7 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A user sent a message that contained stickers
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url} and ${name}""")
-            public String sticker = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> <url:'${url}'><hover:show_text:'Sticker'><underline><blue>${name}</blue></underline></hover></url>";
+            public String sticker = "<<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd>> <url:'${url}'><hover:show_text:'Sticker'><underline><blue>${name}</blue></underline></hover></url>";
 
             /** Pre-parsed 'sticker' text node. */
             public transient TextNode stickerNode;
@@ -477,7 +477,7 @@ public class ChatConfig implements ConfigData
             @Comment("""
                 A user sent a message that contained attachments
                 Usages: ${author}, ${tag}, ${username}, ${discriminator}, ${url}, ${name}, ${ext} and ${size}""")
-            public String attachment = "<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd> <dark_gray>></dark_gray> <url:'${url}'><hover:show_text:'${ext} (${size})'><underline><blue>${name}</blue></underline></hover></url>";
+            public String attachment = "<<cmd:'@${tag} '><hover:show_text:'<i>Sent from Discord</i>'><color:#00aaff>${author}</color></hover></cmd>> <url:'${url}'><hover:show_text:'${ext} (${size})'><underline><blue>${name}</blue></underline></hover></url>";
 
             /** Pre-parsed 'attachment' text node. */
             public transient TextNode attachmentNode;
