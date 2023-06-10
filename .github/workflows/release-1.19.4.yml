@@ -1,13 +1,12 @@
 # Prepares, builds and publishes new releases
 
-name: Release
+name: Release 1.19.4
 
 # On changes to release branches
 on:
   push:
     branches:
-      - main
-      - master
+      - mc/1.19.4
   workflow_dispatch:
 
 jobs:
@@ -23,6 +22,7 @@ jobs:
         with:
           command: manifest
           config-file: .github/release-please.json
+          default-branch: mc/1.19.4
           token: ${{ secrets.GITHUB_TOKEN }}
 
     outputs:
