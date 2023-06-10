@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1+1.19.4](https://github.com/axieum/minecord/compare/v2.0.0+1.19.4...v2.0.1+1.19.4) (2023-06-10)
+
+
+### Bug Fixes
+
+* **api:** do not load already loaded modded translations (fixes [#78](https://github.com/axieum/minecord/issues/78)) ([#79](https://github.com/axieum/minecord/issues/79)) ([2aaf1ba](https://github.com/axieum/minecord/commit/2aaf1bad68c88924b79adf6057b8cdfa8fd6178d))
+
 ## [2.0.0+1.19.4](https://github.com/axieum/minecord/compare/v1.1.0-beta.3...v2.0.0+1.19.4) (2023-06-08)
 
 
