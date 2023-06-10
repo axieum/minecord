@@ -5,10 +5,7 @@ import java.util.Map;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.RequiresRestart;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
-
-import net.minecraft.util.Language;
 
 /**
  * Minecord translations configuration schema.
@@ -16,11 +13,6 @@ import net.minecraft.util.Language;
 @Config(name = "i18n")
 public class I18nConfig implements ConfigData
 {
-    /** The language code used to load translations from. */
-    @Comment("The language code used to load translations from")
-    @RequiresRestart
-    public String lang = Language.DEFAULT_LANGUAGE;
-
     /** The name of the Minecraft server in system messages. */
     @Comment("The name of the Minecraft server in system messages")
     public String serverName = "Server";
