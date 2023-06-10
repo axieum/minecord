@@ -6,7 +6,6 @@
   "mixins": [],
   "server": [
     "CrashReportAccessor",
-    "LanguageMixin",
     "MinecraftServerMixin"
   ],
   "client": [],
