@@ -10,6 +10,7 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.JsonPrimitive;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
@@ -300,8 +301,16 @@ public class CommandConfig implements ConfigData
         messages.feedbackNode = parseNode(messages.feedback);
         builtin.uptime.messageNode = parseNode(builtin.uptime.message);
 
-        // Parse command templates
-        Arrays.stream(custom).forEach(cmd -> cmd.commandNode = parseNode(cmd.command));
+        // Validate custom commands
+        Arrays.stream(custom).forEach(cmd -> {
+            // Parse command templates
+            cmd.commandNode = parseNode(cmd.command);
+            // Unwrap command option-choice primitives
+            Arrays.stream(cmd.options)
+                .flatMap(option -> Arrays.stream(option.choices))
+                .filter(choice -> choice.value instanceof JsonPrimitive)
+                .forEach(choice -> choice.value = ((JsonPrimitive) choice.value).getValue());
+        });
 
         // Register all Minecord provided commands
         MinecordCommandsImpl.initCommands(this);
