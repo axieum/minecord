@@ -99,7 +99,9 @@ public final class MinecraftDispatcher
     )
     {
         // Fetch the Minecraft server instance, only if there is at least one player logged in
-        Minecord.getInstance().getMinecraft().filter(server -> server.getCurrentPlayerCount() > 0).ifPresent(server ->
+        Minecord.getInstance().getMinecraft().filter(server ->
+            server.getPlayerManager() != null && server.getCurrentPlayerCount() > 0
+        ).ifPresent(server ->
             // Prepare a stream of configured chat entries
             Arrays.stream(getConfig().entries)
                   .parallel()
