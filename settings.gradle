@@ -7,4 +7,7 @@ pluginManagement {
 }
 
 rootProject.name = 'minecord'
-include 'minecord-api', 'minecord-chat', 'minecord-cmds', 'minecord-presence'
+include 'minecord-api'
+include 'minecord-chat'
+include 'minecord-cmds'
+include 'minecord-presence'
