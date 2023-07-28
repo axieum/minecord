@@ -5,7 +5,6 @@ import java.util.Arrays;
 import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
@@ -14,10 +13,9 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-import net.minecraft.util.ActionResult;
-
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
+import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.cmds.MinecordCommands;
 import me.axieum.mcmod.minecord.api.cmds.command.CooldownScope;
 import me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl;
@@ -304,32 +302,26 @@ public class CommandConfig implements ConfigData
 
         // Parse command templates
         Arrays.stream(custom).forEach(cmd -> cmd.commandNode = parseNode(cmd.command));
+
+        // Register all Minecord provided commands
+        MinecordCommandsImpl.initCommands(this);
+
+        // Update the command list in Discord
+        Minecord.getInstance().getJDA().ifPresent(jda -> MinecordCommands.getInstance().updateCommandList());
     }
 
     /**
-     * Registers and prepares a new configuration instance.
+     * Registers and loads a new configuration instance.
      *
-     * @return registered config holder
      * @see AutoConfig#register(Class, ConfigSerializer.Factory)
      */
-    public static ConfigHolder<CommandConfig> init()
+    public static void load()
     {
-        // Register the config
-        ConfigHolder<CommandConfig> holder = AutoConfig.register(CommandConfig.class, JanksonConfigSerializer::new);
+        // Register (and load) the config
+        AutoConfig.register(CommandConfig.class, JanksonConfigSerializer::new);
 
         // Listen for when the server is reloading (i.e. /reload), and reload the config
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) ->
             AutoConfig.getConfigHolder(CommandConfig.class).load());
-
-        // Listen for when the config gets loaded
-        holder.registerLoadListener((hld, cfg) -> {
-            // Re-register all Minecord provided commands
-            MinecordCommandsImpl.initCommands(cfg);
-            // Update the command list in Discord
-            MinecordCommands.getInstance().updateCommandList();
-            return ActionResult.PASS;
-        });
-
-        return holder;
     }
 }

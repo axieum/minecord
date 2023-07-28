@@ -1,7 +1,6 @@
 package me.axieum.mcmod.minecord.impl.config;
 
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
@@ -29,22 +28,17 @@ public class MinecordConfig extends PartitioningSerializer.GlobalData
     public MiscConfig misc = new MiscConfig();
 
     /**
-     * Registers and prepares a new configuration instance.
+     * Registers and loads a new configuration instance.
      *
-     * @return registered config holder
      * @see AutoConfig#register(Class, ConfigSerializer.Factory)
      */
-    public static ConfigHolder<MinecordConfig> init()
+    public static void load()
     {
-        // Register the config
-        ConfigHolder<MinecordConfig> holder = AutoConfig.register(
-            MinecordConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new)
-        );
+        // Register (and load) the config
+        AutoConfig.register(MinecordConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
 
         // Listen for when the server is reloading (i.e. /reload), and reload the config
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) ->
             AutoConfig.getConfigHolder(MinecordConfig.class).load());
-
-        return holder;
     }
 }

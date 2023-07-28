@@ -1,6 +1,6 @@
 package me.axieum.mcmod.minecord.impl.chat;
 
-import me.shedaniel.autoconfig.ConfigHolder;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.dv8tion.jda.api.JDABuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,13 +35,14 @@ public final class MinecordChat implements MinecordAddon, DedicatedServerModInit
 {
     /** Minecord Chat logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Chat");
-    /** Minecord Chat configuration. */
-    private static final ConfigHolder<ChatConfig> CONFIG = ChatConfig.init();
 
     @Override
     public void onInitializeMinecord(JDABuilder builder)
     {
         LOGGER.info("Minecord Chat is getting ready...");
+
+        // Load the config
+        ChatConfig.load();
 
         /*
          * Register Discord callbacks.
@@ -117,6 +118,6 @@ public final class MinecordChat implements MinecordAddon, DedicatedServerModInit
      */
     public static ChatConfig getConfig()
     {
-        return CONFIG.getConfig();
+        return AutoConfig.getConfigHolder(ChatConfig.class).getConfig();
     }
 }

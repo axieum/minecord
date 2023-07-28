@@ -5,7 +5,6 @@ import java.util.Arrays;
 import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
@@ -543,20 +542,17 @@ public class ChatConfig implements ConfigData
     }
 
     /**
-     * Registers and prepares a new configuration instance.
+     * Registers and loads a new configuration instance.
      *
-     * @return registered config holder
      * @see AutoConfig#register(Class, ConfigSerializer.Factory)
      */
-    public static ConfigHolder<ChatConfig> init()
+    public static void load()
     {
-        // Register the config
-        ConfigHolder<ChatConfig> holder = AutoConfig.register(ChatConfig.class, JanksonConfigSerializer::new);
+        // Register (and load) the config
+        AutoConfig.register(ChatConfig.class, JanksonConfigSerializer::new);
 
         // Listen for when the server is reloading (i.e. /reload), and reload the config
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) ->
             AutoConfig.getConfigHolder(ChatConfig.class).load());
-
-        return holder;
     }
 }
