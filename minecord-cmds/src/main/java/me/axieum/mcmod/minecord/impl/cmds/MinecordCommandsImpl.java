@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import me.shedaniel.autoconfig.ConfigHolder;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.apache.logging.log4j.LogManager;
@@ -33,8 +33,6 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
     public static final MinecordCommands INSTANCE = new MinecordCommandsImpl();
     /** Minecord Commands logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Commands");
-    /** Minecord Commands configuration. */
-    private static final ConfigHolder<CommandConfig> CONFIG = CommandConfig.init();
     /** A mapping of command names to their implementation (initial capacity for all built-in commands). */
     private static final HashMap<String, MinecordCommand> COMMANDS = new HashMap<>(2);
     /** A mapping of cooldown keys to their end timestamp (millis since epoch). */
@@ -45,11 +43,11 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
     {
         LOGGER.info("Minecord Commands is getting ready...");
 
+        // Load the config
+        CommandConfig.load();
+
         // Register Discord callbacks
         builder.addEventListeners(new DiscordCommandListener());
-
-        // Register all Minecord provided commands
-        initCommands(getConfig());
     }
 
     /**
@@ -218,6 +216,6 @@ public final class MinecordCommandsImpl implements MinecordCommands, MinecordAdd
      */
     public static CommandConfig getConfig()
     {
-        return CONFIG.getConfig();
+        return AutoConfig.getConfigHolder(CommandConfig.class).getConfig();
     }
 }
