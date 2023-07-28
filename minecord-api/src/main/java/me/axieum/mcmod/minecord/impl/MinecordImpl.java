@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.shedaniel.autoconfig.ConfigHolder;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
@@ -46,8 +46,6 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
     public static final Minecord INSTANCE = new MinecordImpl();
     /** Minecord logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord");
-    /** Minecord configuration. */
-    private static final ConfigHolder<MinecordConfig> CONFIG = MinecordConfig.init();
 
     // The captured Minecraft server, available once started
     private static @Nullable MinecraftServer minecraft = null;
@@ -58,6 +56,9 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
     public void onPreLaunch()
     {
         LOGGER.info("Minecord is getting ready...");
+
+        // Load the config
+        MinecordConfig.load();
 
         // Register global placeholders
         MinecordPlaceholders.register();
@@ -153,6 +154,6 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
      */
     public static MinecordConfig getConfig()
     {
-        return CONFIG.getConfig();
+        return AutoConfig.getConfigHolder(MinecordConfig.class).getConfig();
     }
 }
