@@ -25,7 +25,7 @@ public class PlayerAdvancementCallback implements GrantCriterionCallback
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             // Only listen for advancements that should be announced
-            final AdvancementDisplay info = advancement.getDisplay();
+            final AdvancementDisplay info = advancement.display().orElse(null);
             if (info == null || !info.shouldAnnounceToChat()) return;
 
             /*
