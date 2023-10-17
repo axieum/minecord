@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.1+1.20.1](https://github.com/axieum/minecord/compare/cmds-v2.0.0+1.20...cmds-v2.0.1+1.20.1) (2023-10-17)
+
+
+### Bug Fixes
+
+* **cmds:** option choices were incorrectly serializing to disk (fixes [#83](https://github.com/axieum/minecord/issues/83)) ([#90](https://github.com/axieum/minecord/issues/90)) ([70574c4](https://github.com/axieum/minecord/commit/70574c4f87007c406a356b48b4718867538900f2))
+
+
+### Build System
+
+* **cmds:** add support for Minecraft 1.20-1.20.1 ([#104](https://github.com/axieum/minecord/issues/104)) ([07d260f](https://github.com/axieum/minecord/commit/07d260fe7210f228b0ed4061589c2cb28441ff7d))
+
 ## [2.0.0+1.20](https://github.com/axieum/minecord/compare/cmds-v2.0.0+1.19.4...cmds-v2.0.0+1.20) (2023-06-08)
 
 
