@@ -25,7 +25,7 @@
   "depends": {
     "java": ">=17",
     "minecraft": "~1.20",
-    "fabricloader": ">=0.14.18"
+    "fabricloader": ">=0.14.23"
   },
   "recommends": {
     "minecord-api": "*",

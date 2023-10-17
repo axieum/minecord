@@ -24,7 +24,6 @@ import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.impl.entrypoint.EntrypointUtils;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.addon.MinecordAddon;
@@ -82,7 +81,9 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
             }
 
             // Register any Minecord addons
-            EntrypointUtils.invoke("minecord", MinecordAddon.class, addon -> addon.onInitializeMinecord(builder));
+            FabricLoader.getInstance().invokeEntrypoints(
+                "minecord", MinecordAddon.class, addon -> addon.onInitializeMinecord(builder)
+            );
 
             // Build and login to the client
             JDAEvents.BUILD_CLIENT.invoker().onBuildClient(builder);

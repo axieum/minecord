@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.mixin.api;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,7 +20,7 @@ import me.axieum.mcmod.minecord.api.event.ServerShutdownCallback;
 public abstract class MinecraftServerMixin
 {
     // Captured Minecraft server crash report
-    private static @Nullable CrashReport crashReport = null;
+    private static @Unique @Nullable CrashReport crashReport = null;
 
     /**
      * Broadcasts a server shutdown event, be it gracefully or forcefully exited.
