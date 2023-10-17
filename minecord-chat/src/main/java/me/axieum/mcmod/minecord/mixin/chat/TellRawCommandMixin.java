@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -85,6 +86,7 @@ public abstract class TellRawCommandMixin
      * @param context command context
      * @return true if the {@code /tellraw @a} command was executed
      */
+    @Unique
     private static boolean targetsAllPlayers(CommandContext<ServerCommandSource> context)
     {
         return context.getNodes().size() > 1 && context.getNodes().get(1).getRange().get(context.getInput()).equals(
