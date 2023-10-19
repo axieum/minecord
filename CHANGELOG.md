@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.2+1.19.4](https://github.com/axieum/minecord/compare/v2.0.1+1.19.4...v2.0.2+1.19.4) (2023-10-19)
+
+
+### Bug Fixes
+
+* **chat:** do not check player count during server start-up on Discord messages (fixes [#84](https://github.com/axieum/minecord/issues/84)) ([#108](https://github.com/axieum/minecord/issues/108)) ([0cfb220](https://github.com/axieum/minecord/commit/0cfb220f05a069de9d12732b3a668173be5cc0d8))
+* **cmds:** option choices were incorrectly serializing to disk (fixes [#83](https://github.com/axieum/minecord/issues/83)) ([#110](https://github.com/axieum/minecord/issues/110)) ([9e560cf](https://github.com/axieum/minecord/commit/9e560cfc3952cb4422c60870eabee0b89a24f2d8))
+
 ## [2.0.1+1.19.4](https://github.com/axieum/minecord/compare/v2.0.0+1.19.4...v2.0.1+1.19.4) (2023-06-10)
 
 

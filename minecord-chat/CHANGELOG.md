@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1+1.19.4](https://github.com/axieum/minecord/compare/chat-v2.0.0+1.19.4...chat-v2.0.1+1.19.4) (2023-10-19)
+
+
+### Bug Fixes
+
+* **chat:** do not check player count during server start-up on Discord messages (fixes [#84](https://github.com/axieum/minecord/issues/84)) ([#108](https://github.com/axieum/minecord/issues/108)) ([0cfb220](https://github.com/axieum/minecord/commit/0cfb220f05a069de9d12732b3a668173be5cc0d8))
+
 ## [2.0.0+1.19.4](https://github.com/axieum/minecord/compare/chat-v1.1.0-beta.3...chat-v2.0.0+1.19.4) (2023-06-08)
 
 

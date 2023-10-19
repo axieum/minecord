@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1+1.19.4](https://github.com/axieum/minecord/compare/cmds-v2.0.0+1.19.4...cmds-v2.0.1+1.19.4) (2023-10-19)
+
+
+### Bug Fixes
+
+* **cmds:** option choices were incorrectly serializing to disk (fixes [#83](https://github.com/axieum/minecord/issues/83)) ([#110](https://github.com/axieum/minecord/issues/110)) ([9e560cf](https://github.com/axieum/minecord/commit/9e560cfc3952cb4422c60870eabee0b89a24f2d8))
+
 ## [2.0.0+1.19.4](https://github.com/axieum/minecord/compare/cmds-v1.0.1-beta.3...cmds-v2.0.0+1.19.4) (2023-06-08)
 
 
