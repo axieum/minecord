@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.0.2+1.20.1](https://github.com/axieum/minecord/compare/v2.0.1+1.20...v2.0.2+1.20.1) (2023-10-17)
+
+
+### Bug Fixes
+
+* **chat:** do not check player count during server start-up on Discord messages (fixes [#84](https://github.com/axieum/minecord/issues/84)) ([#91](https://github.com/axieum/minecord/issues/91)) ([8cddbeb](https://github.com/axieum/minecord/commit/8cddbeb844f9d20d996dcc0137209e7198bdaa81))
+* **cmds:** option choices were incorrectly serializing to disk (fixes [#83](https://github.com/axieum/minecord/issues/83)) ([#90](https://github.com/axieum/minecord/issues/90)) ([70574c4](https://github.com/axieum/minecord/commit/70574c4f87007c406a356b48b4718867538900f2))
+
+
+### Build System
+
+* add support for Minecraft 1.20-1.20.1 ([#106](https://github.com/axieum/minecord/issues/106)) ([d627188](https://github.com/axieum/minecord/commit/d627188bca981216d1dce5293073c2152be4d5c8))
+* **api:** add support for Minecraft 1.20-1.20.1 ([#102](https://github.com/axieum/minecord/issues/102)) ([d2534e2](https://github.com/axieum/minecord/commit/d2534e2e8c7d1a3a107d8d54b9ec8f0cf4cdfc73))
+* **chat:** add support for Minecraft 1.20-1.20.1 ([#103](https://github.com/axieum/minecord/issues/103)) ([0a150ec](https://github.com/axieum/minecord/commit/0a150ec64087422656db057697f09830257cbc7f))
+* **cmds:** add support for Minecraft 1.20-1.20.1 ([#104](https://github.com/axieum/minecord/issues/104)) ([07d260f](https://github.com/axieum/minecord/commit/07d260fe7210f228b0ed4061589c2cb28441ff7d))
+* **presence:** add support for Minecraft 1.20-1.20.1 ([#105](https://github.com/axieum/minecord/issues/105)) ([ae5e637](https://github.com/axieum/minecord/commit/ae5e6371c01bca8d4b2bbfb521ca90000202dd79))
+
 ## [2.0.1+1.20](https://github.com/axieum/minecord/compare/v2.0.0+1.20...v2.0.1+1.20) (2023-06-10)
 
 
