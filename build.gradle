@@ -17,9 +17,9 @@ allprojects {
 
     group = project.maven_group
     version = project.mod_version
-    archivesBaseName = project.mod_id
+    base { archivesName = project.mod_id }
 
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
+    java { sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17 }
 
     // Declare dependencies
     configurations { shade }
