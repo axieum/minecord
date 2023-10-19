@@ -3,6 +3,7 @@ dependencies {
     modApi include(fabricApi.module("fabric-api-base", project.fabric_version))
     modApi include(fabricApi.module("fabric-lifecycle-events-v1", project.fabric_version))
     modApi include("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+        exclude module: 'fabric-api'
         exclude module: 'modmenu'
     }
     modApi include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
