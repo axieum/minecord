@@ -9,7 +9,6 @@ import java.util.function.Function;
 import eu.pb4.placeholders.api.node.TextNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
@@ -19,8 +18,6 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Activity.ActivityType;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.util.ActionResult;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
@@ -275,30 +272,23 @@ public class PresenceConfig implements ConfigData
                 .filter(presence -> presence.activity != null)
                 .forEach(presence -> presence.activity.nameNode = parseNode(presence.activity.name));
         }
+
+        // Register all Minecord provided presences
+        MinecordPresenceImpl.initPresenceCategories(this);
     }
 
     /**
-     * Registers and prepares a new configuration instance.
+     * Registers and loads a new configuration instance.
      *
-     * @return registered config holder
      * @see AutoConfig#register(Class, ConfigSerializer.Factory)
      */
-    public static ConfigHolder<PresenceConfig> init()
+    public static void load()
     {
-        // Register the config
-        ConfigHolder<PresenceConfig> holder = AutoConfig.register(PresenceConfig.class, JanksonConfigSerializer::new);
+        // Register (and load) the config
+        AutoConfig.register(PresenceConfig.class, JanksonConfigSerializer::new);
 
         // Listen for when the server is reloading (i.e. /reload), and reload the config
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) ->
             AutoConfig.getConfigHolder(PresenceConfig.class).load());
-
-        // Listen for when the config gets loaded
-        holder.registerLoadListener((hld, cfg) -> {
-            // Re-register all Minecord provided presences
-            MinecordPresenceImpl.initPresenceCategories(cfg);
-            return ActionResult.PASS;
-        });
-
-        return holder;
     }
 }

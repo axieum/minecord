@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
 
-import me.shedaniel.autoconfig.ConfigHolder;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
@@ -33,8 +33,6 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
     public static final MinecordPresence INSTANCE = new MinecordPresenceImpl();
     /** Minecord Presence logger. */
     public static final Logger LOGGER = LogManager.getLogger("Minecord|Presence");
-    /** Minecord Presence configuration. */
-    private static final ConfigHolder<PresenceConfig> CONFIG = PresenceConfig.init();
     /** A mapping of presence category names to their implementation (initial capacity for all built-in categories). */
     private static final HashMap<String, PresenceCategory> CATEGORIES = new HashMap<>(3);
 
@@ -49,6 +47,9 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
     public void onInitializeMinecord(JDABuilder builder)
     {
         LOGGER.info("Minecord Presence is getting ready...");
+
+        // Load the config
+        PresenceConfig.load();
 
         // Update the current presence category throughout the lifecycle of the Minecraft server
         ServerLifecycleEvents.SERVER_STARTING.register(s -> useCategory("starting"));
@@ -70,9 +71,6 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
                 stop();
             }
         });
-
-        // Register all Minecord provided presence categories
-        initPresenceCategories(getConfig());
     }
 
     /**
@@ -210,6 +208,6 @@ public final class MinecordPresenceImpl implements MinecordPresence, MinecordAdd
      */
     public static PresenceConfig getConfig()
     {
-        return CONFIG.getConfig();
+        return AutoConfig.getConfigHolder(PresenceConfig.class).getConfig();
     }
 }
