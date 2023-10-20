@@ -131,7 +131,7 @@ public final class MinecordImpl implements Minecord, PreLaunchEntrypoint, Dedica
                 String skinId = null;
                 if (FabricLoader.getInstance().isModLoaded("fabrictailor")) {
                     PlayerEntity player = server.getPlayerManager().getPlayer(UUID.fromString(uuid));
-                    if (player != null) skinId = ((TailoredPlayer) player).getSkinId();
+                    if (player != null) skinId = ((TailoredPlayer) player).fabrictailor_getSkinId();
                 }
                 // Format the avatar URL template and return
                 return PlaceholdersExt.parseString(
