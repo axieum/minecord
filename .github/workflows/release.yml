@@ -19,9 +19,8 @@ jobs:
     steps:
       - name: 🙌 Prepare release
         id: release-please
-        uses: GoogleCloudPlatform/release-please-action@v3
+        uses: google-github-actions/release-please-action@v4
         with:
-          command: manifest
           config-file: .github/release-please.json
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -44,10 +43,10 @@ jobs:
 
     steps:
       - name: ✨ Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: ☕ Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
