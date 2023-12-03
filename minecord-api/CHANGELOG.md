@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1+1.20.2](https://github.com/axieum/minecord/compare/api-v2.0.1+1.20.1...api-v2.0.1+1.20.2) (2023-12-03)
+
+
+### Build System
+
+* **api:** add support for Minecraft 1.20.2+ ([1206525](https://github.com/axieum/minecord/commit/120652589dc23b488255c488ef071398130afbfe))
+
 ## [2.0.1+1.20.1](https://github.com/axieum/minecord/compare/api-v2.0.1+1.20...api-v2.0.1+1.20.1) (2023-10-17)
 
 
