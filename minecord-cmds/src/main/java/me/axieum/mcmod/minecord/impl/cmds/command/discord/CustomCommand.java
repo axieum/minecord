@@ -131,9 +131,9 @@ public class CustomCommand extends MinecordCommand
             // Parse the command and build its context
             final ParseResults<ServerCommandSource> parseResults = server.getCommandManager().getDispatcher().parse(
                 mcCommand,
-                source.withConsumer((c, s, r) -> {
-                    success.set(s); // if unsuccessful, it may choose to raise a command syntax exception
-                    result.set(r);
+                source.withReturnValueConsumer((bl, i) -> {
+                    success.set(bl); // if unsuccessful, it may choose to raise a command syntax exception
+                    result.set(i);
                 })
             );
             final CommandContext<ServerCommandSource> context = parseResults.getContext().build(mcCommand);
@@ -201,7 +201,7 @@ public class CustomCommand extends MinecordCommand
         String result = PlaceholdersExt.parseString(command, ctx, placeholders).trim();
 
         // Strip any leading '/' if present, and return
-        return result.length() > 0 && result.charAt(0) == '/' ? result.substring(1) : result;
+        return !result.isEmpty() && result.charAt(0) == '/' ? result.substring(1) : result;
     }
 
     /**

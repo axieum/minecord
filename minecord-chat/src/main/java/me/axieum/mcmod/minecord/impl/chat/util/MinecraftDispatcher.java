@@ -47,7 +47,7 @@ public final class MinecraftDispatcher
      * @param supplier  supplier that provides the Minecraft text component to be sent for a chat entry
      * @param action    consumer to act upon the resulting Minecraft text component for each player
      * @param predicate predicate that filters configured chat entries
-     * @see net.minecraft.text.Text.Serializer#fromJson(String)
+     * @see net.minecraft.text.Text.Serialization#fromJson(String)
      * @see #dispatch(Function, TriConsumer, Predicate)
      */
     public static void json(
@@ -59,7 +59,7 @@ public final class MinecraftDispatcher
         dispatch(
             entry -> {
                 try {
-                    return supplier.andThen(Text.Serializer::fromJson).apply(entry);
+                    return supplier.andThen(Text.Serialization::fromJson).apply(entry);
                 } catch (Exception e) {
                     LOGGER.error("Unable to parse invalid text JSON: {}", e.getMessage());
                     return null;
