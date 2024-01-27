@@ -42,7 +42,7 @@ public class TPSCommand extends MinecordCommand
         assert server != null;
 
         // Average the last tick lengths, and convert from nanoseconds to milliseconds
-        final double meanTPSTime = LongStream.of(server.lastTickLengths).average().orElse(0) * 1e-6d;
+        final double meanTPSTime = LongStream.of(server.getTickTimes()).average().orElse(0) * 1e-6d;
         // Compute the server's mean ticks per second
         final double meanTPS = Math.min(1000f / meanTPSTime, 20);
 

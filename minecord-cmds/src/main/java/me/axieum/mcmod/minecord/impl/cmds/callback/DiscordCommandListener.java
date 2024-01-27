@@ -41,7 +41,7 @@ public class DiscordCommandListener extends ListenerAdapter
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
     {
         final MinecordCommands minecordCommands = MinecordCommands.getInstance();
-        final String username = event.getUser().getAsTag();
+        final String username = event.getUser().getName();
         final String raw = event.getCommandString();
 
         // Lookup the command name against all registered commands
@@ -58,7 +58,7 @@ public class DiscordCommandListener extends ListenerAdapter
             // Attempt to run the command
             try {
                 // Check whether Minecraft is required, and hence whether the server has started
-                if (command.requiresMinecraft() && (server == null || server.getTickTime() == 0)) {
+                if (command.requiresMinecraft() && (server == null || server.getAverageTickTime() == 0)) {
                     LOGGER.warn("@{} used '{}' but the server is not yet ready!", username, raw);
                     event.getHook().sendMessageEmbeds(
                         new EmbedBuilder().setColor(0xff8800).setDescription(
