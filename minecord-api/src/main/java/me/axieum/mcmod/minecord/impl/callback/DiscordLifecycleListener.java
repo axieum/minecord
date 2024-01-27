@@ -15,7 +15,7 @@ public class DiscordLifecycleListener extends ListenerAdapter
     @Override
     public void onReady(@NotNull ReadyEvent event)
     {
-        LOGGER.info("Logged into Discord as @{}", event.getJDA().getSelfUser().getAsTag());
+        LOGGER.info("Logged into Discord as @{}", event.getJDA().getSelfUser().getName());
     }
 
     @Override

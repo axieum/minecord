@@ -104,7 +104,7 @@ public class CustomCommand extends MinecordCommand
         if (mcCommand == null || mcCommand.isEmpty()) return;
 
         // Create a temporary command source and hence output, to relay command feedback
-        final String tag = event.getUser().getAsTag();
+        final String tag = event.getUser().getName();
         final String username = event.getMember() != null
             ? event.getMember().getEffectiveName()
             : event.getUser().getName();

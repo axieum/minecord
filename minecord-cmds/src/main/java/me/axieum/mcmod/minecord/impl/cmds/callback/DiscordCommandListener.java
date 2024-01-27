@@ -41,7 +41,7 @@ public class DiscordCommandListener extends ListenerAdapter
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
     {
         final MinecordCommands minecordCommands = MinecordCommands.getInstance();
-        final String username = event.getUser().getAsTag();
+        final String username = event.getUser().getName();
         final String raw = event.getCommandString();
 
         // Lookup the command name against all registered commands

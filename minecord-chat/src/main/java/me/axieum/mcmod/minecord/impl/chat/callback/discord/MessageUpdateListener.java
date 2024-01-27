@@ -65,7 +65,7 @@ public class MessageUpdateListener extends ListenerAdapter
                 final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
                 final Map<String, PlaceholderHandler> placeholders = Map.of(
                     // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-                    "tag", string(event.getAuthor().getAsTag()),
+                    "tag", string(event.getAuthor().getName()),
                     // The author's username, e.g. Axieum
                     "username", string(event.getAuthor().getName()),
                     // The author's username discriminator, e.g. 1001

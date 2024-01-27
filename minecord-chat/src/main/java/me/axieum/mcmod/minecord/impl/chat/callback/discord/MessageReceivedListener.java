@@ -60,7 +60,7 @@ public class MessageReceivedListener extends ListenerAdapter
         final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
         final Map<String, PlaceholderHandler> placeholders = new HashMap<>(Map.of(
             // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-            "tag", string(event.getAuthor().getAsTag()),
+            "tag", string(event.getAuthor().getName()),
             // The author's username, e.g. Axieum
             "username", string(event.getAuthor().getName()),
             // The author's username discriminator, e.g. 1001
@@ -79,7 +79,7 @@ public class MessageReceivedListener extends ListenerAdapter
         if (replyMessage != null) {
             placeholders.putAll(Map.of(
                 // The replied message author's tag (i.e. username#discriminator), e.g. Axieum#1001
-                "reply_tag", string(replyMessage.getAuthor().getAsTag()),
+                "reply_tag", string(replyMessage.getAuthor().getName()),
                 // The replied message author's username, e.g. Axieum
                 "reply_username", string(replyMessage.getAuthor().getName()),
                 // The replied message author's username discriminator, e.g. 1001
@@ -138,7 +138,7 @@ public class MessageReceivedListener extends ListenerAdapter
         final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
         final Map<String, PlaceholderHandler> placeholders = Map.of(
             // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-            "tag", string(event.getAuthor().getAsTag()),
+            "tag", string(event.getAuthor().getName()),
             // The author's username, e.g. Axieum
             "username", string(event.getAuthor().getName()),
             // The author's username discriminator, e.g. 1001
@@ -181,7 +181,7 @@ public class MessageReceivedListener extends ListenerAdapter
         final @Nullable PlaceholderContext ctx = PlaceholdersExt.getMinecordServerContext();
         final Map<String, PlaceholderHandler> placeholders = Map.of(
             // The author's tag (i.e. username#discriminator), e.g. Axieum#1001
-            "tag", string(event.getAuthor().getAsTag()),
+            "tag", string(event.getAuthor().getName()),
             // The author's username, e.g. Axieum
             "username", string(event.getAuthor().getName()),
             // The author's username discriminator, e.g. 1001
