@@ -63,6 +63,9 @@ public final class MinecordChat implements MinecordAddon, DedicatedServerModInit
     @Override
     public void onInitializeServer()
     {
+        // Parse Minecraft event templates in the configuration
+        getConfig().parseMinecraftTemplates();
+
         /*
          * Register Minecraft server-related callbacks.
          */

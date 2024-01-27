@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
+import me.axieum.mcmod.minecord.api.Minecord;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.parseNode;
 
 /**
@@ -511,8 +512,23 @@ public class ChatConfig implements ConfigData
     @Override
     public void validatePostLoad()
     {
+        // Parse Discord event templates
+        parseDiscordTemplates();
+        // Parse Minecraft event templates
+        if (Minecord.getInstance().getMinecraft().isPresent()) {
+            parseMinecraftTemplates();
+        }
+    }
+
+    /**
+     * Parses Discord event templates into text nodes.
+     *
+     * @see me.axieum.mcmod.minecord.api.util.PlaceholdersExt#parseNode(String)
+     * @see me.axieum.mcmod.minecord.impl.chat.config.ChatConfig.ChatEntrySchema.DiscordSchema
+     */
+    public void parseDiscordTemplates()
+    {
         Arrays.stream(entries).forEach(entry -> {
-            // Parse Discord event templates
             entry.discord.chatNode = parseNode(entry.discord.chat);
             entry.discord.emoteNode = parseNode(entry.discord.emote);
             entry.discord.sayNode = parseNode(entry.discord.say);
@@ -530,7 +546,20 @@ public class ChatConfig implements ConfigData
             entry.discord.stoppingNode = parseNode(entry.discord.stopping);
             entry.discord.stoppedNode = parseNode(entry.discord.stopped);
             entry.discord.crashedNode = parseNode(entry.discord.crashed);
-            // Parse Minecraft event templates
+        });
+    }
+
+    /**
+     * Parses Minecraft event templates into text nodes.
+     *
+     * <p>The Minecraft server MUST be available with its registry bootstrapped!
+     *
+     * @see me.axieum.mcmod.minecord.api.util.PlaceholdersExt#parseNode(String)
+     * @see me.axieum.mcmod.minecord.impl.chat.config.ChatConfig.ChatEntrySchema.DiscordSchema
+     */
+    public void parseMinecraftTemplates()
+    {
+        Arrays.stream(entries).forEach(entry -> {
             entry.minecraft.chatNode = parseNode(entry.minecraft.chat);
             entry.minecraft.replyNode = parseNode(entry.minecraft.reply);
             entry.minecraft.editNode = parseNode(entry.minecraft.edit);
