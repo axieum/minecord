@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2+1.19.4](https://github.com/axieum/minecord/compare/chat-v2.0.1+1.19.4...chat-v2.0.2+1.19.4) (2024-03-04)
+
+
+### Bug Fixes
+
+* **chat:** Minecraft events were not being forwarded to Discord forum threads (fixes [#121](https://github.com/axieum/minecord/issues/121)) ([#125](https://github.com/axieum/minecord/issues/125)) ([bb07ad2](https://github.com/axieum/minecord/commit/bb07ad297984f1febde8a547db1316d7dd428c4c))
+
 ## [2.0.1+1.19.4](https://github.com/axieum/minecord/compare/chat-v2.0.0+1.19.4...chat-v2.0.1+1.19.4) (2023-10-19)
 
 
