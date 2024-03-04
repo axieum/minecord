@@ -5,7 +5,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import org.jetbrains.annotations.Nullable;
@@ -141,7 +141,9 @@ public final class DiscordDispatcher
                   // Build and queue each chat entry
                   .forEach(entry -> {
                       // Fetch the channel
-                      final @Nullable TextChannel channel = jda.getTextChannelById(entry.id);
+                      final @Nullable GuildMessageChannel channel = jda.getChannelById(
+                          GuildMessageChannel.class, entry.id
+                      );
 
                       // Check that the channel exists
                       if (channel == null)
