@@ -16,7 +16,6 @@ import net.minecraft.text.Text;
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig.ChatEntrySchema;
-import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.LOGGER;
 import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 
 /**
@@ -28,47 +27,6 @@ import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
 public final class MinecraftDispatcher
 {
     private MinecraftDispatcher() {}
-
-    /**
-     * Builds, parses and sends JSON messages for each configured chat entry.
-     *
-     * @param supplier  supplier that provides the Minecraft text component as JSON to be sent for a chat entry
-     * @param predicate predicate that filters configured chat entries
-     * @see #json(Function, TriConsumer, Predicate)
-     */
-    public static void json(Function<ChatEntrySchema, @NotNull String> supplier, Predicate<ChatEntrySchema> predicate)
-    {
-        json(supplier, (player, text, entry) -> player.sendMessage(text, false), predicate);
-    }
-
-    /**
-     * Builds, parses and acts on messages for each configured chat entry.
-     *
-     * @param supplier  supplier that provides the Minecraft text component to be sent for a chat entry
-     * @param action    consumer to act upon the resulting Minecraft text component for each player
-     * @param predicate predicate that filters configured chat entries
-     * @see net.minecraft.text.Text.Serialization#fromJson(String)
-     * @see #dispatch(Function, TriConsumer, Predicate)
-     */
-    public static void json(
-        Function<ChatEntrySchema, @NotNull String> supplier,
-        TriConsumer<ServerPlayerEntity, @NotNull Text, ChatEntrySchema> action,
-        Predicate<ChatEntrySchema> predicate
-    )
-    {
-        dispatch(
-            entry -> {
-                try {
-                    return supplier.andThen(Text.Serialization::fromJson).apply(entry);
-                } catch (Exception e) {
-                    LOGGER.error("Unable to parse invalid text JSON: {}", e.getMessage());
-                    return null;
-                }
-            },
-            action,
-            predicate
-        );
-    }
 
     /**
      * Builds and sends messages for each configured chat entry.
