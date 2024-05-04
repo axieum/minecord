@@ -62,7 +62,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
         SignedMessage message, ServerCommandSource source, MessageType.Parameters params
     )
     {
-        final String typeKey = params.type().chat().translationKey();
+        final String typeKey = params.type().value().chat().translationKey();
         if ("chat.type.emote".equals(typeKey)) {
             // '/me <action>'
             onEmoteCommandMessage(message, source, params);
