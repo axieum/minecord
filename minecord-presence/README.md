@@ -2,5 +2,5 @@
 
 ## Minecord Presence
 
-Minecord Presence is an addon to [Minecord](../README.md) that updates the bot
+Minecord Presence is a module for [Minecord](../README.md) that updates the bot
 presence in Discord to show more detailed statuses.
