@@ -2,5 +2,5 @@
 
 ## Minecord Chat
 
-Minecord Chat is an addon to [Minecord](../README.md) that bridges chat-related
+Minecord Chat is a module for [Minecord](../README.md) that bridges chat-related
 events between Minecraft and Discord.
