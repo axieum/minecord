@@ -6,6 +6,7 @@ import java.util.Map;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
 import org.jetbrains.annotations.Nullable;
+import static net.dv8tion.jda.api.EmbedBuilder.URL_PATTERN;
 
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
@@ -22,11 +23,7 @@ import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
 import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
-
-import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.markdown;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
-import static me.axieum.mcmod.minecord.impl.chat.MinecordChat.getConfig;
-import static net.dv8tion.jda.api.EmbedBuilder.URL_PATTERN;
 
 /**
  * A listener for a when a Minecraft player sends a message.
@@ -187,6 +184,6 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
      */
     private static String replaceLinks(String text, ChatConfig.ChatEntrySchema entry)
     {
-        return entry.discord.allowLinks ? text : URL_PATTERN.matcher(text).replaceAll(" … ");
+        return entry.discord.purgeLinks ? text : URL_PATTERN.matcher(text).replaceAll(" … ");
     }
 }
