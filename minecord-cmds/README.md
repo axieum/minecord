@@ -2,5 +2,5 @@
 
 ## Minecord Commands
 
-Minecord Commands is an addon to [Minecord](../README.md) that provides various
+Minecord Commands is a module for [Minecord](../README.md) that provides various
 commands to interact with your Minecraft server from Discord.
