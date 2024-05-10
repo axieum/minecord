@@ -184,6 +184,6 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
      */
     private static String replaceLinks(String text, ChatConfig.ChatEntrySchema entry)
     {
-        return entry.discord.purgeLinks ? text : URL_PATTERN.matcher(text).replaceAll(" … ");
+        return entry.discord.purgeLinks ? URL_PATTERN.matcher(text).replaceAll(" … ") : text;
     }
 }
