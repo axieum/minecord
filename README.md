@@ -20,6 +20,9 @@ It is a **server-side** only mod, uses [JDA][jda] to interface with Discord, is
 built on the [Fabric][fabric] mod loader, and is available for modern versions
 of [Minecraft][minecraft] Java Edition.
 
+> [!TIP]
+> You only need to add the one mod jar to your server, e.g. `minecord-2.0.3+1.20.6.jar`.
+
 #### Integrations
 
   * [TextPlaceholderAPI][text-placeholder-api] by Patbox &mdash; for text
@@ -30,7 +33,7 @@ of [Minecraft][minecraft] Java Edition.
 
 ### 💬 Chat
 
-[Chat](minecord-chat/README.md) is an addon that bridges chat-related events
+[Chat](minecord-chat/README.md) is responsible for bridging chat-related events
 between Minecraft and Discord.
 
 * Multi-channel support
@@ -68,8 +71,8 @@ between Minecraft and Discord.
 
 ### 🪄 Commands
 
-[Commands](minecord-cmds/README.md) is an addon that provides various
-commands to interact with your Minecraft server from Discord.
+[Commands](minecord-cmds/README.md) is responsible for providing various commands to interact with
+your Minecraft server from Discord.
 
 * Built-in commands ready to use
   * `/uptime` &mdash; shows for how long the server has been online
@@ -83,8 +86,8 @@ commands to interact with your Minecraft server from Discord.
 
 ### 😇 Presence
 
-[Presence](minecord-presence/README.md) is an addon that updates the bot
-presence in Discord to show more detailed statuses.
+[Presence](minecord-presence/README.md) is responsible for updating the bot presence in Discord to show
+more detailed statuses.
 
 * Built-in presence categories ready to use
   * `starting` &mdash; used when the Minecraft server is starting
@@ -97,8 +100,8 @@ presence in Discord to show more detailed statuses.
 
 ### 📦 API
 
-[API](minecord-api/README.md) is a gateway into the Minecord mod. It equips
-developers with the tools necessary to integrate their mods with Discord.
+[API](minecord-api/README.md) is a gateway into the Minecord mod. It equips developers with the
+tools necessary to integrate their mods with Discord.
 
 ## Sponsors
 
