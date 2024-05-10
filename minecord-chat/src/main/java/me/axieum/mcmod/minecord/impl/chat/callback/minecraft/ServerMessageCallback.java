@@ -6,6 +6,7 @@ import java.util.Map;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
 import org.jetbrains.annotations.Nullable;
+import static net.dv8tion.jda.api.EmbedBuilder.URL_PATTERN;
 
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
@@ -20,6 +21,7 @@ import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.chat.event.minecraft.TellRawMessageCallback;
 import me.axieum.mcmod.minecord.api.util.PlaceholdersExt;
 import me.axieum.mcmod.minecord.api.util.StringUtils;
+import me.axieum.mcmod.minecord.impl.chat.config.ChatConfig;
 import me.axieum.mcmod.minecord.impl.chat.util.DiscordDispatcher;
 import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
 
@@ -50,7 +52,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
 
             DiscordDispatcher.dispatch(
                 (embed, entry) -> embed.setContent(
-                    PlaceholdersExt.parseString(entry.discord.chatNode, ctx, placeholders)
+                    replaceLinks(PlaceholdersExt.parseString(entry.discord.chatNode, ctx, placeholders), entry)
                 ),
                 entry -> entry.discord.chat != null && entry.hasWorld(player.world)
             );
@@ -102,7 +104,7 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
 
             DiscordDispatcher.dispatch(
                 (embed, entry) -> embed.setContent(
-                    PlaceholdersExt.parseString(entry.discord.emoteNode, ctx, placeholders)
+                    replaceLinks(PlaceholdersExt.parseString(entry.discord.emoteNode, ctx, placeholders), entry)
                 ),
                 entry -> entry.discord.emote != null && (player == null || entry.hasWorld(source.getWorld()))
             );
@@ -171,5 +173,17 @@ public class ServerMessageCallback implements ChatMessage, CommandMessage, TellR
                 entry -> entry.discord.tellraw != null
             );
         });
+    }
+
+    /**
+     * Wrapper method for replacing URLs found in messages if configured to disallow links.
+     *
+     * @param text formatted message
+     * @param entry chat config entry
+     * @return sanitised text
+     */
+    private static String replaceLinks(String text, ChatConfig.ChatEntrySchema entry)
+    {
+        return entry.discord.purgeLinks ? text : URL_PATTERN.matcher(text).replaceAll(" … ");
     }
 }
