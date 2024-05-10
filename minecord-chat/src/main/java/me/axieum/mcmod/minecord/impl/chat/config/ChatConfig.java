@@ -70,6 +70,10 @@ public class ChatConfig implements ConfigData
             /** Pre-parsed 'chat' text node. */
             public transient TextNode chatNode;
 
+            /** True if players are allowed to send links, possibly leading to image previews. */
+            @Comment("True if players are allowed to send links, possibly leading to image previews")
+            public boolean purgeLinks = true;
+
             /**
              * A player sent an in-game message via the {@code /me} command.
              *
