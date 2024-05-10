@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0+1.20.2](https://github.com/axieum/minecord/compare/chat-v2.0.2+1.20.2...chat-v2.1.0+1.20.2) (2024-05-10)
+
+
+### Features
+
+* **chat:** add `entries[].discord.purgeLinks` option to prevent links from being sent to Discord ([#135](https://github.com/axieum/minecord/issues/135)) ([58e2c18](https://github.com/axieum/minecord/commit/58e2c18511409d9a3efe7671ab2bd71deef5c271))
+
 ## [2.0.2+1.20.2](https://github.com/axieum/minecord/compare/chat-v2.0.1+1.20.2...chat-v2.0.2+1.20.2) (2024-03-04)
 
 
