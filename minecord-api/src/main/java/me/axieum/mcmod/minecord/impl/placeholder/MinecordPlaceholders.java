@@ -21,7 +21,7 @@ public final class MinecordPlaceholders
     public static void register()
     {
         // minecord:player (or server)
-        Placeholders.register(new Identifier("minecord", "player"), (ctx, arg) ->
+        Placeholders.register(Identifier.of("minecord", "player"), (ctx, arg) ->
             PlaceholderResult.value(
                 ctx.player() != null
                     ? ctx.player().getDisplayName().getString()
@@ -29,7 +29,7 @@ public final class MinecordPlaceholders
             )
         );
         // minecord:world
-        Placeholders.register(new Identifier("minecord", "world"), (ctx, arg) ->
+        Placeholders.register(Identifier.of("minecord", "world"), (ctx, arg) ->
             PlaceholderResult.value(ctx.world() != null ? StringUtils.getWorldName(ctx.world()) : "∞")
         );
     }
