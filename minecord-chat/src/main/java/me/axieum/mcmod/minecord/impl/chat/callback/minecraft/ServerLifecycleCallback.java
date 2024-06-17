@@ -3,6 +3,7 @@ package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 import java.awt.Color;
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
@@ -143,7 +144,9 @@ public class ServerLifecycleCallback implements ServerStarting, ServerStarted, S
             // The server stopped due to an error
             } else {
                 // Fetch the crash report file
-                final Optional<File> file = Optional.ofNullable(crashReport.getFile()).filter(File::exists);
+                final Optional<File> file = Optional.ofNullable(crashReport.getFile())
+                    .map(Path::toFile)
+                    .filter(File::exists);
 
                 // Dispatch the message
                 DiscordDispatcher.embed(

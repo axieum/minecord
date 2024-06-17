@@ -93,11 +93,11 @@ public class StringUtilsTests
     {
         assertEquals(
             "Overworld",
-            StringUtils.deriveWorldName(new Identifier("minecraft", "overworld"))
+            StringUtils.deriveWorldName(Identifier.of("minecraft", "overworld"))
         );
         assertEquals(
             "Deep Dark",
-            StringUtils.deriveWorldName(new Identifier("extrautils", "the_deep_dark"))
+            StringUtils.deriveWorldName(Identifier.of("extrautils", "the_deep_dark"))
         );
     }
 }
