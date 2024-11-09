@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.1.0+1.21.3](https://github.com/axieum/minecord/compare/v2.1.0+1.21...v2.1.0+1.21.3) (2024-11-09)
+
+
+### Build System
+
+* add support for Minecraft 1.21.3+ ([#157](https://github.com/axieum/minecord/issues/157)) ([767e478](https://github.com/axieum/minecord/commit/767e478d804e45a7e60525822152ba7d1ac9e292))
+* **api:** add support for Minecraft 1.21.3+ ([#159](https://github.com/axieum/minecord/issues/159)) ([8b317b6](https://github.com/axieum/minecord/commit/8b317b6639884bfa051cb15cc6a667a49241a5e0))
+* **chat:** add support for Minecraft 1.21.3+ ([#160](https://github.com/axieum/minecord/issues/160)) ([bcf84f9](https://github.com/axieum/minecord/commit/bcf84f918b32a87361b625a1f793f2143f8dd913))
+* **cmds:** add support for Minecraft 1.21.3+ ([#161](https://github.com/axieum/minecord/issues/161)) ([f7acdd6](https://github.com/axieum/minecord/commit/f7acdd6cbf2ea319baff5aca417aa5e5d58f8095))
+* **presence:** add support for Minecraft 1.21.3+ ([#162](https://github.com/axieum/minecord/issues/162)) ([9baea0e](https://github.com/axieum/minecord/commit/9baea0e175f2218c4417be9d56ee40f69fab188a))
+
 ## [2.1.0+1.21](https://github.com/axieum/minecord/compare/v2.1.0+1.20.6...v2.1.0+1.21) (2024-06-27)
 
 
