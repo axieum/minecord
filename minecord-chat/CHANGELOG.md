@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0+1.21.3](https://github.com/axieum/minecord/compare/chat-v2.1.0+1.21...chat-v2.1.0+1.21.3) (2024-11-09)
+
+
+### Build System
+
+* **chat:** add support for Minecraft 1.21.3+ ([#160](https://github.com/axieum/minecord/issues/160)) ([9228a3c](https://github.com/axieum/minecord/commit/9228a3c1be3bf745f41096fbd6bc47d131596067))
+
 ## [2.1.0+1.21](https://github.com/axieum/minecord/compare/chat-v2.1.0+1.20.6...chat-v2.1.0+1.21) (2024-06-27)
 
 
