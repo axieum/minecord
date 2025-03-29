@@ -2,6 +2,7 @@ package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 
 import java.awt.Color;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
@@ -38,7 +39,9 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
                 // The entity's display name
                 "name", string(entityName),
                 // The reason for the entity's death
-                "cause", string(source.getDeathMessage(entity).getString().replaceFirst(entityName, "").trim()),
+                "cause", string(source.getDeathMessage(entity).getString().replaceFirst(
+                    Pattern.quote(entityName), "").trim()
+                ),
                 // The X coordinate of where the entity died
                 "pos_x", string(String.valueOf((int) entity.lastX)),
                 // The Y coordinate of where the entity died

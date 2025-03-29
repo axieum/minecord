@@ -3,6 +3,7 @@ package me.axieum.mcmod.minecord.impl.chat.callback.minecraft;
 import java.awt.Color;
 import java.time.Duration;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderHandler;
@@ -38,7 +39,9 @@ public class PlayerDeathCallback implements EntityDeathEvents.Player
             final @Nullable PlaceholderContext ctx = PlaceholderContext.of(player);
             final Map<String, PlaceholderHandler> placeholders = Map.of(
                 // The reason for the player's death
-                "cause", string(source.getDeathMessage(player).getString().replaceFirst(playerName, "").trim()),
+                "cause", string(source.getDeathMessage(player).getString().replaceFirst(
+                    Pattern.quote(playerName), "").trim()
+                ),
                 // The total time for which the player was alive for
                 "lifespan", duration(Duration.ofSeconds(
                     player.getStatHandler().getStat(Stats.CUSTOM.getOrCreateStat(Stats.TIME_SINCE_DEATH)) / 20
