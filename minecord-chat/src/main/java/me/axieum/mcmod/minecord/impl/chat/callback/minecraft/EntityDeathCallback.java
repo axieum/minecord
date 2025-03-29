@@ -40,11 +40,11 @@ public class EntityDeathCallback implements EntityDeathEvents.Entity
                 // The reason for the entity's death
                 "cause", string(source.getDeathMessage(entity).getString().replaceFirst(entityName, "").trim()),
                 // The X coordinate of where the entity died
-                "pos_x", string(String.valueOf((int) entity.prevX)),
+                "pos_x", string(String.valueOf((int) entity.lastX)),
                 // The Y coordinate of where the entity died
-                "pos_y", string(String.valueOf((int) entity.prevY)),
+                "pos_y", string(String.valueOf((int) entity.lastY)),
                 // The Z coordinate of where the entity died
-                "pos_z", string(String.valueOf((int) entity.prevZ))
+                "pos_z", string(String.valueOf((int) entity.lastZ))
             );
 
             /*
