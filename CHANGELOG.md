@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.1.1+1.21.5](https://github.com/axieum/minecord/compare/v2.1.0+1.21.3...v2.1.1+1.21.5) (2025-03-29)
+
+
+### Bug Fixes
+
+* **chat:** entity names with special characters should not cause a crash (closes [#165](https://github.com/axieum/minecord/issues/165)) ([ecab6a5](https://github.com/axieum/minecord/commit/ecab6a5b21dcc6de8852cf886488cea0cbde9193))
+
+
+### Build System
+
+* add support for Minecraft 1.21.5+ ([e0deca4](https://github.com/axieum/minecord/commit/e0deca4d961aaa19ee2ddb5a08c63f877b573755))
+* **api:** add support for Minecraft 1.21.5+ ([63c460a](https://github.com/axieum/minecord/commit/63c460a881d0c6720262003a59c2be673a8f7f6e))
+* **chat:** add support for Minecraft 1.21.5+ ([a07025d](https://github.com/axieum/minecord/commit/a07025d869c36f5cb53aeb823b432135b2f2b9b1))
+* **cmds:** add support for Minecraft 1.21.5+ ([2c851a7](https://github.com/axieum/minecord/commit/2c851a713786ee96735944218f1a3b56f15356dd))
+* **presence:** add support for Minecraft 1.21.5+ ([2d19671](https://github.com/axieum/minecord/commit/2d19671ad88f6deec973e43370460f303aeb53fa))
+
 ## [2.1.0+1.21.3](https://github.com/axieum/minecord/compare/v2.1.0+1.21...v2.1.0+1.21.3) (2024-11-09)
 
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.1+1.21.5](https://github.com/axieum/minecord/compare/chat-v2.1.0+1.21.3...chat-v2.1.1+1.21.5) (2025-03-29)
+
+
+### Bug Fixes
+
+* **chat:** entity names with special characters should not cause a crash (closes [#165](https://github.com/axieum/minecord/issues/165)) ([ecab6a5](https://github.com/axieum/minecord/commit/ecab6a5b21dcc6de8852cf886488cea0cbde9193))
+
+
+### Build System
+
+* **chat:** add support for Minecraft 1.21.5+ ([a07025d](https://github.com/axieum/minecord/commit/a07025d869c36f5cb53aeb823b432135b2f2b9b1))
+
 ## [2.1.0+1.21.3](https://github.com/axieum/minecord/compare/chat-v2.1.0+1.21...chat-v2.1.0+1.21.3) (2024-11-09)
 
 
