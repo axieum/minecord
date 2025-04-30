@@ -1,9 +1,0 @@
-// Declare dependencies
-dependencies {
-    implementation project(path: ':minecord-api', configuration: 'namedElements')
-    implementation project(path: ':minecord-api', configuration: 'shade')
-    modApi include(fabricApi.module("fabric-entity-events-v1", project.fabric_version))
-    modApi include(fabricApi.module("fabric-message-api-v1", project.fabric_version))
-    modApi include(fabricApi.module("fabric-networking-api-v1", project.fabric_version))
-    implementation shade("io.github.java-diff-utils:java-diff-utils:${project.java_diff_utils_version}")
-}

@@ -1,5 +1,0 @@
-// Declare dependencies
-dependencies {
-    implementation project(path: ':minecord-api', configuration: 'namedElements')
-    implementation project(path: ':minecord-api', configuration: 'shade')
-}

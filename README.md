@@ -1,6 +1,6 @@
 <div align="center">
 
-<img alt="Minecord Icon" src="src/main/resources/assets/minecord/icon.svg" width="128">
+<img alt="Minecord Icon" src="common/src/main/resources/icon.svg" width="128">
 
 # Minecord
 
@@ -16,24 +16,20 @@ Bring your Minecraft world into your Discord guild
 Minecord is a **Minecraft mod** that brings your Minecraft world into your
 Discord guild.
 
-It is a **server-side** only mod, uses [JDA][jda] to interface with Discord, is 
-built on the [Fabric][fabric] mod loader, and is available for modern versions
-of [Minecraft][minecraft] Java Edition.
-
-> [!TIP]
-> You only need to add the one mod jar to your server, e.g. `minecord-2.0.3+1.20.6.jar`.
+It is a **server-side** only mod, uses [JDA][jda] to interface with Discord, 
+and is available for modern versions of [Minecraft][minecraft] Java Edition.
 
 #### Integrations
 
   * [TextPlaceholderAPI][text-placeholder-api] by Patbox &mdash; for text
     placeholders
-  * [TydiumCraft Skin API][tydiumcraft-api] by Tydium &mdash; for embed avatars
+  * [Starlight Skin API][starlight-skin-api] by Lunar Eclipse &mdash; for embed avatars
 
 ## Features
 
 ### 💬 Chat
 
-[Chat](minecord-chat/README.md) is responsible for bridging chat-related events
+This module is responsible for bridging chat-related events
 between Minecraft and Discord.
 
 * Multi-channel support
@@ -71,7 +67,7 @@ between Minecraft and Discord.
 
 ### 🪄 Commands
 
-[Commands](minecord-cmds/README.md) is responsible for providing various commands to interact with
+This module is responsible for providing various commands to interact with
 your Minecraft server from Discord.
 
 * Built-in commands ready to use
@@ -86,7 +82,7 @@ your Minecraft server from Discord.
 
 ### 😇 Presence
 
-[Presence](minecord-presence/README.md) is responsible for updating the bot presence in Discord to show
+This module is responsible for updating the bot presence in Discord to show
 more detailed statuses.
 
 * Built-in presence categories ready to use
@@ -100,7 +96,7 @@ more detailed statuses.
 
 ### 📦 API
 
-[API](minecord-api/README.md) is a gateway into the Minecord mod. It equips developers with the
+This module is a gateway into the Minecord mod. It equips developers with the
 tools necessary to integrate their mods with Discord.
 
 ## Sponsors
@@ -135,5 +131,5 @@ Minecord is open-sourced software licenced under the [MIT licence][licence].
 [minecraft]: https://minecraft.net/
 [releases]: https://github.com/axieum/minecord/releases
 [security]: .github/SECURITY.md
+[starlight-skin-api]: https://lunareclipse.studio/creations/starlight-skinapi
 [text-placeholder-api]: https://github.com/Patbox/TextPlaceholderAPI
-[tydiumcraft-api]: https://www.tydiumcraft.net/docs/skinapi

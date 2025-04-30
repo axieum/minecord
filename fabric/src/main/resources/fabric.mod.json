@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "sources": "https://github.com/axieum/minecord",
+    "issues": "https://github.com/axieum/minecord/issues"
+  },
+  "license": "${mod_license}",
+  "icon": "icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "preLaunch": [
+      "me.axieum.mcmod.minecord.impl.fabric.MinecordFabric"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}.fabric.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "~${minecraft_version}",
+    "fabricloader": "${fabric_loader_version_range}",
+    "resourcefulconfig": "*"
+  },
+  "custom": {
+    "mc-publish": {
+      "dependencies": [
+        "resourcefulconfig(embedded){curseforge:714059}{modrinth:M1953qlQ}"
+      ]
+    }
+  }
+}

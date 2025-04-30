@@ -53,7 +53,7 @@
     <module name="AvoidStarImport"/>
     <module name="IllegalImport"/>
     <module name="ImportOrder">
-      <property name="groups" value="java,javax,*,com.mojang,net.minecraft,net.fabricmc,me.axieum.mcmod.minecord"/>
+      <property name="groups" value="java,javax,*,com.mojang,net.minecraft,dev.architectury,net.fabricmc,me.axieum.mcmod.minecord"/>
       <property name="separated" value="true"/>
     </module>
     <module name="RedundantImport"/>

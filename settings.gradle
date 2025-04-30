@@ -1,13 +1,21 @@
 pluginManagement {
     repositories {
         mavenCentral()
-        maven { name 'Fabric'; url 'https://maven.fabricmc.net/' }
         gradlePluginPortal()
+        maven { name = 'Architectury'; url = 'https://maven.architectury.dev/' }
+        maven { name = 'dv8tion'; url = 'https://m2.dv8tion.net/releases' }
+        maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+        maven { name = 'Forge'; url = 'https://maven.minecraftforge.net/' }
+        maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
+        maven { name = 'NeoForge'; url = 'https://maven.neoforged.net/releases/' }
+        maven { name = 'Nucleoid'; url = 'https://maven.nucleoid.xyz/' }
+        maven { name = 'Sponge'; url = 'https://repo.spongepowered.org/repository/maven-public' }
+        maven { name = 'Team Resourceful'; url = 'https://maven.teamresourceful.com/repository/maven-public/' }
+        maven { name = 'TerraformersMC'; url = 'https://maven.terraformersmc.com/' }
     }
 }
 
 rootProject.name = 'minecord'
-include 'minecord-api'
-include 'minecord-chat'
-include 'minecord-cmds'
-include 'minecord-presence'
+include 'common'
+include 'fabric'
+include 'neoforge'

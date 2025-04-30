@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.axieum.mcmod.minecord.mixin",
+  "compatibilityLevel": "JAVA_18",
+  "mixins": [],
+  "client": [],
+  "server": [
+    "MinecraftServerMixin",
+    "PlayerListMixin",
+    "TellRawCommandMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

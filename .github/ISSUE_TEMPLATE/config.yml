@@ -1,11 +1,11 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Wiki
-    url: https://github.com/axieum/minecord/wiki
-    about: Please find helpful guides related to using the mod here
   - name: GitHub Discussions
     url: https://github.com/axieum/minecord/discussions
     about: Please ask and answer any questions regarding the mod here
   - name: About Fabric
     url: https://fabricmc.net/
     about: Please find information regarding the Fabric mod loader here
+  - name: About NeoForge
+    url: https://neoforged.net/
+    about: Please find information regarding the NeoForge mod loader here
