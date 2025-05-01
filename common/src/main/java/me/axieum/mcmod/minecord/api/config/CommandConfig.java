@@ -85,7 +85,7 @@ public final class CommandConfig
 
         /** Uptime built-in command configuration schema. */
         @ConfigObject
-        public static class UptimeCommand extends BaseCommand
+        public static final class UptimeCommand extends BaseCommand
         {
             /** Constructs a new built-in uptime command config. */
             public UptimeCommand()
@@ -117,7 +117,7 @@ public final class CommandConfig
          * Ticks-per-second (TPS) built-in command configuration schema.
          */
         @ConfigObject
-        public static class TPSCommand extends BaseCommand
+        public static final class TPSCommand extends BaseCommand
         {
             /** Constructs a new built-in TPS command config. */
             public TPSCommand()
@@ -135,7 +135,7 @@ public final class CommandConfig
 
     /** A custom Discord command. */
     @ConfigObject
-    public static class CustomCommand extends BaseCommand
+    public static final class CustomCommand extends BaseCommand
     {
         /** Constructs a new custom command config. */
         public CustomCommand()
@@ -201,7 +201,7 @@ public final class CommandConfig
 
         /** Command option configuration schema. */
         @ConfigObject
-        public static class Option
+        public static final class Option
         {
             /** The type of option. */
             @ConfigEntry(id = "type")
@@ -227,7 +227,7 @@ public final class CommandConfig
              * A command option's choice configuration schema.
              */
             @ConfigObject
-            public static class Choice
+            public static final class Choice
             {
                 /** The choice name. */
                 @ConfigEntry(id = "name")

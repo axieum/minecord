@@ -24,9 +24,9 @@ dependencies {
 
     modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
     modImplementation include("com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-${project.resourceful_config_version}")
-    modApi include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
-    api include("io.github.java-diff-utils:java-diff-utils:${project.java_diff_utils_version}")
-    api include("net.dv8tion:JDA:${project.jda_version}") { exclude module: 'opus-java' }
+    modImplementation include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
+    implementation include("io.github.java-diff-utils:java-diff-utils:${project.java_diff_utils_version}")
+    implementation include("net.dv8tion:JDA:${project.jda_version}") { exclude module: 'opus-java' }
 }
 
 processResources {

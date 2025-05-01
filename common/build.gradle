@@ -7,9 +7,9 @@ dependencies {
 
     modApi "dev.architectury:architectury:${project.architectury_version}"
     modApi "com.teamresourceful.resourcefulconfig:resourcefulconfig-common-${project.resourceful_config_version}"
-    modApi include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
-    api include("io.github.java-diff-utils:java-diff-utils:${project.java_diff_utils_version}")
-    api include("net.dv8tion:JDA:${project.jda_version}") { exclude module: 'opus-java' }
+    modApi "eu.pb4:placeholder-api:${project.placeholder_api_version}"
+    api "io.github.java-diff-utils:java-diff-utils:${project.java_diff_utils_version}"
+    api("net.dv8tion:JDA:${project.jda_version}") { exclude module: 'opus-java' }
 }
 
 processResources {

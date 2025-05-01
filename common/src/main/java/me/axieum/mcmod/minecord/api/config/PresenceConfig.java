@@ -39,7 +39,7 @@ public final class PresenceConfig
      * Presence category configuration schema.
      */
     @ConfigObject
-    public static class Category
+    public static final class Category
     {
         /** Constructs a new empty Discord presence category config. */
         public Category() {}
@@ -74,7 +74,7 @@ public final class PresenceConfig
          * Presence entry configuration schema.
          */
         @ConfigObject
-        public static class Presence
+        public static final class Presence
         {
             /**
              * Constructs a new empty Discord presence config.
@@ -117,7 +117,7 @@ public final class PresenceConfig
              * Presence activity configuration schema.
              */
             @ConfigObject
-            public static class Activity
+            public static final class Activity
             {
                 /**
                  * Constructs a new empty Discord presence activity config.

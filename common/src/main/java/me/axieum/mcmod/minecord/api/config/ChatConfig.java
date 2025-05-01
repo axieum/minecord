@@ -32,7 +32,7 @@ public final class ChatConfig
 
     /** Chat entry configuration schema. */
     @ConfigObject
-    public static class ChatEntry
+    public static final class ChatEntry
     {
         /** A channel identifier in Discord to observe. */
         @ConfigEntry(id = "id")
@@ -53,7 +53,7 @@ public final class ChatConfig
         /** Discord events configuration schema. */
         @ConfigObject
         @SuppressWarnings("checkstyle:linelength")
-        public static class Discord
+        public static final class Discord
         {
             /**
              * A player sent an in-game chat message.
@@ -299,7 +299,7 @@ public final class ChatConfig
          */
         @ConfigObject
         @SuppressWarnings("checkstyle:linelength")
-        public static class Minecraft
+        public static final class Minecraft
         {
             /**
              * A user sent a message.
