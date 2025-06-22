@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1+1.21.6](https://github.com/axieum/minecord/compare/cmds-v2.0.1+1.21.5...cmds-v2.0.1+1.21.6) (2025-06-22)
+
+
+### Build System
+
+* **cmds:** add support for Minecraft 1.21.6+ ([6271d7c](https://github.com/axieum/minecord/commit/6271d7c8672855052706e9bbbe4e53b99f23c6af))
+
 ## [2.0.1+1.21.5](https://github.com/axieum/minecord/compare/cmds-v2.0.1+1.21.3...cmds-v2.0.1+1.21.5) (2025-03-29)
 
 
