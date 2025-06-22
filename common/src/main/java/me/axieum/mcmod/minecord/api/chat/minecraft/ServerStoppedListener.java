@@ -30,6 +30,7 @@ import static me.axieum.mcmod.minecord.api.util.PlaceholdersExt.string;
  */
 public class ServerStoppedListener implements LifecycleEvent.ServerState
 {
+    /** The crash report if present. */
     public static @Nullable CrashReport crashReport = null;
 
     @Override

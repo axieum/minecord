@@ -33,6 +33,11 @@ public final class MinecordChat
 {
     private MinecordChat() {}
 
+    /**
+     * Initialises the Minecord Chat addon.
+     *
+     * @param jda JDA client
+     */
     public static void init(JDA jda)
     {
         /*

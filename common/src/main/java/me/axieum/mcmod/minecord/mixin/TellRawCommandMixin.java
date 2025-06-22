@@ -88,7 +88,7 @@ public abstract class TellRawCommandMixin
      * @return true if the {@code /tellraw @a} command was executed
      */
     @Unique
-    @SuppressWarnings("MethodName")
+    @SuppressWarnings({"checkstyle:illegalidentifiername", "checkstyle:methodname"})
     private static boolean minecord$targetsAllPlayers(CommandContext<CommandSourceStack> context)
     {
         return context.getNodes().size() > 1 && context.getNodes().get(1).getRange().get(context.getInput()).equals(
