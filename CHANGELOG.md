@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2+1.21.6](https://github.com/axieum/minecord/compare/v2.1.1+1.21.6...v2.1.2+1.21.6) (2025-07-01)
+
+
+### Bug Fixes
+
+* **chat:** respawning should not send a `teleport` message (closes [#171](https://github.com/axieum/minecord/issues/171)) ([#173](https://github.com/axieum/minecord/issues/173)) ([4df14c4](https://github.com/axieum/minecord/commit/4df14c42a935f415235a6a596ff21a726b224051))
+
 ## [2.1.1+1.21.6](https://github.com/axieum/minecord/compare/v2.1.1+1.21.5...v2.1.1+1.21.6) (2025-06-22)
 
 
