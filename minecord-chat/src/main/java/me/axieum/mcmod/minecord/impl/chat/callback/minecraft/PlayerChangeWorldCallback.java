@@ -28,6 +28,7 @@ public class PlayerChangeWorldCallback implements ServerEntityWorldChangeEvents.
     {
         Minecord.getInstance().getJDA().ifPresent(jda -> {
             final BlockPos lastBlockPos = ((LivingEntityAccessor) player).getLastBlockPos();
+            if (lastBlockPos == null) return;
 
             /*
              * Prepare the message placeholders.

@@ -22,8 +22,13 @@ public abstract class ServerPlayerEntityMixin
      * @param source damage source
      * @param ci     mixin callback info
      */
-    @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;sendEntityStatus("
-        + "Lnet/minecraft/entity/Entity;B)V"))
+    @Inject(
+        method = "onDeath",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/server/world/ServerWorld;sendEntityStatus(Lnet/minecraft/entity/Entity;B)V"
+        )
+    )
     public void onDeath(DamageSource source, CallbackInfo ci)
     {
         EntityDeathEvents.PLAYER.invoker().onPlayerDeath((ServerPlayerEntity) (Object) this, source);
