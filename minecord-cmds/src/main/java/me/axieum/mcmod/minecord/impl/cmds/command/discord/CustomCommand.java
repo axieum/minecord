@@ -22,7 +22,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.context.ParsedCommandNode;
@@ -32,6 +31,7 @@ import com.mojang.brigadier.tree.ArgumentCommandNode;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerConfigEntry;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -226,8 +226,10 @@ public class CustomCommand extends MinecordCommand
                         return EntityArgumentType.getPlayer(context, node.getName()).getUuidAsString();
                     } else if (node.getType() instanceof GameProfileArgumentType) {
                         // Game Profile
-                        Collection<GameProfile> c = GameProfileArgumentType.getProfileArgument(context, node.getName());
-                        return c.size() == 1 ? c.iterator().next().getId().toString() : null;
+                        Collection<PlayerConfigEntry> c = GameProfileArgumentType.getProfileArgument(
+                            context, node.getName()
+                        );
+                        return c.size() == 1 ? c.iterator().next().id().toString() : null;
                     }
                 } catch (CommandSyntaxException | IllegalArgumentException ignored) { /* ignored */ }
                 return null;
