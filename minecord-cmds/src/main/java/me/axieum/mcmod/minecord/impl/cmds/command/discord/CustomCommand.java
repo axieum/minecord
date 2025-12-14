@@ -30,6 +30,7 @@ import com.mojang.brigadier.tree.ArgumentCommandNode;
 
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
+import net.minecraft.command.permission.LeveledPermissionPredicate;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerConfigEntry;
 import net.minecraft.server.command.CommandOutput;
@@ -37,7 +38,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.rule.GameRules;
 
 import me.axieum.mcmod.minecord.api.Minecord;
 import me.axieum.mcmod.minecord.api.cmds.command.MinecordCommand;
@@ -53,8 +54,6 @@ import static me.axieum.mcmod.minecord.impl.cmds.MinecordCommandsImpl.getConfig;
  */
 public class CustomCommand extends MinecordCommand
 {
-    // The permission level all Minecraft commands should run at
-    private static final int PERMISSION_LEVEL = 4;
     // The custom command config instance
     private final CommandConfig.CustomCommandSchema config;
 
@@ -112,7 +111,7 @@ public class CustomCommand extends MinecordCommand
         final ServerCommandSource origSource = new ServerCommandSource(
             output, // command output
             Vec3d.ZERO, Vec2f.ZERO, server.getOverworld(), // location & world
-            PERMISSION_LEVEL, tag, Text.literal(username), // permission & display name
+            LeveledPermissionPredicate.OWNERS, tag, Text.literal(username), // permission & display name
             server, null // server & entity
         );
 
@@ -310,7 +309,7 @@ public class CustomCommand extends MinecordCommand
         @Override
         public boolean shouldBroadcastConsoleToOps()
         {
-            return server.getGameRules().getBoolean(GameRules.COMMAND_BLOCK_OUTPUT);
+            return server.getOverworld().getGameRules().getValue(GameRules.COMMAND_BLOCK_OUTPUT);
         }
     }
 }

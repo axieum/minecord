@@ -176,7 +176,7 @@ public class CommandConfig implements ConfigData
         @Comment("""
             A Minecraft command to execute
             Usages: ${<name>} for "<name>" option value""")
-        public String command = "/whitelist ${args:-}";
+        public String command = "/whitelist ${args}";
 
         /** Pre-parsed 'command' text node. */
         public transient TextNode commandNode;
