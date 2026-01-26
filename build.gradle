@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
     id 'com.modrinth.minotaur' version '2.8.10'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'com.gradleup.shadow' version '9.3.0'
+    id 'com.gradleup.shadow' version '9.3.1'
     id 'fabric-loom' version '1.14-SNAPSHOT'
 }
 
@@ -60,8 +60,6 @@ allprojects {
         dependsOn tasks.shadowJar
         inputFile.set(tasks.shadowJar.archiveFile)
     }
-
-    components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) { skip() }
 
     // Add the licence to all distributions
     tasks.withType(Jar).configureEach {
