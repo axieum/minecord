@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0+1.21.11](https://github.com/axieum/minecord/compare/presence-v2.0.0+1.21.9...presence-v2.0.0+1.21.11) (2026-01-26)
+
+
+### Build System
+
+* **presence:** add support for Minecraft 1.21.11+ ([39b052e](https://github.com/axieum/minecord/commit/39b052e3aa557d18e30c24004c87ee548a5cff16))
+
 ## [2.0.0+1.21.9](https://github.com/axieum/minecord/compare/presence-v2.0.0+1.21.7...presence-v2.0.0+1.21.9) (2025-10-11)
 
 
